@@ -1,73 +1,101 @@
 #!/usr/bin/env bash
+#export PATH="$(pwd):$PATH"
+#/をつける
 #--------------------------------<<外部ファイル読み込み>>--------------------------------#
 #設定ファイル
-. ./etc/settings
+. etc/intsl_v/settings
 #変数ファイル
-. ./etc/variable
-#設定ファイル
-. ./assets/settings.txt
+. etc/intsl_v/variable
 #言語ファイル
-. ./usr/share/intsl_v/locale/$USER_LANGUAGE.txt
+. usr/share/intsl_v/locale/${setting_use_lang}
 #----------------------------------------------------------------------------------------#
 SELF_DIR_PATH=$(
     cd $(dirname $0)
     pwd
 )/
-
-
+#TODO: packageにする際にファイルの先頭に/をつける (yupix 2020:4/9)
 #Official
 SERVER_JARLIST_PATH="./minecraft/versionlist/official/"
 #Paper
 SERVER_PAPERLIST_PATH="./minecraft/versionlist/paper/"
 #Spigot
 SERVER_SPIGOTLIST_PATH="./minecraft/versionlist/spigot/"
+if [ ! -e etc/intsl_v/settings -o ! -e etc/intsl_v/variable -o ! -e usr/share/intsl_v/locale/ja -o ! -e usr/share/intsl_v/locale/en ]; then
+    echo "システムファイルが破損している、又は存在しない為、起動に失敗しました。"
+    echo "復元を試みますか?"
+    echo "Coming Soon..."
+fi
 
 #コマンド
 first_start() {
-    "$(mktemp)"
-    if [ ! -e /var/dummy ]; then
+    #/をつける
+    if [[ ${setting_package_mode} = "true" ]]; then
+        local max_settings="2"
+    else
+        local max_settings="3"
+    fi
+    if [ ! -e var/dummy ]; then
         echo "INTSLをインストールして頂きありがとうございます。"
         echo "本Projectのご利用をスムーズにスタートする為に初期設定をする事を推奨します！"
-        echo "$USE_POSSIBLE_ME"
-        while :; do
-            read -p ">" INPUT_DATA
-            INPUT_DATA=${INPUT_DATA:-y}
-            case $INPUT_DATA in
-            [Yy] | [yY][eE][sS])
-                echo "(使用する言語を入力してください。 1/3)"
-                echo "以下が使用可能な言語です。 デフォルト:ja"
-                echo "|ja | en|"
+        local count="1"
+        while [[ ${count} -le ${max_settings} ]]; do
+            local setting_text1="使用する言語を選択してください (${count} / ${max_settings})"
+            if [[ ${setting_package_mode} = "false" ]]; then
+                local setting_text2="使用するたびにバージョンアップを確認するか (${count} / ${max_settings})"
+                local setting_text3="(SpigotのBuild時,前回の環境をリセットするかどうか (${count} / ${max_settings})"
+            else
+                local setting_text2="(SpigotのBuild時,前回の環境をリセットするかどうか (${count} / ${max_settings})"
+
+            fi
+            local change_setting="${count}"
+            local overwrite="setting_text"
+            eval $overwrite="\$setting_text$count"
+            if [[ ${change_setting} = 1 ]]; then
+                echo "$setting_text"
+                echo "$message_available_languages"
                 while :; do
-                    read -p ">" INPUT_LANGUAGE_DATA
-                    INPUT_LANGUAGE_DATA=${INPUT_LANGUAGE_DATA:-ja}
-                    case $INPUT_LANGUAGE_DATA in
-                    [jJ][aA])
-                        LANGUAGE_DATA="ja"
+                    read -p ">" input_data
+                    input_data=${input_data:-ja}
+                    case $input_data in
+                    ja)
+                        local run_sed_command="$(sed -i -e 's/setting_use_lang="'${setting_use_lang}'"/setting_use_lang="'${input_data}'"/' etc/intsl_v/settings)"
                         break
                         ;;
-                    [eE][nN])
-                        LANGUAGE_DATA="en"
+                    en)
+                        echo "ComingSoon..."
+                        local input_data="ja"
+                        local run_sed_command="$(sed -i -e 's/setting_use_lang="'${setting_use_lang}'"/setting_use_lang="'${input_data}'"/' etc/intsl_v/settings)"
                         break
                         ;;
                     *)
-                        echo "存在しない言語または未対応の言語です。"
+                        echo "$message_nonexistent_language"
                         ;;
                     esac
                 done
-                #言語設定を書き換え
-                sed -i -e 's/USER_LANGUAGE="'$USER_LANGUAGE'"/USER_LANGUAGE="'$LANGUAGE_DATA'"/' ./assets/settings.txt
-                #再読み込み
-                . ./assets/settings.txt
-                #言語を変更できているかチェック
-                if [[ $LANGUAGE_DATA = $USER_LANGUAGE ]]; then
-                    echo "言語を${LANGUAGE_DATA}に変更しました"
-                else
-                    echo "予期せぬ動作により言語の設定に失敗しました。"
-                    echo "項目をスキップします。"
-                fi
-                mkdir /var/dummy/
-                ;;
-            esac
+            else
+                echo "$setting_text"
+                echo "$message_use_possible"
+                read -p ">" input_data
+                input_data=${input_data:-true}
+                while :; do
+                    if [ ${input_data,,} = true -o ${input_data,,} = yes -o ${input_data,,} = y ]; then
+                        local input_data="true"
+                        break
+                    elif [ ${input_data,,} = false -o ${input_data,,} = no -o ${input_data,,} = n ]; then
+                        local input_data="false"
+                        break
+                    else
+                        echo "(Y)es または (N)o を入力してください。"
+                    fi
+                done
+                run_sed_command2="sed -i -e 's/setting_version_check=\"$setting_version_check\"/setting_version_check=\"$input_data\"/' etc/intsl_v/settings"
+                run_sed_command3="sed -i -e 's/setting_resetspigot=\"$setting_resetspigot\"/setting_resetspigot=\"$input_data\"/' etc/intsl_v/settings"
+                local overwrite="run_sed_command"
+                eval $overwrite="\$run_sed_command$count"
+                eval ${run_sed_command}
+            fi
+            echo $count
+            local count=$((${count} + 1))
         done
     fi
 }
@@ -86,7 +114,7 @@ serverlistoutput() {
             rm -rf OUTPUTSERVERLIST.txt
         else
             while [[ ! -e OUTPUTSERVERLIST.txt ]]; do
-                PROGRESS_STATUS="$first_start"
+                PROGRESS_STATUS="${first_start}"
                 cat ./lib/main/server_list.sh | awk '/STARTSERVERLIST/,/ENDSERVERLIST/' >OUTPUTSERVERLIST.txt
                 sed -i -e '1,1d' OUTPUTSERVERLIST.txt
                 #先頭削除
@@ -99,7 +127,7 @@ serverlistoutput() {
             break
         fi
     done
-    echo "$message_output_SUCCESS"
+    echo "${message_output_success}"
 }
 
 #INTSLGETV() {

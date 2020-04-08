@@ -6,19 +6,16 @@ readonly message_updata_success="バージョンアップに成功"
 
 ##アウトプット系メッセージ
 readonly message_output_now="アウトプット中..."
-readonly message_output_SUCCESS="アウトプットに成功しました"
+readonly message_output_success="アウトプットに成功しました"
 
-
-
-
-
-
-
+##システム系メッセージ
+readonly message_use_possible="使用可能 (Y)es (N)o default(Y)es"
+readonly message_available_languages="| ja | en | (Default = ja)"
+readonly message_nonexistent_language="存在しない言語または、対応中の言語です。"
 
 ##ファイル系メッセージ
-FILE_DOWNLOAD_CHECK_ME="ファイルをダウンロードしますか?"
-USE_POSSIBLE_ME="使用可能 (Y)es (N)o default(Y)es"
-DATA_DOWNLOAD_NOW_ME="データのダウンロード中"
+readonly message_downalod_file="ファイルをダウンロードしますか?"
+readonly message_download_file_now="データのダウンロード中"
 
 ##ダウンロード系メッセージ
 DONWLOAD_SUCCESS_ME="ダウンロードに成功"

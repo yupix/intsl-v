@@ -1,2 +1,11 @@
 #使用する言語
-use_lang="ja"
+setting_use_lang="ja"
+
+#バージョンチェック
+setting_version_check="true"
+
+#SPIGOT環境リセット
+setting_resetspigot="false"
+
+#パッケージモード
+setting_package_mode="false"
