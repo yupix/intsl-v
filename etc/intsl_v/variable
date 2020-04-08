@@ -1,0 +1,39 @@
+#--------------------------------<<INTSL情報>>--------------------------------#
+#バージョン
+readonly INTVESION="100"
+#エディション
+readonly INTEDITION="linux"
+#レポジトリー
+readonly INTREPOURL="https://repo.akarinext.org/"
+
+#EEWBOT関係
+EEW_VERSION="207"
+EEWFILE="./discord/eew/"
+readonly JAR_FILE="./discord/eew/eewbot-$EEW_VERSION.jar"
+EEW_SYSTEM_FILE="./discord/eew"
+
+#ECHO色 (太文字)
+##緑
+readonly ECHO_GREEN_COLOR="\033[1;32m"
+##赤
+readonly ECHO_RED_COLOR="\033[1;31m"
+##終了
+readonly ECHO_COLOR_EXIT="\033[0;39m"
+
+#SYSTEM関係
+SCREEN_NAME=test
+USER=$(whoami)
+
+
+chars="/-\|"
+
+#リトライ上限
+RETRYMAX="3"
+
+
+PASSWORDDILECTORY="./assets/password.txt"
+AMBSETTINGS="./assets/settings.txt"
+SYSTEMFILEMUSIC="./discord/jmusic"
+SYSTEMFILE="discord"
+SYSTEMMV="./discrod/musicbot/"
+#------------------------------------------------------------------------------#
