@@ -86,7 +86,7 @@ serverlistoutput() {
             rm -rf OUTPUTSERVERLIST.txt
         else
             while [[ ! -e OUTPUTSERVERLIST.txt ]]; do
-                PROGRESS_STATUS="$OUTPUT_NOW_ME"
+                PROGRESS_STATUS="$first_start"
                 cat ./lib/main/server_list.sh | awk '/STARTSERVERLIST/,/ENDSERVERLIST/' >OUTPUTSERVERLIST.txt
                 sed -i -e '1,1d' OUTPUTSERVERLIST.txt
                 #先頭削除
@@ -99,7 +99,7 @@ serverlistoutput() {
             break
         fi
     done
-    echo "$OUTPUT_SUCCESS_ME"
+    echo "$message_output_SUCCESS"
 }
 
 #INTSLGETV() {
@@ -119,7 +119,7 @@ vcheck() {
                 . ./assets/new-version.txt
                 NEWINTSLGETV=$(echo "$NEWVERSION" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
                 if [[ $NEWVERSION -gt ${INTVERSION} ]]; then
-                    echo "$NEW_VERSION_EXISTS            "
+                    echo "$message_update_exists            "
                     echo -e "\e[31mCurrent: INTSL-$INTVERSION\e[m ⇛  \e[32mNew: INTSL-$NEWINTSLGETV\e[m"
                     echo "$FILE_DOWNLOAD_CHECK_ME"
                     echo "$USE_POSSIBLE_ME"
@@ -127,7 +127,7 @@ vcheck() {
                     INPUT_DATA=${INPUT_DATA:y}
                     case $INPUT_DATA in
                     [yY])
-                        echo "$UPDATE_START_ME"
+                        echo "$message_updata_start"
                         while [[ ! -e ./INTSL-${NEWINTSLGETV}-${INTEDITION}.zip ]]; do
                             PROGRESS_STATUS="$DATA_DOWNLOAD_NOW_ME"
                             SPINNER
@@ -160,7 +160,7 @@ vcheck() {
                                 GETLINE=$(sed -n ${COUNT}P news.txt)
                                 echo "$GETLINE"
                             done
-                            echo "$VERSION_UPDATE_SUCCESS_ME"
+                            echo "$message_updata_success"
 
                         fi
                         ;;

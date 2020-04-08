@@ -1,1 +1,39 @@
- 
+#--------------------------------<<本体メッセージ>>--------------------------------#
+##アップデート系メッセージ
+readonly message_update_exists="新しいバージョンが存在します"
+readonly message_updata_start="アップデートを開始します"
+readonly message_updata_success="バージョンアップに成功"
+
+##アウトプット系メッセージ
+readonly message_output_now="アウトプット中..."
+readonly message_output_SUCCESS="アウトプットに成功しました"
+
+
+
+
+
+
+
+
+##ファイル系メッセージ
+FILE_DOWNLOAD_CHECK_ME="ファイルをダウンロードしますか?"
+USE_POSSIBLE_ME="使用可能 (Y)es (N)o default(Y)es"
+DATA_DOWNLOAD_NOW_ME="データのダウンロード中"
+
+##ダウンロード系メッセージ
+DONWLOAD_SUCCESS_ME="ダウンロードに成功"
+DONWLOAD_FAILED_ME="ファイルのダウンロードに失敗しました。"
+
+##設定系メッセージ
+CHANGED_SETTINGS_ME="設定を変更しました。"
+
+##開発者系メッセージ
+DEV_WELCOME_ME="ようこそ"
+
+##マイクラサーバー系
+INPUT_MC_SERVER_TYPE_ME="サーバータイプを入力してください。"
+
+##サービス系メッセージ
+MISSING_INPUT_DATA_ME="(Y)es or (N)o を入力してください"
+END_THE_SERVICE_ME="サービスを終了します。"
+#----------------------------------------------------------------------------------------#
