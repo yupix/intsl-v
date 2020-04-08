@@ -7,4 +7,5 @@ test:
         - archlinux
     stage: test
     script:
-        - ./intsl
+        - export PATH="$(pwd)/usr/bin:$PATH"
+        - intsl
