@@ -1,0 +1,10 @@
+stages:
+  - test
+
+test:
+    tags:
+        - linux
+        - archlinux
+    stage: test
+    script:
+        - ./intsl
