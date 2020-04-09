@@ -4,3 +4,5 @@ test.sh
 create_package
 #ダミーファイル
 dummy
+#JAR系
+*.jar

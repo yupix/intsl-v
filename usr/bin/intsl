@@ -20,7 +20,17 @@ SERVER_JARLIST_PATH="./minecraft/versionlist/official/"
 SERVER_PAPERLIST_PATH="./minecraft/versionlist/paper/"
 #Spigot
 SERVER_SPIGOTLIST_PATH="./minecraft/versionlist/spigot/"
-if [ ! -e etc/intsl_v/settings -o ! -e etc/intsl_v/variable -o ! -e usr/share/intsl_v/locale/ja -o ! -e usr/share/intsl_v/locale/en ]; then
+
+#その他使用ファイルの存在確認
+if [ ! -e "var/cache/intsl_v/minecraft_jar/official" -o ! -e "var/cache/intsl_v/minecraft_jar/spigot" -o ! -e "var/cache/intsl_v/minecraft_jar/paper" -o ! -e "var/cache/intsl_v/minecraft_jar/forge" -o ! -e "usr/lib/intsl_v/" -o ! -e "usr/share/doc/intsl_v/" -o ! -e "usr/share/intsl_v/locale" -o ! -e "etc/intsl_v/" ]; then
+    echo "intslを使用する上で必要なファイルが不足しています。"
+    echo "不足しているファイルを作成する為、sudoのパスワードを入力してください。"
+    sudo mkdir -p var/cache/intsl_v/minecraft_jar/official var/cache/intsl_v/minecraft_jar/spigot var/cache/intsl_v/minecraft_jar/paper var/cache/intsl_v/minecraft_jar/forge \
+        usr/lib/intsl_v/ usr/share/doc/intsl_v/ usr/share/intsl_v/locale etc/intsl_v/
+fi
+
+#基本システムファイルの存在確認
+if [ ! -e "etc/intsl_v/settings" -o ! -e "etc/intsl_v/variable" -o ! -e "usr/share/intsl_v/locale/" ]; then
     echo "システムファイルが破損している、又は存在しない為、起動に失敗しました。"
     echo "復元を試みますか?"
     echo "Coming Soon..."
@@ -59,7 +69,7 @@ first_start() {
                         while :; do
                             read -p ">" input_data
                             input_data=${input_data:-ja}
-                            case $input_data in
+                            case ${input_data} in
                             ja)
                                 local run_sed_command="$(sed -i -e 's/setting_use_lang="'${setting_use_lang}'"/setting_use_lang="'${input_data}'"/' etc/intsl_v/settings)"
                                 break
@@ -125,7 +135,7 @@ first_start() {
 SPINNER() {
     for ((i = 0; i < ${#chars}; i++)); do
         sleep 0.05
-        echo -en "${chars:$i:1} $PROGRESS_STATUS " "\r"
+        echo -en "${chars:$i:1} ${spinner_progress_status} " "\r"
     done
 }
 
@@ -136,7 +146,7 @@ serverlistoutput() {
             rm -rf OUTPUTSERVERLIST.txt
         else
             while [[ ! -e OUTPUTSERVERLIST.txt ]]; do
-                PROGRESS_STATUS="${first_start}"
+                spinner_progress_status="${first_start}"
                 cat ./lib/main/server_list.sh | awk '/STARTSERVERLIST/,/ENDSERVERLIST/' >OUTPUTSERVERLIST.txt
                 sed -i -e '1,1d' OUTPUTSERVERLIST.txt
                 #先頭削除
@@ -159,11 +169,11 @@ serverlistoutput() {
 vcheck() {
     while :; do
         if [[ -e ./assets/new-version.txt ]]; then
-            PROGRESS_STATUS="既存のファイルを削除しています。"
+            spinner_progress_status="既存のファイルを削除しています。"
             SPINNER
             rm -rf ./assets/new-version.txt
         else
-            PROGRESS_STATUS="新しいバージョンが無いかサーバーに問い合わせています。"
+            spinner_progress_status="新しいバージョンが無いかサーバーに問い合わせています。"
             wget -q ${INTREPOURL}pub/intsl/new-version.txt -P ./assets/
             if [[ -e ./assets/new-version.txt ]]; then
                 . ./assets/new-version.txt
@@ -173,17 +183,17 @@ vcheck() {
                     echo -e "\e[31mCurrent: INTSL-$INTVERSION\e[m ⇛  \e[32mNew: INTSL-$NEWINTSLGETV\e[m"
                     echo "$FILE_DOWNLOAD_CHECK_ME"
                     echo "$USE_POSSIBLE_ME"
-                    read -p ">" INPUT_DATA
-                    INPUT_DATA=${INPUT_DATA:y}
-                    case $INPUT_DATA in
+                    read -p ">" input_data
+                    input_data=${input_data:y}
+                    case ${input_data} in
                     [yY])
                         echo "$message_updata_start"
                         while [[ ! -e ./INTSL-${NEWINTSLGETV}-${INTEDITION}.zip ]]; do
-                            PROGRESS_STATUS="$DATA_DOWNLOAD_NOW_ME"
+                            spinner_progress_status="$DATA_DOWNLOAD_NOW_ME"
                             SPINNER
                             wget -q https://repo.akarinext.org/pub/intsl-v/${NEWINTSLGETV}/INTSL-${NEWINTSLGETV}-${INTEDITION}.zip
                         done
-                        echo "$DONWLOAD_SUCCESS_ME"
+                        echo "${message_download_success}"
                         serverlistoutput
                         unzip -qonu ./INTSL-${NEWINTSLGETV}-${INTEDITION}.zip
                         if [[ -e INTSL-${NEWINTSLGETV}-${INTEDITION} ]]; then
@@ -204,7 +214,7 @@ vcheck() {
                             MAXLINE=$(cat news.txt | wc -l)
                             while [[ $COUNT != $MAXLINE ]]; do
                                 . ./assets/settings.txt
-                                PROGRESS_STATUS="最新情報の取得中 $COUNT / $MAXLINE"
+                                spinner_progress_status="最新情報の取得中 $COUNT / $MAXLINE"
                                 SPINNER
                                 COUNT=$(($COUNT + 1))
                                 GETLINE=$(sed -n ${COUNT}P news.txt)
@@ -226,7 +236,7 @@ vcheck() {
                     break
                 fi
             else
-                echo "$DONWLOAD_FAILED_ME"
+                echo "$message_download_failed"
                 echo "考えられる理由として、RepositoryServerがDownしている、又は"
                 echo "ネットの接続が不安定な可能性が有ります。"
                 break
@@ -364,8 +374,8 @@ CHANGE_SERVER_MAX_MEMORY() {
         fi
     done
 }
-SERVER_CREATE() {
-    . ./lib/minecraft/prsr_ce.sh
+mc_server_create() {
+    . usr/lib/intsl_v/prsr_ce.sh
 }
 extension_import() {
     rm -rf ${INPUT_EXTENSION_NAME}.txt
@@ -377,7 +387,7 @@ extension_import() {
         while [[ $COUNT != $MAXLINE ]]; do
             . ./assets/settings.txt
             COUNT=$(($COUNT + 1))
-            PROGRESS_STATUS="進捗 $COUNT / $MAXLINE"
+            spinner_progress_status="進捗 $COUNT / $MAXLINE"
             SPINNER
             GETLINE=$(sed -n ${COUNT}P ${INPUT_EXTENSION_NAME}.txt)
             sed -i ''$EXSTENSIONLANE'i '"$GETLINE"'' ./assets/extension.txt
@@ -430,7 +440,7 @@ extension_import() {
 DEVELOPER_LOGIN() {
     while [[ $RETRYCOUNT != $RETRYMAX ]]; do
         if [ -e $PASSWORDDILECTORY ]; then
-            PROGRESS_STATUS="過去のログイン記録を参照中..."
+            spinner_progress_status="過去のログイン記録を参照中..."
             SPINNER
             . ./assets/settings.txt
             if [[ $first_dev_login = 0 ]]; then
@@ -455,7 +465,7 @@ DEVELOPER_LOGIN() {
         else
             echo "開発者モードを初めて使用するため、必要なファイルを作成します"
             while [[ ! -e ./assets/password.txt ]]; do
-                PROGRESS_STATUS="パスワードの生成 / ファイルの作成中"
+                spinner_progress_status="パスワードの生成 / ファイルの作成中"
                 SPINNER
                 password_generator=$(pwgen 20)
                 cat <<EOF >./assets/password.txt
@@ -490,39 +500,39 @@ WELCOME_DEV_MESSAGE() {
         fi
     fi
 }
-MC_SERVER_CREATE() {
+mc_server_version_list() {
     if [[ -z "$INPUT_SERVER_TYPE" ]]; then
         echo "$INPUT_MC_SERVER_TYPE_ME"
         read -p ">" INPUT_SERVER_TYPE
     fi
     case $INPUT_SERVER_TYPE in
     [1])
-        SERVER_EDITION="official"
+        mc_server_edition="official"
         echo "OfficialServer"
         echo -e "VersionList: | \033[1;37m1.2.5\033[0;39m | \033[1;37m1.3.1\033[0;39m | \033[1;37m1.3.2\033[0;39m | \033[1;37m1.4.2\033[0;39m | \033[1;37m1.4.4\033[0;39m | \033[1;37m1.4.5\033[0;39m | \033[1;37m1.4.6\033[0;39m | \033[1;37m1.4.7\033[0;39m | \033[1;37m1.5.2\033[0;39m | \033[1;37m1.5.2\033[0;39m | \033[1;37m1.6.1\033[0;39m | \033[1;37m1.6.2\033[0;39m | \033[1;37m1.6.4\033[0;39m |"
         echo -e "| \033[1;37m1.7.2\033[0;39m | \033[1;37m1.7.5\033[0;39m | \033[1;37m1.7.6\033[0;39m | \033[1;37m1.7.7\033[0;39m | \033[1;37m1.7.8\033[0;39m | \033[1;37m1.7.9\033[0;39m | \033[1;37m1.7.10\033[0;39m | \033[1;37m1.8\033[0;39m | \033[1;37m1.8.1\033[0;39m | \033[1;37m1.8.2\033[0;39m | \033[1;37m1.8.3\033[0;39m | \033[1;37m1.8.4\033[0;39m | \033[1;37m1.8.5\033[0;39m | \033[1;37m1.8.6\033[0;39m | \033[1;37m1.8.7\033[0;39m | \033[1;37m1.8.8\033[0;39m | \033[1;37m1.8.9\033[0;39m |"
         echo -e "| \033[1;37m1.9\033[0;39m | \033[1;37m1.9.1\033[0;39m | \033[1;37m1.9.2\033[0;39m | \033[1;37m1.9.3\033[0;39m | \033[1;37m1.9.4\033[0;39m | \033[1;37m1.10\033[0;39m | \033[1;37m1.10.1\033[0;39m | \033[1;37m1.10.2\033[0;39m | \033[1;37m1.11\033[0;39m | \033[1;37m1.11.1\033[0;39m | \033[1;37m1.11.2\033[0;39m | \033[1;37m1.12\033[0;39m | \033[1;37m1.12.1\033[0;39m | \033[1;37m1.12.2\033[0;39m | \033[1;37m1.13\033[0;39m | \033[1;37m1.13.1\033[0;39m | \033[1;37m1.13.2\033[0;39m |"
         echo -e "| \033[1;37m1.14\033[0;39m | \033[1;37m1.14.1\033[0;39m | \033[1;37m1.14.2\033[0;39m | \033[1;37m1.14.3\033[0;39m | \033[1;37m1.14.4\033[0;39m | \033[1;37m1.15\033[0;39m | \033[1;37m1.15.1\033[0;39m | \033[1;37m1.15.2\033[0;39m |"
-        . ./lib/minecraft/officialserver.sh
-        . ./lib/minecraft/olsr_dr.sh
+        . usr/lib/intsl_v/officialserver.sh
+        . usr/lib/intsl_v/mc_server_download
         exit 0
         ;;
     [2])
-        SERVER_EDITION="paper"
+        mc_server_edition="paper"
         echo "PaperServer"
         echo -e "VersionList: | \033[1;37m1.7.10\033[0;39m | \033[1;37m1.8.8\033[0;39m | \033[1;37m1.9.4\033[0;39m | \033[1;37m1.10.2\033[0;39m | \033[1;37m1.11.2\033[0;39m | \033[1;37m1.12.2\033[0;39m | \033[1;37m1.13.2\033[0;39m | \033[1;37m1.14.4\033[0;39m | \033[1;37m1.15.2\033[0;39m |"
-        . ./lib/minecraft/paperserver.sh
-        . ./lib/minecraft/prsr_dr.sh
+        . usr/lib/intsl_v/paperserver.sh
+        . usr/lib/intsl_v/mc_server_download
         ;;
     [3])
-        SERVER_EDITION="spigot"
+        mc_server_edition="spigot"
         echo "SpigotServer"
-        . ./lib/minecraft/spigotserver.sh
-        . ./lib/minecraft/stsr_dr.sh
+        . usr/lib/intsl_v/spigotserver.sh
+        . usr/lib/intsl_v/mc_server_download
         ;;
     [4])
-        SERVER_EDITION="forge"
-        echo "forgeserver"
+        mc_server_edition="forge"
+        echo "ComingSoon..."
         ;;
     *)
         echo "数字を入力してください。"
@@ -534,14 +544,14 @@ MC_SERVER_IMPORT() {
         MAXLINE=$(cat OUTPUTSERVERLIST.txt | wc -l)
         while [[ $COUNT != $MAXLINE ]]; do
             . ./assets/settings.txt
-            PROGRESS_STATUS="進捗 $COUNT / $MAXLINE"
+            spinner_progress_status="進捗 $COUNT / $MAXLINE"
             SPINNER
             COUNT=$(($COUNT + 1))
             GETLINE=$(sed -n ${COUNT}P OUTPUTSERVERLIST.txt)
-            sed -i ''$SERVERLANE'i '"$GETLINE"'' ./lib/main/server_list.sh
+            sed -i ''${server_add_line}'i '"$GETLINE"'' ./lib/main/server_list.sh
             #サーバーの追加する行変更
-            NEWSERVERLANE=$((SERVERLANE + 1))
-            sed -i -e 's/SERVERLANE="'$SERVERLANE'"/SERVERLANE="'$NEWSERVERLANE'"/' ./assets/settings.txt
+            NEWSERVERLANE=$((server_add_line + 1))
+            sed -i -e 's/server_add_line="'${server_add_line}'"/server_add_line="'$NEWSERVERLANE'"/' ./assets/settings.txt
         done
         echo -e "\e[1;37;32mIMPORT SUCCESS\e[0m"
     else
@@ -620,14 +630,14 @@ main)
     echo "■ extension | 拡張機能を管理できます"
     echo "■ dev       | 開発者向け機能を使用できます"
     echo "■ report   | INTSLに欲しい機能や不具合を報告できます。"
-    read -p ">" INPUT_DATA
-    case $INPUT_DATA in
+    read -p ">" input_data
+    case ${input_data} in
     #開発者向け機能
     report)
         echo "INTSLに欲しい機能、又は不具合を報告できます。"
         echo "要望(request) | 不具合(bug)"
-        read -p ">" INPUT_DATA
-        case $INPUT_DATA in
+        read -p ">" input_data
+        case ${input_data} in
         request)
             echo "要望を簡潔にまとめて入力してください。"
             read -p ">" INPUT_REQUEST_DATA
@@ -698,7 +708,7 @@ main)
             rm -rf ./newversion.txt
             while [[ $PLAYCOUNT != $EXTENSIONS ]]; do
                 . ./assets/extension.txt
-                PROGRESS_STATUS="アップデートの確認中 $3 / $EXTENSIONS"
+                spinner_progress_status="アップデートの確認中 $3 / $EXTENSIONS"
                 SPINNER
                 COUNT=$(($COUNT + 1))
                 PLAYCOUNT=$(($PLAYCOUNT + 1))
@@ -721,13 +731,13 @@ main)
                     echo -e "$IE_XT     $Formal_V\e[32m         $Formal_NEW_V\e[m"
                     echo "更新を行いますか?"
                     echo "(Y)es / (N)o"
-                    read -p ">" INPUT_DATA
-                    case $INPUT_DATA in
+                    read -p ">" input_data
+                    case ${input_data} in
                     [yY])
                         EXT_NAME="IE_XT"
                         eval $EXT_NAME="\$IE_XT$COUNT"
                         while [[ ! -e ./lib/extensions/old/old_${IE_XT}.sh ]]; do
-                            PROGRESS_STATUS="旧バージョンをバックアップ中"
+                            spinner_progress_status="旧バージョンをバックアップ中"
                             SPINNER
                             mv ./lib/extensions/${IE_XT}.sh ./lib/extensions/old/old_${IE_XT}.sh
                         done
@@ -767,21 +777,21 @@ mc)
     first_start
     while :; do
         #サーバー作成オプション
-        if [[ $2 = make ]]; then
-            INPUT_SERVER_TYPE="$3"
-            if [[ -n $4 ]]; then
-                INPUT_SERVER_VERSION="$4"
+        if [[ ${2} = make ]]; then
+            INPUT_SERVER_TYPE="${3}"
+            if [[ -n ${4} ]]; then
+                INPUT_SERVER_VERSION="${4}"
             fi
-            INPUT_SERVER_NAME="$5"
-            MC_SERVER_CREATE
+            input_server_name="${5}"
+            mc_server_version_list
         #サーバー管理オプション
-        elif [[ $2 = manage ]]; then
-            serverstartlist="$3"
+        elif [[ ${2} = manage ]]; then
+            serverstartlist="${3}"
             . ./lib/main/server_list.sh
-        elif [[ $2 = output ]]; then
+        elif [[ ${2} = output ]]; then
             serverlistoutput
         #サーバーインポートオプション
-        elif [[ $2 = import ]]; then
+        elif [[ ${2} = import ]]; then
             MC_SERVER_IMPORT
             exit 0
         fi
@@ -789,42 +799,18 @@ mc)
         echo "■ manage | サーバーを管理します。"
         echo "■ import | 出力したデータをインポートします"
         echo "■ export | サーバーリストを出力します"
-        read -p ">" INPUT_DATA
-        case "$INPUT_DATA" in
+        read -p ">" input_data
+        case "${input_data}" in
         make)
-            echo -e "   \033[1;37m_<----^¯¯¯¯<Server List>¯¯¯¯^---->_\033[0;39m"
-            echo "❘   1. OfficialServer 2. PaperServer   ❘"
-            echo "❘   3. SpigotServer   4. ForgeServer   ❘"
-            echo "❘   5. SpongeServer   6. BungeeCord    ❘"
-            echo "❘   7. WaterFall      8. Travertine    ❘"
-            MC_SERVER_CREATE
+            echo -e "  \033[1;37m_<----^¯¯¯¯<Server List>¯¯¯¯^---->_\033[0;39m"
+            echo "❘   1. OfficialServer 2. PaperServer  ❘"
+            echo "❘   3. SpigotServer   4. ForgeServer  ❘"
+            echo "❘   5. SpongeServer   6. BungeeCord   ❘"
+            echo "❘   7. WaterFall      8. Travertine   ❘"
+            mc_server_version_list
             ;;
         manage)
             . ./lib/main/server_list.sh
-            ;;
-        #未完成
-        gcst)
-            read -p ">" INPUT_DATA
-            case $INPUT_DATA in
-            create)
-                echo "登録するサーバー数を入力してください"
-                read -p ">" SERVER_MAX
-                while [[ $COUNT != $SERVER_MAX ]]; do
-                    echo "サーバー名を入力してください。"
-                    read -p ">" SERVER_NAME
-                    PROGRESS_STATUS="実行ファイルの確認"
-                    SPINNER
-                    if [[ -e ./minecraft/serversh/${SERVER_NAME}.sh ]]; then
-                        echo "実行ファイルが存在します。"
-                        SERVER_CREATE_SERVER="${SERVER_NAME}.sh"
-                        echo "インポートする名前$SERVER_CREATE_SERVER"
-                        COUNT=$(($COUNT + 1))
-                    else
-                        echo "実行ファイルが存在しません。"
-                    fi
-                done
-                ;;
-            esac
             ;;
         import)
             MC_SERVER_IMPORT
@@ -844,8 +830,8 @@ discord)
         echo "■ eew   | eewBotに関するコマンドを使用できます"
         echo "■ jmusic | JmusicBotに関するコマンドを使用できます"
         echo "■ status  | 各種Botのステータスを確認します。"
-        read -p ">" INPUT_DATA
-        case "$INPUT_DATA" in
+        read -p ">" input_data
+        case "${input_data}" in
         eew)
             . ./lib/main/discord/eew.sh
             ;;

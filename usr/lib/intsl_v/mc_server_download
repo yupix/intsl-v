@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+if [ ${mc_server_edition} = official -o ${mc_server_edition} = spigot -o ${mc_server_edition} = paper -o ${mc_server_edition} = forge ]; then
+    mc_server_jar_file="var/cache/intsl_v/minecraft_jar/$mc_server_edition/"
+fi
+mc_donwload_version="$INPUT_SERVER_VERSION"
+spinner_progress_status="${message_file_check}"
+SPINNER
+if [ -e ${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar ]; then
+    echo "JARファイルが存在します"
+    mc_server_create
+else
+    echo "jarファイルが存在しません!ファイルをダウンロードしますか?"
+    echo "${message_use_possible}"
+    while :; do
+        if [[ -e ${mc_server_jar_file}server${mc_donwload_version}.jar ]]; then
+            echo "JARファイルが存在します"
+            break
+            mc_server_create
+        else
+            read -p ">" INPUT_Y_OR_N
+            INPUT_Y_OR_N=${INPUT_Y_OR_N:-y}
+            echo $INPUT_Y_OR_N
+            case $INPUT_Y_OR_N in
+            [yY]*)
+                while :; do
+                    spinner_progress_status="ファイルのダウンロード中"
+                    SPINNER
+                    if [[ -e "${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar" ]]; then
+                        echo "${message_download_success}"
+                        mc_server_create
+                    else
+                        if [[ ${get_pid_wget} != 0 ]]; then
+                            wget -q ${mc_server_jar_url} -O ${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar &
+                            pid=${get_pid_wget}
+                        fi
+                    fi
+                done
+                ;;
+            [nN]*)
+                DONWLOAD_CANCELLATION
+                ;;
+            *)
+                echo "${message_use_possible}"
+                ;;
+            esac
+        fi
+    done
+fi

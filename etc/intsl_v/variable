@@ -6,6 +6,8 @@ readonly INTEDITION="linux"
 #レポジトリー
 readonly INTREPOURL="https://repo.akarinext.org/"
 
+readonly home_directory=$(echo ~$USERNAME)
+
 #EEWBOT関係
 EEW_VERSION="207"
 EEWFILE="./discord/eew/"
