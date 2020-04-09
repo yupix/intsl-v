@@ -1,2 +1,6 @@
+#テスト用Shell
 test.sh
+#パッケージ用Shell
 create_package
+#ダミーファイル
+dummy
