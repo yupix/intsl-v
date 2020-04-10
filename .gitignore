@@ -6,3 +6,5 @@ create_package
 dummy
 #JAR系
 *.jar
+#一時フォルダ
+tmp

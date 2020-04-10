@@ -783,6 +783,7 @@ mc)
                 INPUT_SERVER_VERSION="${4}"
             fi
             input_server_name="${5}"
+            INPUT_Y_OR_N="${6}"
             mc_server_version_list
         #サーバー管理オプション
         elif [[ ${2} = manage ]]; then

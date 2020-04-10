@@ -6,21 +6,21 @@ run_spigot_build() {
             if [[ -e BuildTools.log.txt ]]; then
                 rm -rf BuildTools.log.txt
             fi
-            echo "SCREENNAME: $cryptography"
+            echo "SCREENNAME: ${cryptography}"
             sleep 5
             SECOND=0
-            if [[ ${setting_resetspigot} = true ]]; then
-                spinner_progress_status="前回の実行環境の削除を開始"
+            if [[ ${setting_resetspigot} = "true" ]]; then
+                local spinner_progress_status="前回の実行環境の削除を開始"
                 SPINNER
                 rm -rf ./*
-                FILECLEARCHECK="y"
+                local FILECLEARCHECK="y"
             fi
             screen -AdmS ${cryptography} java -jar BuildTools.jar --rev ${buildversion} nogui
             while [[ ${buildstatus} != "Success! Everything completed successfully. Copying final .jar files now." ]]; do
                 #更新
                 buildstatus=$(cat ./BuildTools.log.txt | grep "Success! Everything completed successfully. Copying final .jar files now.")
                 #現状
-                spinner_progress_status="BUILD NOW                 "
+                local spinner_progress_status="BUILD NOW                 "
                 SPINNER
             done
             echo -e "\e[1;37;32mBUILD SUCCESS\e[0m             "
@@ -31,11 +31,10 @@ run_spigot_build() {
             echo "掛かった時間: ${time_calculation}"
             #ファイル移動
             cd -
-            echo "$pwd"
             mv tmp/spigot-${buildversion}.jar var/cache/intsl_v/minecraft_jar/spigot/spigot${buildversion}.jar
             mc_server_create
         else
-            wget -q $SPIGOT_BUILD_TOOLS_URL -P tmp
+            wget -q ${SPIGOT_BUILD_TOOLS_URL} -P tmp
         fi
     done
 }
@@ -54,19 +53,23 @@ if [ -e ${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar ]; t
     echo "JARファイルが存在します"
     mc_server_create
 else
-    echo "jarファイルが存在しません!ファイルをダウンロードしますか?"
-    echo "${message_use_possible}"
+    if [[ ${INPUT_Y_OR_N} != "-y" ]]; then
+        echo "jarファイルが存在しません!ファイルをダウンロードしますか?"
+        echo "${message_use_possible}"
+    fi
     while :; do
         if [[ -e ${mc_server_jar_file}server${mc_donwload_version}.jar ]]; then
             echo "JARファイルが存在します"
             break
             mc_server_create
         else
-            read -p ">" INPUT_Y_OR_N
-            INPUT_Y_OR_N=${INPUT_Y_OR_N:-y}
-            echo $INPUT_Y_OR_N
-            case $INPUT_Y_OR_N in
-            [yY] | [yY][eE][sS])
+            if [[ ${INPUT_Y_OR_N} != "-y" ]]; then
+                read -p ">" INPUT_Y_OR_N
+                INPUT_Y_OR_N=${INPUT_Y_OR_N:-y}
+            fi
+            echo ${INPUT_Y_OR_N}
+            case ${INPUT_Y_OR_N} in
+            [yY] | [yY][eE][sS] | [-][yY])
                 while :; do
                     spinner_progress_status="ファイルのダウンロード中"
                     SPINNER
