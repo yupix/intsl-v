@@ -18,4 +18,4 @@ server_create_test:
     stage: server_create_test
     script:
         - export PATH="$(pwd)/usr/bin:$PATH"
-        - intsl mc make 1 1.15 test -y
+        - intsl mc make 1 1.15 test -y f

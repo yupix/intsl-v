@@ -36,99 +36,103 @@ if [ ! -e "etc/intsl_v/settings" -o ! -e "etc/intsl_v/variable" -o ! -e "usr/sha
     echo "Coming Soon..."
 fi
 
+get_optision=$(echo $@ | grep -o "f")
+
 #コマンド
 first_start() {
-    #/をつける
-    if [[ ${setting_package_mode} = "true" ]]; then
-        local max_settings="2"
-    else
-        local max_settings="3"
-    fi
-    if [ ! -e var/dummy ]; then
-        echo "INTSLをインストールして頂きありがとうございます。"
-        echo "本Projectのご利用をスムーズにスタートする為に初期設定をする事を推奨します！"
-        while :; do
-            read -p ">" set_preferences
-            case $set_preferences in
-            [yY] | [yY][eE][sS])
-                local count="1"
-                while [[ ${count} -le ${max_settings} ]]; do
-                    local setting_text1="使用する言語を選択してください (${count} / ${max_settings})"
-                    if [[ ${setting_package_mode} = "false" ]]; then
-                        local setting_text2="使用するたびにバージョンアップを確認するか (${count} / ${max_settings})"
-                        local setting_text3="(SpigotのBuild時,前回の環境をリセットするかどうか (${count} / ${max_settings})"
-                    else
-                        local setting_text2="(SpigotのBuild時,前回の環境をリセットするかどうか (${count} / ${max_settings})"
-                    fi
-                    local change_setting="${count}"
-                    local overwrite="setting_text"
-                    eval $overwrite="\$setting_text$count"
-                    if [[ ${change_setting} = 1 ]]; then
-                        echo "${setting_text}"
-                        echo "${message_available_languages}"
-                        while :; do
+    if [[ $get_optision != f ]]; then
+        #/をつける
+        if [[ ${setting_package_mode} = "true" ]]; then
+            local max_settings="2"
+        else
+            local max_settings="3"
+        fi
+        if [ ! -e var/dummy ]; then
+            echo "INTSLをインストールして頂きありがとうございます。"
+            echo "本Projectのご利用をスムーズにスタートする為に初期設定をする事を推奨します！"
+            while :; do
+                read -p ">" set_preferences
+                case $set_preferences in
+                [yY] | [yY][eE][sS])
+                    local count="1"
+                    while [[ ${count} -le ${max_settings} ]]; do
+                        local setting_text1="使用する言語を選択してください (${count} / ${max_settings})"
+                        if [[ ${setting_package_mode} = "false" ]]; then
+                            local setting_text2="使用するたびにバージョンアップを確認するか (${count} / ${max_settings})"
+                            local setting_text3="(SpigotのBuild時,前回の環境をリセットするかどうか (${count} / ${max_settings})"
+                        else
+                            local setting_text2="(SpigotのBuild時,前回の環境をリセットするかどうか (${count} / ${max_settings})"
+                        fi
+                        local change_setting="${count}"
+                        local overwrite="setting_text"
+                        eval $overwrite="\$setting_text$count"
+                        if [[ ${change_setting} = 1 ]]; then
+                            echo "${setting_text}"
+                            echo "${message_available_languages}"
+                            while :; do
+                                read -p ">" input_data
+                                input_data=${input_data:-ja}
+                                case ${input_data} in
+                                ja)
+                                    local run_sed_command="$(sed -i -e 's/setting_use_lang="'${setting_use_lang}'"/setting_use_lang="'${input_data}'"/' etc/intsl_v/settings)"
+                                    break
+                                    ;;
+                                en)
+                                    echo "ComingSoon..."
+                                    local input_data="ja"
+                                    local run_sed_command="$(sed -i -e 's/setting_use_lang="'${setting_use_lang}'"/setting_use_lang="'${input_data}'"/' etc/intsl_v/settings)"
+                                    break
+                                    ;;
+                                *)
+                                    echo "${message_nonexistent_language}"
+                                    ;;
+                                esac
+                            done
+                        else
+                            echo "${setting_text}"
+                            echo "${message_use_possible}"
                             read -p ">" input_data
-                            input_data=${input_data:-ja}
-                            case ${input_data} in
-                            ja)
-                                local run_sed_command="$(sed -i -e 's/setting_use_lang="'${setting_use_lang}'"/setting_use_lang="'${input_data}'"/' etc/intsl_v/settings)"
-                                break
-                                ;;
-                            en)
-                                echo "ComingSoon..."
-                                local input_data="ja"
-                                local run_sed_command="$(sed -i -e 's/setting_use_lang="'${setting_use_lang}'"/setting_use_lang="'${input_data}'"/' etc/intsl_v/settings)"
-                                break
-                                ;;
-                            *)
-                                echo "${message_nonexistent_language}"
-                                ;;
-                            esac
-                        done
-                    else
-                        echo "${setting_text}"
-                        echo "${message_use_possible}"
-                        read -p ">" input_data
-                        input_data=${input_data:-true}
-                        while :; do
-                            if [ ${input_data,,} = true -o ${input_data,,} = yes -o ${input_data,,} = y ]; then
-                                local input_data="true"
-                                break
-                            elif [ ${input_data,,} = false -o ${input_data,,} = no -o ${input_data,,} = n ]; then
-                                local input_data="false"
-                                break
-                            else
-                                echo "(Y)es または (N)o を入力してください。"
-                            fi
-                        done
-                        run_sed_command2="sed -i -e 's/setting_version_check=\"${setting_version_check}\"/setting_version_check=\"${input_data}\"/' etc/intsl_v/settings"
-                        run_sed_command3="sed -i -e 's/setting_resetspigot=\"${setting_resetspigot}\"/setting_resetspigot=\"${input_data}\"/' etc/intsl_v/settings"
-                        local overwrite="run_sed_command"
-                        eval $overwrite="\$run_sed_command${count}"
-                        eval ${run_sed_command}
-                    fi
-                    local count=$((${count} + 1))
-                done
-                touch var/dummy
-                echo "これで初回設定は終了です！"
-                echo "それでは良いINTSL V ライフを！"
-                echo "3秒後に元の動作に自動で戻ります..."
-                sleep 3
-                break
-                ;;
-            [nN] | [nN][oO])
-                touch var/dummy
-                echo "初回設定をキャンセルしました。"
-                echo "設定はいつでも mainコマンドで変更可能です!"
-                echo "3秒後に元の動作に自動で戻ります..."
-                sleep 3
-                break
-                ;;
-            *)
-                echo "(Y)es または (N)oを入力してください"
-                ;;
-            esac
-        done
+                            input_data=${input_data:-true}
+                            while :; do
+                                if [ ${input_data,,} = true -o ${input_data,,} = yes -o ${input_data,,} = y ]; then
+                                    local input_data="true"
+                                    break
+                                elif [ ${input_data,,} = false -o ${input_data,,} = no -o ${input_data,,} = n ]; then
+                                    local input_data="false"
+                                    break
+                                else
+                                    echo "(Y)es または (N)o を入力してください。"
+                                fi
+                            done
+                            run_sed_command2="sed -i -e 's/setting_version_check=\"${setting_version_check}\"/setting_version_check=\"${input_data}\"/' etc/intsl_v/settings"
+                            run_sed_command3="sed -i -e 's/setting_resetspigot=\"${setting_resetspigot}\"/setting_resetspigot=\"${input_data}\"/' etc/intsl_v/settings"
+                            local overwrite="run_sed_command"
+                            eval $overwrite="\$run_sed_command${count}"
+                            eval ${run_sed_command}
+                        fi
+                        local count=$((${count} + 1))
+                    done
+                    touch var/dummy
+                    echo "これで初回設定は終了です！"
+                    echo "それでは良いINTSL V ライフを！"
+                    echo "3秒後に元の動作に自動で戻ります..."
+                    sleep 3
+                    break
+                    ;;
+                [nN] | [nN][oO])
+                    touch var/dummy
+                    echo "初回設定をキャンセルしました。"
+                    echo "設定はいつでも mainコマンドで変更可能です!"
+                    echo "3秒後に元の動作に自動で戻ります..."
+                    sleep 3
+                    break
+                    ;;
+                *)
+                    echo "(Y)es または (N)oを入力してください"
+                    ;;
+                esac
+            done
+        fi
     fi
 }
 
