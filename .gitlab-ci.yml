@@ -12,7 +12,10 @@ test:
         - intsl
 
 server_create_test:
+    tags:
+        - linux
+        - archlinux
     stage: server_create_test
     script:
         - export PATH="$(pwd)/usr/bin:$PATH"
-        - intsl mc make 1 1.8.8 test
+        - intsl mc make 1 1.8.8 test | yes
