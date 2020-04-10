@@ -38,4 +38,8 @@ AMBSETTINGS="./assets/settings.txt"
 SYSTEMFILEMUSIC="./discord/jmusic"
 SYSTEMFILE="discord"
 SYSTEMMV="./discrod/musicbot/"
+#--------------------------------<<Minecraft情報>>-----------------------------#
+#BuildToolsのurl(デフォルト: 最新の安定版)
+readonly SPIGOT_BUILD_TOOLS_URL="https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/artifact/target/BuildTools.jar"
+
 #------------------------------------------------------------------------------#

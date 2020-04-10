@@ -1,5 +1,50 @@
 #!/usr/bin/env bash
-if [ ${mc_server_edition} = official -o ${mc_server_edition} = spigot -o ${mc_server_edition} = paper -o ${mc_server_edition} = forge ]; then
+run_spigot_build() {
+    while :; do
+        if [[ -e tmp/BuildTools.jar ]]; then
+            cd tmp
+            if [[ -e BuildTools.log.txt ]]; then
+                rm -rf BuildTools.log.txt
+            fi
+            echo "SCREENNAME: $cryptography"
+            sleep 5
+            SECOND=0
+            if [[ ${setting_resetspigot} = true ]]; then
+                spinner_progress_status="前回の実行環境の削除を開始"
+                SPINNER
+                rm -rf ./*
+                FILECLEARCHECK="y"
+            fi
+            screen -AdmS ${cryptography} java -jar BuildTools.jar --rev ${buildversion} nogui
+            while [[ ${buildstatus} != "Success! Everything completed successfully. Copying final .jar files now." ]]; do
+                #更新
+                buildstatus=$(cat ./BuildTools.log.txt | grep "Success! Everything completed successfully. Copying final .jar files now.")
+                #現状
+                spinner_progress_status="BUILD NOW                 "
+                SPINNER
+            done
+            echo -e "\e[1;37;32mBUILD SUCCESS\e[0m             "
+            time=${SECONDS}
+            i=${time}
+            ((sec = i % 60, min = (i % 3600) / 60, hrs = i / 3600))
+            time_calculation=$(printf "%d:%02d:%02d" $hrs $min $sec)
+            echo "掛かった時間: ${time_calculation}"
+            #ファイル移動
+            cd -
+            echo "$pwd"
+            mv tmp/spigot-${buildversion}.jar var/cache/intsl_v/minecraft_jar/spigot/spigot${buildversion}.jar
+            mc_server_create
+        else
+            wget -q $SPIGOT_BUILD_TOOLS_URL -P tmp
+        fi
+    done
+}
+
+cryptography=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 | sort | uniq)
+
+if [ ${mc_server_edition} = official -o ${mc_server_edition} = paper ]; then
+    mc_server_jar_file="var/cache/intsl_v/minecraft_jar/$mc_server_edition/"
+elif [[ ${mc_server_edition} = spigot ]]; then
     mc_server_jar_file="var/cache/intsl_v/minecraft_jar/$mc_server_edition/"
 fi
 mc_donwload_version="$INPUT_SERVER_VERSION"
@@ -28,6 +73,8 @@ else
                     if [[ -e "${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar" ]]; then
                         echo "${message_download_success}"
                         mc_server_create
+                    elif [[ ${mc_server_edition} = spigot ]]; then
+                        run_spigot_build
                     else
                         if [[ ${get_pid_wget} != 0 ]]; then
                             wget -q ${mc_server_jar_url} -O ${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar &
