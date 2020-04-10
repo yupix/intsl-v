@@ -1,11 +1,16 @@
 stages:
-  - test
+  - run_check
+  - server_create_test
 
 test:
     tags:
         - linux
         - archlinux
-    stage: test
+    stage: run_check
     script:
         - export PATH="$(pwd)/usr/bin:$PATH"
         - intsl
+    stage: server_create_test
+    script:
+        - export PATH="$(pwd)/usr/bin:$PATH"
+        - intsl mc make 1 1.8.8 test
