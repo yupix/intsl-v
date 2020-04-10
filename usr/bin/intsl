@@ -375,7 +375,7 @@ CHANGE_SERVER_MAX_MEMORY() {
     done
 }
 mc_server_create() {
-    . usr/lib/intsl_v/prsr_ce.sh
+    . usr/lib/intsl_v/server_create
 }
 extension_import() {
     rm -rf ${INPUT_EXTENSION_NAME}.txt
@@ -787,7 +787,7 @@ mc)
         #サーバー管理オプション
         elif [[ ${2} = manage ]]; then
             serverstartlist="${3}"
-            . ./lib/main/server_list.sh
+            . var/lib/intsl_v/server_list
         elif [[ ${2} = output ]]; then
             serverlistoutput
         #サーバーインポートオプション
@@ -810,7 +810,7 @@ mc)
             mc_server_version_list
             ;;
         manage)
-            . ./lib/main/server_list.sh
+            . var/lib/intsl_v/server_list
             ;;
         import)
             MC_SERVER_IMPORT

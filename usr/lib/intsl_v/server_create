@@ -14,14 +14,14 @@ if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
 fi
 mkdir $mc_server_create_file_dir/${input_server_name}
 mc_donwload_version="$INPUT_SERVER_VERSION"
-if [[ ${mc_server_edition} = official ]]; then
+if [ ${mc_server_edition} = official -o ${mc_server_edition} = spigot -o ${mc_server_edition} = paper ]; then
     srce_edision="server"
-    cp ${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar $mc_server_create_file_dir/${input_server_name}
+    cp ${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar ${mc_server_create_file_dir}/${input_server_name}
 fi
 sed -i ''${server_add_line}'i'${input_server_name}\)'' var/lib/intsl_v/server_list
 sed -i ''${server_add_line}'a ;;' var/lib/intsl_v/server_list
-sed -i ''${server_add_line}'a . ./minecraft/serversh/'${input_server_name}.sh'' var/lib/intsl_v/server_list
-cat <<EOF >usr/lib/intsl_v/mc_server_run/${input_server_name}.sh
+sed -i ''${server_add_line}'a . 'usr/lib/intsl_v/mc_server_run/${input_server_name}'''' var/lib/intsl_v/server_list
+cat <<EOF >usr/lib/intsl_v/mc_server_run/${input_server_name}
 #!/usr/bin/env bash
 #バックアップ用
 WORLD_BACKUP(){
@@ -30,14 +30,14 @@ if [[ \$${input_server_name}_backup = yes ]];then
     if [[ ! -e ./backups ]]; then
         mkdir ./backups
     fi
-    while :; do
+    while [[ -e \$${input_server_name}_backup_world_name ]]; do
         BACKUP_NAME=\$(date "+%Y%m%d-%H%M%S")
         tar -zcf \${BACKUP_NAME}.tar.gz ./\$${input_server_name}_backup_world_name
         mv ./\${BACKUP_NAME}.tar.gz ./\$${input_server_name}_backup_dir
         sleep \$${input_server_name}_backup_time
     done
 else
-    if [[ $first_dev_login = 0 ]]; then
+    if [[ \$first_dev_login = 0 ]]; then
         echo "バックアップ機能が無効です。"
     fi
 fi
@@ -64,7 +64,7 @@ else
     echo "変更に失敗しました。"
 fi
 }
-cd ./${input_server_name}
+cd $mc_server_create_file_dir/${input_server_name}
 while :; do
     #本番時はINPUT系に置き換え
     #${input_server_name}\SERVER
@@ -100,8 +100,8 @@ while :; do
         #SERVER_NAME="${input_server_name}" +
         FILE_SERVER_NAME="${input_server_name}"
         FILE_SERVER_PATH="${input_server_name}"
-        #${srce_edision}${mc_donwload_version}.jar
-        FILE_SERVER_FILE="${srce_edision}${mc_donwload_version}.jar"
+        #${mc_server_edition}${mc_donwload_version}.jar
+        FILE_SERVER_FILE="${mc_server_edition}${mc_donwload_version}.jar"
 
         . ./setting.txt
 
@@ -115,9 +115,9 @@ while :; do
                 SPINNER
                 if [[ \$RETRYCOUNT -le \$RETRYMAX ]]; then
                     if [[ ! -e setting.txt ]]; then
-                        cd ../
+                        cd -
                         . ./lib/main/server_default_settings.sh
-                        cd ./\${input_server_name}
+                        cd ${mc_server_create_file_dir}/${input_server_name}
                         #ちゃんと\を入れる
                         RETRYCOUNT=$((RETRYCOUNT + 1))
                     else
@@ -132,10 +132,10 @@ while :; do
         fi
 
         #これを本番時はifに追加
-        #${srce_edision}${mc_donwload_version}.jar
+        #${mc_server_edition}${mc_donwload_version}.jar
         spinner_progress_status="ファイルの確認中"
         SPINNER
-        if [ -e ${srce_edision}${mc_donwload_version}.jar ]; then
+        if [ -e ${mc_server_edition}${mc_donwload_version}.jar ]; then
             echo "JARファイルのチェックに成功"
             spinner_progress_status="ファイルの確認中"
             SPINNER
