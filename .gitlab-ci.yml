@@ -17,6 +17,7 @@ server_create_test:
         - archlinux
     stage: server_create_test
     script:
-        - pacman -S wget
+        - pacman -Sy
+        - pacman -S wget | yes
         - export PATH="$(pwd)/usr/bin:$PATH"
         - intsl mc make 1 1.15 test -y f
