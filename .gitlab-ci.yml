@@ -10,6 +10,8 @@ test:
     script:
         - export PATH="$(pwd)/usr/bin:$PATH"
         - intsl
+
+server_create_test:
     stage: server_create_test
     script:
         - export PATH="$(pwd)/usr/bin:$PATH"
