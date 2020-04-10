@@ -1,9 +1,8 @@
-![IntegrationShell](https://repo.akarinext.org/pub/intsl/intsl.gif "Image")
-[![pipeline status](https://dev.akarinext.org/yupix/INTSL/badges/master/pipeline.svg)](https://dev.akarinext.org/yupix/INTSL/-/commits/master)
-
+![IntegrationShell](https://repo.akarinext.org/pub/intsl_v/intsl_v.gif "Image")
+[![pipeline status](https://dev.akarinext.org/yupix/INTSL_v/badges/master/pipeline.svg)](https://dev.akarinext.org/yupix/intsl-v)
 # INTSL V
 IntegrationShell(統合シェル)
-このProjectは私が開発している[INTSL](https://github.com/yupix.amb/)PROJECTの
+このProjectは私が開発している[INTSL](https://dev.akarinext.org/yupix/INTSL/-/commits/master)PROJECTの
 様々な無駄なコードを削除、保守性の向上を目指して開発されています。
 このPROJECTはyupixが主に開発を行い、aki氏にテストして頂いています。
 そのため、すべての機能はテストできていません。

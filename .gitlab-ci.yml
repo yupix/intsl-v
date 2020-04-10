@@ -1,6 +1,6 @@
 stages:
   - run_check
-  - server_create_test
+#  - server_create_test
 
 test:
     tags:
@@ -11,13 +11,11 @@ test:
         - export PATH="$(pwd)/usr/bin:$PATH"
         - intsl
 
-server_create_test:
-    tags:
-        - linux
-        - archlinux
-    stage: server_create_test
-    script:
-        - pacman -Sy
-        - pacman -S wget | yes
-        - export PATH="$(pwd)/usr/bin:$PATH"
-        - intsl mc make 1 1.15 test -y f
+#server_create_test:
+#    tags:
+#        - linux
+#        - archlinux
+#    stage: server_create_test
+#    script:
+#        - export PATH="$(pwd)/usr/bin:$PATH"
+#        - intsl mc make 1 1.15 test -y f
