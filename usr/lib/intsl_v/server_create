@@ -16,6 +16,11 @@ if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
             echo -e "- ${ECHO_GREEN_COLOR}${i}: ${input_server_name}${i} ✓使用可能 ${ECHO_COLOR_EXIT}"
         else
             echo -e "- ${ECHO_RED_COLOR}${i}: ${input_server_name}${i} ✕使用不可${ECHO_COLOR_EXIT}"
+            not_available_count=$((not_available_count + 1))
+            echo $not_available_count
+        fi
+        if [[ ${not_available_count} = "7" ]]; then
+            echo "全ての代替手段が使用できません。"
         fi
     done
     echo "変更する場合は代替案の数字を、しない場合は、nを入力してください。"
@@ -27,7 +32,7 @@ if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
                 input_server_name="${input_server_name}${input_alternate_name}"
                 break
             else
-            echo "使用不可能なサーバー名です。"
+                echo "使用不可能なサーバー名です。"
             fi
             ;;
         [nN] | [nN][oO])
@@ -400,7 +405,6 @@ SPINNER
 if [[ -e $mc_server_create_file_dir/${input_server_name} ]]; then
     echo "サーバーファイルの作成に成功しました。"
     . usr/lib/intsl_v/server_default_settings.sh
-    cd -
     spinner_progress_status="ファイルの確認中 2/2"
     SPINNER
     if [[ ! -e $mc_server_create_file_dir/${input_server_name}/setting.txt ]]; then
@@ -410,6 +414,7 @@ else
     echo "サーバーファイルの作成に失敗しました。"
     exit 1
 fi
+
 NEWSERVERLANE=$((server_add_line + 3))
 sed -i -e 's/server_add_line="'$server_add_line'/server_add_line="'$NEWSERVERLANE'/' etc/intsl_v/settings
 exit 0

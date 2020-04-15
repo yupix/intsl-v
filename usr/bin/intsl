@@ -562,11 +562,11 @@ WELCOME_DEV_MESSAGE() {
     fi
 }
 mc_server_version_list() {
-    if [[ -z "$INPUT_SERVER_TYPE" ]]; then
+    if [[ -z "${input_server_type}" ]]; then
         echo "$INPUT_MC_SERVER_TYPE_ME"
-        read -p ">" INPUT_SERVER_TYPE
+        read -p ">" input_server_type
     fi
-    case $INPUT_SERVER_TYPE in
+    case ${input_server_type} in
     [1])
         mc_server_edition="official"
         echo "OfficialServer"
@@ -782,7 +782,7 @@ mc)
     while :; do
         #サーバー作成オプション
         if [[ ${2} = make ]]; then
-            INPUT_SERVER_TYPE="${3}"
+            input_server_type="${3}"
             if [[ -n ${4} ]]; then
                 INPUT_SERVER_VERSION="${4}"
             fi

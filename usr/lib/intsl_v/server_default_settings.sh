@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-cryptography=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 | sort | uniq )
-
+cryptography=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 | sort | uniq)
 cat <<EOF >$mc_server_create_file_dir/${input_server_name}/setting.txt
 #最小メモリ
 ${input_server_name}_MEM_MIN=1G
