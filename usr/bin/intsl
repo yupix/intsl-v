@@ -478,23 +478,28 @@ DEV_CONTENT() {
     [4])
         echo "開発者ログインをする際のパスワードを変更します。"
         echo "現在のパスワードを入力してください。"
-        read -p ">" CURRENT_DEV_PASSWORD
-        . ./assets/password.txt
-        case $CURRENT_DEV_PASSWORD in
-        $password)
+        . etc/intsl_v/passwd/dev_pass
+        read -s -p ">" input_password_data
+        local input_password_check=$(echo ${input_password_data} | sha512sum | sed -e "s/-//g")
+        if [[ ${input_password_check} = ${password} ]]; then
             echo "パスワードを変更しますか?"
             echo "(Y)es / (N)o"
-            read -p ">" INPUT_Y_N_DATA
-            case $INPUT_Y_N_DATA in
+            read -p ">" input_choise_data
+            case ${input_choise_data} in
             [yY])
-                echo ""
+                echo "新しいパスワードを入力してください"
+                read -s -p ">" input_new_password_data
+                local input_new_password_check=$(echo ${input_new_password_data} | sha512sum | sed -e "s/-//g")
+                sudo rm -rf etc/intsl_v/passwd/dev_pass
+                cat <<EOF >etc/intsl_v/passwd/dev_pass
+password="${input_new_password_check}"
+EOF
                 ;;
             [nN])
                 echo ""
                 ;;
             esac
-            ;;
-        esac
+        fi
         ;;
     [5])
         . ./lib/main/java.sh
