@@ -496,7 +496,8 @@ password="${input_new_password_check}"
 EOF
                 ;;
             [nN])
-                echo ""
+                echo "キャンセルしました"
+                exit 0
                 ;;
             esac
         fi
