@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-echo "サーバーを起動する際のコマンドを指定してください"
+echo "サーバー名を入力してください。"
 if [[ -z "${input_server_name}" ]]; then
     read -p ">" input_server_name
 fi
@@ -9,8 +9,36 @@ elif [[ ${setting_package_mode} = "true" ]]; then
     mc_server_create_file_dir="${HOME}/intsl_v"
 fi
 if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
-    echo "既に存在するサーバーです。"
-    exit 1
+    echo "既に使用されているサーバー名です。"
+    echo "使用可能な代替案:"
+    for i in $(seq 1 7); do
+        if [[ ! -e "${mc_server_create_file_dir}/${input_server_name}${i}" ]]; then
+            echo -e "- ${ECHO_GREEN_COLOR}${i}: ${input_server_name}${i} ✓使用可能 ${ECHO_COLOR_EXIT}"
+        else
+            echo -e "- ${ECHO_RED_COLOR}${i}: ${input_server_name}${i} ✕使用不可${ECHO_COLOR_EXIT}"
+        fi
+    done
+    echo "変更する場合は代替案の数字を、しない場合は、nを入力してください。"
+    while :; do
+        read -p ">" input_alternate_name
+        case $input_alternate_name in
+        [1] | [2] | [3] | [4] | [5] | [6] | [7])
+            if [[ ! -e "${mc_server_create_file_dir}/${input_server_name}${input_alternate_name}" ]]; then
+                input_server_name="${input_server_name}${input_alternate_name}"
+                break
+            else
+            echo "使用不可能なサーバー名です。"
+            fi
+            ;;
+        [nN] | [nN][oO])
+            echo "キャンセルしました。"
+            exit 0
+            ;;
+        *)
+            echo "代替案の数字、またはnを入力してください。"
+            ;;
+        esac
+    done
 fi
 mkdir $mc_server_create_file_dir/${input_server_name}
 mc_donwload_version="$INPUT_SERVER_VERSION"

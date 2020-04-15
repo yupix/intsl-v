@@ -36,11 +36,13 @@ if [ ! -e "etc/intsl_v/settings" -o ! -e "etc/intsl_v/variable" -o ! -e "usr/sha
     echo "Coming Soon..."
 fi
 
-get_optision=$(echo $@ | grep -o "f")
+echo $@
+get_optision=$(echo $@ | grep -o "\-f")
 
 #コマンド
 first_start() {
-    if [[ $get_optision != f ]]; then
+    echo $get_optision
+    if [[ ${get_optision} != "-f" ]]; then
         #/をつける
         if [[ ${setting_package_mode} = "true" ]]; then
             local max_settings="2"

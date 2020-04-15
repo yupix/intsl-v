@@ -50,7 +50,7 @@ mc_donwload_version="$INPUT_SERVER_VERSION"
 spinner_progress_status="${message_file_check}"
 SPINNER
 if [ -e ${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar ]; then
-    echo "JARファイルが存在します"
+    echo "ファイルの確認に成功しました"
     mc_server_create
 else
     if [[ ${INPUT_Y_OR_N} != "-y" ]]; then
@@ -59,7 +59,7 @@ else
     fi
     while :; do
         if [[ -e ${mc_server_jar_file}server${mc_donwload_version}.jar ]]; then
-            echo "JARファイルが存在します"
+            echo "ファイルの確認に成功しました"
             break
             mc_server_create
         else
