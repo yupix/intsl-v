@@ -36,12 +36,11 @@ if [ ! -e "etc/intsl_v/settings" -o ! -e "etc/intsl_v/variable" -o ! -e "usr/sha
     echo "Coming Soon..."
 fi
 
-echo $@
+#オプション取得
 get_optision=$(echo $@ | grep -o "\-f")
 
 #コマンド
 first_start() {
-    echo $get_optision
     if [[ ${get_optision} != "-f" ]]; then
         #/をつける
         if [[ ${setting_package_mode} = "true" ]]; then
