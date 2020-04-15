@@ -449,7 +449,9 @@ DEV_HELP_MESSAGE() {
     echo "■ 3.新型起動方法を実行する    ■ 6.Coming Soon..."
 }
 DEV_CONTENT() {
-    if [[ -z "$dev" ]]; then
+    if [ -z "$dev" ]; then
+        read -p ">" dev
+    elif [[ $dev = "-f" ]]; then
         read -p ">" dev
     fi
     case "$dev" in
@@ -506,14 +508,14 @@ DEVELOPER_LOGIN() {
             #spinner_progress_status="過去のログイン記録を参照中..."
             #SPINNER
             echo "パスワードを入力してください"
-            read -p ">" input_password_data
+            read -s -p ">" input_password_data
             input_password_check=$(echo $input_password_data | sha512sum | sed -e "s/-//g")
             if [[ $input_password_check = $password ]]; then
                 echo "認証に成功"
                 break
             else
-                echo "認証に失敗"
-                break
+                echo -e "${ECHO_RED_COLOR}認証に失敗${ECHO_COLOR_EXIT}"
+                exit 1
             fi
         else
             echo "開発者モードを初めて使用するため、必要なファイルを作成します"
