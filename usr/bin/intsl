@@ -256,129 +256,6 @@ DONWLOAD_CANCELLATION() {
     exit 0
 }
 
-CHANGE_SERVER_PROCESS_NAME() {
-    echo "サーバーのプロセス名を変更します。"
-    while :; do
-        read input_serverprocess_name
-        if [ -n $input_serverprocess_name ]; then
-            echo "サーバーのプロセス名 $input_serverprocess_name に変更します。よろしいですか? (Y)es / (N)o "
-            read input_confirm
-            case $input_confirm in
-            [yY])
-                sed -i -e 's/SCREEN_NAME='$SCREEN_NAME'/SCREEN_NAME='$input_serverprocess_name'/' ./setting.txt
-                echo "プロセス名を $input_serverprocess_name に変更しました"
-                break
-                ;;
-            [nN])
-                echo "変更をキャンセルしました。"
-                echo "$"
-                exit 0
-                ;;
-            *)
-                echo "$MISSING_INPUT_DATA_ME"
-                ;;
-            esac
-        fi
-    done
-}
-CHANGE_SERVER_JAR_NAME() {
-    echo "サーバーのJAR名を変更します。"
-    while :; do
-        read input_serverjar_name
-        if [ -n $input_serverjar_name ]; then
-            echo "サーバーJAR名を $input_serverjar_name に変更します。よろしいですか? (Y)es / (N)o "
-            read input_confirm
-            case $input_confirm in
-            [yY])
-                sed -i -e 's/SERVER_FILE='$SERVER_FILE'/SERVER_FILE='$input_serverjar_name'/' ./setting.txt
-                echo "サーバーJAR名を $input_serverjar_name に変更しました"
-                break
-                ;;
-            [nN])
-                echo "変更をキャンセルしました。"
-                echo "$END_THE_SERVICE_ME"
-                exit 0
-                ;;
-            *)
-                echo "$MISSING_INPUT_DATA_ME"
-                ;;
-            esac
-        fi
-    done
-}
-
-CHANGE_SERVER_MIN_MEMORY() {
-    echo "サーバーの最小メモリを変更します。"
-    while :; do
-        read input_mem_min
-        if [ -n $input_mem_min ]; then
-            if expr "$input_mem_min" : '[0-9]*'; then
-                if [[ $input_mem_min -le $SMEM_MAX ]]; then
-                    echo "サーバーの最小メモリを $input_mem_min$MEM_UNIT に変更します。よろしいですか? (Y)es / (N)o "
-                    read input_confirm
-                    case $input_confirm in
-                    [yY])
-                        sed -i -e 's/SMEM_MIN='$SMEM_MIN'/SMEM_MIN='$input_mem_min'/' ./setting.txt
-                        sed -i -e 's/MEM_MIN='$MEM_MIN'/MEM_MIN='$input_mem_min$MEM_UNIT'/' ./setting.txt
-                        echo "サーバーの最小メモリを $input_mem_min に変更しました"
-                        break
-                        ;;
-                    [nN])
-                        echo "変更をキャンセルしました。"
-                        echo "$END_THE_SERVICE_ME"
-                        exit 0
-                        ;;
-                    *)
-                        echo "$MISSING_INPUT_DATA_ME"
-                        ;;
-                    esac
-                else
-                    echo "最小メモリの値が最大メモリを上回る為、再入力をお願いします。"
-                    exit 0
-                fi
-            else
-                echo "数字を入力してください。"
-                echo "単位を変更するにはsettingsの6番目を選択してください"
-            fi
-        fi
-    done
-}
-CHANGE_SERVER_MAX_MEMORY() {
-    echo "サーバーの最大メモリを変更します。"
-    while :; do
-        read input_mem_max
-        if [ -n $input_mem_max ]; then
-            if expr "$input_mem_max" : '[0-9]*'; then
-                if [[ $input_mem_max -gt $SMEM_MAX ]]; then
-                    echo "サーバーの最大メモリを $input_mem_max$MEM_UNIT に変更します。よろしいですか? (Y)es / (N)o "
-                    read input_confirm
-                    case $input_confirm in
-                    [yY])
-                        sed -i -e 's/SMEM_MAX='$SMEM_MAX'/SMEM_MAX='$input_mem_max'/' ./setting.txt
-                        sed -i -e 's/MEM_MAX='$MEM_MAX'/MEM_MAX='$input_mem_max$MEM_UNIT'/' ./setting.txt
-                        echo "サーバーの最大メモリを $input_mem_max に変更しました"
-                        break
-                        ;;
-                    [nN])
-                        echo "変更をキャンセルしました。"
-                        echo "$END_THE_SERVICE_ME"
-                        exit 0
-                        ;;
-                    *)
-                        echo "$MISSING_INPUT_DATA_ME"
-                        ;;
-                    esac
-                else
-                    echo "最大メモリの値が最小メモリを下回る為、再入力をお願いします。"
-                    exit 0
-                fi
-            else
-                echo "数字を入力してください。"
-                echo "単位を変更するにはsettingsの6番目を選択してください"
-            fi
-        fi
-    done
-}
 mc_server_create() {
     . usr/lib/intsl_v/server_create
 }
@@ -867,11 +744,11 @@ discord)
     echo -e "   └   \033[0;31mmanage\033[1;39m: サーバーを管理します"
     echo -e "   └   \033[0;31mexport\033[1;39m: サーバーリストを出力します"
     echo -e "   └   \033[0;31mimport\033[1;39m: サーバーリストをインポートします"
-    echo -e "\033[0;31mdiscord\033[1;39m: Discordに関する機能を開始します"
-    echo -e "   └   \033[0;31meew\033[1;39m: eewBotをスタートします"
-    echo -e "       └   \033[0;31mstart\033[1;39m: EEWBotを起動します"
-    echo -e "   └   \033[0;31mjmusic\033[1;39m: JMusiBotをスタートします"
-    echo -e "       └   \033[0;31mstart\033[1;39m: JMusicBotを起動します"
+    #echo -e "\033[0;31mdiscord\033[1;39m: Discordに関する機能を開始します"
+    #echo -e "   └   \033[0;31meew\033[1;39m: eewBotをスタートします"
+    #echo -e "       └   \033[0;31mstart\033[1;39m: EEWBotを起動します"
+    #echo -e "   └   \033[0;31mjmusic\033[1;39m: JMusiBotをスタートします"
+    #echo -e "       └   \033[0;31mstart\033[1;39m: JMusicBotを起動します"
 
     ;;
 esac

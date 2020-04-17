@@ -1,5 +1,5 @@
 ![IntegrationShell](https://repo.akarinext.org/pub/intsl_v/intsl_v.gif "Image")
-[![pipeline status](https://dev.akarinext.org/yupix/INTSL_v/badges/master/pipeline.svg)](https://dev.akarinext.org/yupix/intsl-v)
+[![pipeline status](https://dev.akarinext.org/yupix/intsl-v/badges/master/pipeline.svg)](https://dev.akarinext.org/yupix/intsl-v/-/commits/master)
 # INTSL V
 IntegrationShell(統合シェル)
 このProjectは私が開発している[INTSL](https://dev.akarinext.org/yupix/INTSL/-/commits/master)PROJECTの
@@ -16,6 +16,7 @@ IntegrationShell(統合シェル)
 
 ## 進捗
 ここに書いてある項目は作業が終わったものです。
+ - 設定を変更する際に使用するshの短縮化 2〇〇 -> 77
  - 基本的なサーバー作成機能の修正
  - 初回設定の修正
  - spigotのbuild機能の修正
@@ -25,6 +26,7 @@ IntegrationShell(統合シェル)
  - もしかして機能の追加
 
 ## 既知の不具合
+ - サーバーの設定をする際、現在の設定が表示されない
  - 一部のサーバーが動作しない可能性があります。
  - かなり多くの機能が何かしらエラーが発生し、動作しない可能性があります。
 
@@ -33,6 +35,8 @@ IntegrationShell(統合シェル)
   環境を破壊する原因になる可能性があります。
  2.サーバー作成時に名前に-を使わないでください。
   バグの原因になります。
+ 3.INTSLで作成されたサーバーはこのprojectで使用できない可能性が高いです。
+  INTSL V では多くの変数等が変更されており、INTSLとの互換性は極めて低いです。
 
 ## 動作環境
 本Projectではechoに色を付ける際-eを使用しているため、Dashなどのターミナルを使用している場合、

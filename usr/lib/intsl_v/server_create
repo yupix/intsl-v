@@ -4,7 +4,11 @@ if [[ -z "${input_server_name}" ]]; then
     read -p ">" input_server_name
 fi
 if [[ ${setting_package_mode} = "false" ]]; then
-    mc_server_create_file_dir="home/test_user/intsl_v"
+    echo "サーバーのディレクトリーを指定してください。"
+    echo "default: home/test_user/intsl_v"
+    read -p ">" input_data
+    input_data=${input_data:-home/test_user/intsl_v}
+    mc_server_create_file_dir="$input_data"
 elif [[ ${setting_package_mode} = "true" ]]; then
     mc_server_create_file_dir="${HOME}/intsl_v"
 fi
@@ -17,7 +21,6 @@ if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
         else
             echo -e "- ${ECHO_RED_COLOR}${i}: ${input_server_name}${i} ✕使用不可${ECHO_COLOR_EXIT}"
             not_available_count=$((not_available_count + 1))
-            echo $not_available_count
         fi
         if [[ ${not_available_count} = "7" ]]; then
             echo "全ての代替手段が使用できません。"
@@ -97,7 +100,6 @@ else
     echo "変更に失敗しました。"
 fi
 }
-cd $mc_server_create_file_dir/${input_server_name}
 while :; do
     #本番時はINPUT系に置き換え
     #${input_server_name}\SERVER
@@ -109,6 +111,7 @@ while :; do
     read -p ">" server
     case \$server in
     cd)
+        cd \$server_dir
         while :; do
             . ./setting.txt
             if [[ \$${input_server_name}_STATUS = online ]]; then
@@ -129,6 +132,7 @@ while :; do
         done
         ;;
     start)
+        cd \$server_dir
         #本番時は$INPUT系に置き換え
         #SERVER_NAME="${input_server_name}" +
         FILE_SERVER_NAME="${input_server_name}"
@@ -150,7 +154,7 @@ while :; do
                     if [[ ! -e setting.txt ]]; then
                         cd -
                         . ./lib/main/server_default_settings.sh
-                        cd ${mc_server_create_file_dir}/${input_server_name}
+                        cd \$server_dir
                         #ちゃんと\を入れる
                         RETRYCOUNT=$((RETRYCOUNT + 1))
                     else
@@ -239,6 +243,7 @@ EOS
 
     #サーバー停止
     stop)
+        cd \$server_dir
         spinner_progress_status="プロセスの有無を確認中"
         SPINNER
         while :; do
@@ -258,6 +263,7 @@ EOS
     ;;
     #サーバーのログ
     log)
+        cd \$server_dir
         if [ "\$(screen -ls | grep \$${input_server_name}_SCREEN_NAME)" == "" ]; then
             echo "サーバーが起動していません"
         else
@@ -277,10 +283,16 @@ EOS
         ;;
     #設定変更コマンド
     settings)
-        . ./setting.txt
+        if [[ -z "\$server_dir" ]];then
+            server_dir="${mc_server_create_file_dir}/${input_server_name}"
+        global_server_dir="\$server_dir"
+        fi
+        . \$server_dir/setting.txt
+        export server_dir
+        export server_name
         spinner_progress_status="ファイルの確認中"
         SPINNER
-        if [[ -e setting.txt ]]; then
+        if [[ -e "\$server_dir/setting.txt" ]]; then
         echo "閲覧したい設定を選んでください。"
         echo " 1.サーバー関連 | 2.バックアップ関連"
         echo " 3.WebHook関連  |"
@@ -301,21 +313,33 @@ EOS
                     read INPUT_SERVER_SETTING
                     case \$INPUT_SERVER_SETTING in
                         1)
-                            CHANGE_SERVER_PROCESS_NAME
-                            ;;
+                            change_setting_number="1"
+                            export change_setting_number
+                            usr/lib/intsl_v/setting_function
+                        ;;
                         2)
-                            CHANGE_SERVER_JAR_NAME
-                            ;;
+                            change_setting_number="2"
+                            export change_setting_number
+                            usr/lib/intsl_v/setting_function
+                        ;;
                         3)
-                            CHANGE_SERVER_MIN_MEMORY
-                            ;;
+                            change_setting_number="3"
+                            export change_setting_number
+                            usr/lib/intsl_v/setting_function
+                        ;;
                         4)
-                            CHANGE_SERVER_MAX_MEMORY
-                            ;;
-                        5) ;;
 
+                            change_setting_number="4"
+                            export change_setting_number
+                            usr/lib/intsl_v/setting_function
+                            ;;
+                        5)
+                            change_setting_number="5"
+                            export change_setting_number
+                            usr/lib/intsl_v/setting_function
+                                            ;;
                         *)
-                            echo "変なキー打たないで"
+                            echo "使用できないキー入力です"
                             ;;
                     esac
                 ;;
