@@ -43,7 +43,9 @@ IntegrationShell(統合シェル)
 本来色がつくはずの所が、そのまま -eと出力されてしまう可能性があります。
 
 ### 必須パッケージ等
-準備中
+ - unzip
+ - wget
+ - curl
 ### OS
  - [ARCHLINUX](https://www.archlinux.org/)
 

@@ -8,6 +8,8 @@
 . etc/intsl_v/variable
 #言語ファイル
 . usr/share/intsl_v/locale/${setting_use_lang}
+#ディレクトリー設定
+. etc/intsl_v/directory
 #----------------------------------------------------------------------------------------#
 SELF_DIR_PATH=$(
     cd $(dirname $0)
@@ -173,37 +175,37 @@ serverlistoutput() {
 
 vcheck() {
     while :; do
-        if [[ -e ./tmp/new-version.txt ]]; then
+        if [[ -e ${TMP_DIR}new-version.txt ]]; then
             spinner_progress_status="キャッシュの削除中"
             SPINNER
-            rm -rf ./tmp/new-version.txt
+            rm -rf ${TMP_DIR}new-version.txt
         else
             spinner_progress_status="最新バージョンの確認中"
-            wget -q ${INTREPOURL}pub/intsl_v/new-version.txt -P ./tmp/
-            if [[ -e ./tmp/new-version.txt ]]; then
-                . ./tmp/new-version.txt
-                NEWINTSLGETV=$(echo "$NEWVERSION" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
+            wget -q ${INTREPOURL}pub/intsl_v/new-version.txt -P ${TMP_DIR}
+            if [[ -e ${TMP_DIR}new-version.txt ]]; then
+                . ${TMP_DIR}/new-version.txt
+                regular_version=$(echo "$NEWVERSION" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
                 if [[ $NEWVERSION -gt ${INTVESION} ]]; then
                     echo "$message_update_exists            "
-                    echo -e "\e[31mCurrent: INTSL-${INTVESION}\e[m ⇛  \e[32mNew: INTSL-$NEWINTSLGETV\e[m"
+                    echo -e "${ECHO_RED_COLOR}Current: INTSL-${INTVESION}${ECHO_COLOR_EXIT} ->  ${ECHO_GREEN_COLOR}New: INTSL-${regular_version}${ECHO_COLOR_EXIT}"
                     echo "${message_downalod_file}"
                     echo "${message_use_possible}"
                     read -p ">" input_data
                     input_data=${input_data:-y}
                     case ${input_data} in
-                    [yY])
+                    [yY]|[yY][eE][sS])
                         echo "$message_updata_start"
                         exit
-                        while [[ ! -e ./INTSL-${NEWINTSLGETV}-${INTEDITION}.zip ]]; do
+                        while [[ ! -e ./INTSL-${regular_version}-${INTEDITION}.zip ]]; do
                             spinner_progress_status="$DATA_DOWNLOAD_NOW_ME"
                             SPINNER
-                            wget -q https://repo.akarinext.org/pub/intsl-v/${NEWINTSLGETV}/INTSL-${NEWINTSLGETV}-${INTEDITION}.zip
+                            wget -q https://repo.akarinext.org/pub/intsl-v/${regular_version}/INTSL-${regular_version}-${INTEDITION}.zip -P ${TMP_DIR}
                         done
                         echo "${message_download_success}"
                         serverlistoutput
-                        unzip -qonu ./INTSL-${NEWINTSLGETV}-${INTEDITION}.zip
-                        if [[ -e INTSL-${NEWINTSLGETV}-${INTEDITION} ]]; then
-                            cd ./INTSL-${NEWINTSLGETV}-${INTEDITION}
+                        unzip -qonu ./INTSL-${regular_version}-${INTEDITION}.zip
+                        if [[ -e INTSL-${regular_version}-${INTEDITION} ]]; then
+                            cd ./INTSL-${regular_version}-${INTEDITION}
                             sudo cp -r . ../
                             cd -
                         else
@@ -212,7 +214,7 @@ vcheck() {
                             break
                         fi
                         . ./assets/variable.txt
-                        if [[ ${NEWINTSLGETV} -gt ${INTVERSION} ]]; then
+                        if [[ ${regular_version} -gt ${INTVERSION} ]]; then
                             echo "バージョンアップに失敗"
                         else
                             rm -rf news.txt
@@ -230,7 +232,7 @@ vcheck() {
 
                         fi
                         ;;
-                    [nN])
+                    [nN]|[nN][oO])
                         echo "キャンセルしました。"
                         ;;
                     esac
@@ -595,7 +597,7 @@ main)
                 eval $EXT_NAME="\$V_URL$COUNT"
                 wget -q $V_URL
                 . ./newversion.txt
-                NEWINTSLGETV=$(echo "$BO_DY" | sed -e 's/\(.\{1\}\)/.\1/g')
+                regular_version=$(echo "$BO_DY" | sed -e 's/\(.\{1\}\)/.\1/g')
                 EXT_NAME="IE_XT"
                 eval $EXT_NAME="\$IE_XT$COUNT"
                 EXT_VERSION="INT_EXT"
