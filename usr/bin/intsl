@@ -172,7 +172,7 @@ serverlistoutput() {
 }
 
 #INTSLGETV() {
-#    VERSIONGET=$(echo "$INTVERSIONBODY" | sed -e 's/\(.\{1\}\)/.\1/g')
+#    VERSIONGET=$(echo "$INTSL_V_VERSIONBODY" | sed -e 's/\(.\{1\}\)/.\1/g')
 #}
 
 vcheck() {
@@ -206,20 +206,17 @@ EOS
                         done
                         echo "${message_download_success}"
                         serverlistoutput
-                        #ここまで完成
-                        exit
-                        unzip -qonu ./INTSL-${regular_version}-${INTSL_V_EDITION}.zip
-                        if [[ -e INTSL-${regular_version}-${INTSL_V_EDITION} ]]; then
-                            cd ./INTSL-${regular_version}-${INTSL_V_EDITION}
-                            sudo cp -r . ../
-                            cd -
+                        unzip -qqo ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip -d ${TMP_FILE_LOCATIONS}
+                        if [[ -e ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION} ]]; then
+                            echo "ファイルの解凍に成功"
+                            sudo cp -r ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}/. .
                         else
                             echo -e "${ECHO_RED_COLOR}ERROR:${ECHO_COLOR_EXIT} ファイルの解凍に失敗しました"
                             echo "Systemを保護するためにサービスを終了します。"
                             break
                         fi
-                        . ./assets/variable.txt
-                        if [[ ${regular_version} -gt ${INTVERSION} ]]; then
+                        . ${VARIABLE_FILE_LOCATIONS}variable
+                        if [[ ${NEWVERSION} -gt ${INTSL_V_VERSION} ]]; then
                             echo "バージョンアップに失敗"
                         else
                             rm -rf news.txt

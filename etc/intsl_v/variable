@@ -1,26 +1,26 @@
 #--------------------------------<<INTSL情報>>--------------------------------#
 #バージョン
-readonly INTSL_V_VERSION="100"
+INTSL_V_VERSION="100"
 #エディション
-readonly INTSL_V_EDITION="linux"
+INTSL_V_EDITION="linux"
 #レポジトリー
-readonly INTREPOURL="https://repo.akarinext.org/"
+INTREPOURL="https://repo.akarinext.org/"
 
-readonly home_directory=$(echo ~$USERNAME)
+home_directory=$(echo ~$USERNAME)
 
 #EEWBOT関係
 EEW_VERSION="207"
 EEWFILE="./discord/eew/"
-readonly JAR_FILE="./discord/eew/eewbot-$EEW_VERSION.jar"
+JAR_FILE="./discord/eew/eewbot-$EEW_VERSION.jar"
 EEW_SYSTEM_FILE="./discord/eew"
 
 #ECHO色 (太文字)
 ##緑
-readonly ECHO_GREEN_COLOR="\033[1;32m"
+ECHO_GREEN_COLOR="\033[1;32m"
 ##赤
-readonly ECHO_RED_COLOR="\033[1;31m"
+ECHO_RED_COLOR="\033[1;31m"
 ##終了
-readonly ECHO_COLOR_EXIT="\033[0;39m"
+ECHO_COLOR_EXIT="\033[0;39m"
 
 #SYSTEM関係
 SCREEN_NAME=test
@@ -41,6 +41,6 @@ SYSTEMFILE="discord"
 SYSTEMMV="./discrod/musicbot/"
 #--------------------------------<<Minecraft情報>>-----------------------------#
 #BuildToolsのurl(デフォルト: 最新の安定版)
-readonly SPIGOT_BUILD_TOOLS_URL="https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/artifact/target/BuildTools.jar"
+SPIGOT_BUILD_TOOLS_URL="https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/artifact/target/BuildTools.jar"
 
 #------------------------------------------------------------------------------#
