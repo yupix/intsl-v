@@ -173,26 +173,27 @@ serverlistoutput() {
 
 vcheck() {
     while :; do
-        if [[ -e ./assets/new-version.txt ]]; then
-            spinner_progress_status="既存のファイルを削除しています。"
+        if [[ -e ./tmp/new-version.txt ]]; then
+            spinner_progress_status="キャッシュの削除中"
             SPINNER
-            rm -rf ./assets/new-version.txt
+            rm -rf ./tmp/new-version.txt
         else
-            spinner_progress_status="新しいバージョンが無いかサーバーに問い合わせています。"
-            wget -q ${INTREPOURL}pub/intsl/new-version.txt -P ./assets/
-            if [[ -e ./assets/new-version.txt ]]; then
-                . ./assets/new-version.txt
+            spinner_progress_status="最新バージョンの確認中"
+            wget -q ${INTREPOURL}pub/intsl_v/new-version.txt -P ./tmp/
+            if [[ -e ./tmp/new-version.txt ]]; then
+                . ./tmp/new-version.txt
                 NEWINTSLGETV=$(echo "$NEWVERSION" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
-                if [[ $NEWVERSION -gt ${INTVERSION} ]]; then
+                if [[ $NEWVERSION -gt ${INTVESION} ]]; then
                     echo "$message_update_exists            "
-                    echo -e "\e[31mCurrent: INTSL-$INTVERSION\e[m ⇛  \e[32mNew: INTSL-$NEWINTSLGETV\e[m"
-                    echo "$FILE_DOWNLOAD_CHECK_ME"
-                    echo "$USE_POSSIBLE_ME"
+                    echo -e "\e[31mCurrent: INTSL-${INTVESION}\e[m ⇛  \e[32mNew: INTSL-$NEWINTSLGETV\e[m"
+                    echo "${message_downalod_file}"
+                    echo "${message_use_possible}"
                     read -p ">" input_data
-                    input_data=${input_data:y}
+                    input_data=${input_data:-y}
                     case ${input_data} in
                     [yY])
                         echo "$message_updata_start"
+                        exit
                         while [[ ! -e ./INTSL-${NEWINTSLGETV}-${INTEDITION}.zip ]]; do
                             spinner_progress_status="$DATA_DOWNLOAD_NOW_ME"
                             SPINNER
@@ -231,19 +232,16 @@ vcheck() {
                         ;;
                     [nN])
                         echo "キャンセルしました。"
-                        echo ""
                         ;;
                     esac
                     echo $name
                     break
                 else
-                    echo -e '現在のINTSLは\e[1;37;32m最新バージョン\e[0mで実行中です '
+                    echo -e '現在のINTSL Vは\e[1;37;32m最新バージョン\e[0mで実行中です '
                     break
                 fi
             else
                 echo "$message_download_failed"
-                echo "考えられる理由として、RepositoryServerがDownしている、又は"
-                echo "ネットの接続が不安定な可能性が有ります。"
                 break
             fi
         fi
@@ -658,7 +656,7 @@ mc)
     first_start
     while :; do
         #サーバー作成オプション
-        if [[ ${2} = make ]]; then
+        if [[ ${2} = "make" ]]; then
             input_server_type="${3}"
             if [[ -n ${4} ]]; then
                 INPUT_SERVER_VERSION="${4}"
@@ -677,9 +675,9 @@ mc)
             MC_SERVER_IMPORT
             exit 0
         fi
-        echo "■ make   | サーバーを作成します。"
-        echo "■ manage | サーバーを管理します。"
-        echo "■ import | 出力したデータをインポートします"
+        echo "■ make   | サーバーを作成します"
+        echo "■ manage | サーバーを管理します"
+        echo "■ import | サーバーリストをインポートします"
         echo "■ export | サーバーリストを出力します"
         read -p ">" input_data
         case "${input_data}" in

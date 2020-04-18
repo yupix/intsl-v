@@ -10,3 +10,5 @@ dummy
 tmp
 #開発者用のパスワードファイル
 dev_pass
+#新バージョンのデータ記載ファイル
+new-version.txt
