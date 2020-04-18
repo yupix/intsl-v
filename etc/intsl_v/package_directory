@@ -12,3 +12,12 @@ readonly LANGUAGE_FILE_LOCATIONS="/usr/share/intsl_v/locale/"
 
 #一時ファイル
 readonly TMP_FILE_LOCATIONS="/tmp/"
+
+#一時ファイル / バックアップ等
+readonly CACHE_FILE_LOCATIONS="/var/cache/intsl_v/"
+
+#システムファイル系(変更無し)
+readonly LIB_FILE_LOCATIONS="/usr/lib/intsl_v"
+
+#システムファイル系(変更有り)
+readonly VAR_LIB_FILE_LOCATIONS="/var/lib/intsl_v"

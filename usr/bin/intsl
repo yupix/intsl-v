@@ -147,21 +147,23 @@ run_spinner() {
 }
 
 serverlistoutput() {
+    #TODO: サーバー数を作成し、0の場合は動かないようにする(2019/4/18)
     echo "サーバーリストをアウトプットします。"
     while :; do
         if [[ -e OUTPUTSERVERLIST.txt ]]; then
             rm -rf OUTPUTSERVERLIST.txt
         else
-            while [[ ! -e OUTPUTSERVERLIST.txt ]]; do
-                spinner_progress_status="${first_start}"
-                cat ./lib/main/server_list.sh | awk '/STARTSERVERLIST/,/ENDSERVERLIST/' >OUTPUTSERVERLIST.txt
-                sed -i -e '1,1d' OUTPUTSERVERLIST.txt
+            while [[ ! -e ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt ]]; do
+                spinner_progress_status="出力中"
+                run_spinner
+                cat ${VAR_LIB_FILE_LOCATIONS}/server_list | awk '/STARTSERVERLIST/,/ENDSERVERLIST/' >${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt
+                sed -i -e '1,1d' ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt
                 #先頭削除
-                sed -i -e '$d' OUTPUTSERVERLIST.txt
+                sed -i -e '$d' ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt
                 #最終行削除
-                sed -i -e '1d' OUTPUTSERVERLIST.txt
+                sed -i -e '1d' ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt
                 #空白削除
-                sed -i '/^$/d' OUTPUTSERVERLIST.txt
+                sed -i '/^$/d' ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt
             done
             break
         fi
@@ -203,9 +205,9 @@ EOS
                             wget -q https://repo.akarinext.org/pub/intsl_v/${regular_version}/INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip -P ${TMP_FILE_LOCATIONS}
                         done
                         echo "${message_download_success}"
+                        serverlistoutput
                         #ここまで完成
                         exit
-                        serverlistoutput
                         unzip -qonu ./INTSL-${regular_version}-${INTSL_V_EDITION}.zip
                         if [[ -e INTSL-${regular_version}-${INTSL_V_EDITION} ]]; then
                             cd ./INTSL-${regular_version}-${INTSL_V_EDITION}
