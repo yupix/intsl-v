@@ -1,5 +1,14 @@
 #このファイルはArch等のパッケージ化する際に使用するファイルです。
 #何かしらの理由が無い限り変更しないでください。
 
+#設定ファイル
+readonly SETTING_FILE_LOCATIONS="/etc/intsl_v/"
+
+#変数ファイル
+readonly VARIABLE_FILE_LOCATIONS="/etc/intsl_v/"
+
+#言語ファイル
+readonly LANGUAGE_FILE_LOCATIONS="/usr/share/intsl_v/locale/"
+
 #一時ファイル
-readonly TMP_DIR="/tmp/"
+readonly TMP_FILE_LOCATIONS="/tmp/"
