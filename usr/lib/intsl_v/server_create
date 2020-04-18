@@ -143,13 +143,13 @@ while :; do
         . ./setting.txt
 
         spinner_progress_status="ファイルの確認中"
-        SPINNER
+        run_spinner
         #ファイルのチェック
         if [[ ! -e setting.txt ]]; then
             #ループs
             while :; do
                 spinner_progress_status="ファイルの作成中"
-                SPINNER
+                run_spinner
                 if [[ \$RETRYCOUNT -le \$RETRYMAX ]]; then
                     if [[ ! -e setting.txt ]]; then
                         cd -
@@ -171,11 +171,11 @@ while :; do
         #これを本番時はifに追加
         #${mc_server_edition}${mc_donwload_version}.jar
         spinner_progress_status="ファイルの確認中"
-        SPINNER
+        run_spinner
         if [ -e ${mc_server_edition}${mc_donwload_version}.jar ]; then
             echo "JARファイルのチェックに成功"
             spinner_progress_status="ファイルの確認中"
-            SPINNER
+            run_spinner
             if [[ -e eula.txt ]]; then
                 #治す↓
                 EULACONSENT=\$(cat ./eula.txt | grep eula=false | sed 's/eula=//g')
@@ -228,7 +228,7 @@ EOS
         fi
         if [ "\$(screen -ls | grep \$${input_server_name}_SCREEN_NAME)" == "" ]; then
             spinner_progress_status="サーバーを起動中"
-            SPINNER
+            run_spinner
             screen -AdmS \$${input_server_name}_SCREEN_NAME \$${input_server_name}_JAVA_HOME \$${input_server_name}_JVM_ARGUMENT -jar \$FILE_SERVER_FILE nogui
         else
             echo "サーバーは既に起動しています。"
@@ -245,7 +245,7 @@ EOS
     stop)
         cd \$server_dir
         spinner_progress_status="プロセスの有無を確認中"
-        SPINNER
+        run_spinner
         while :; do
             if [ "\$(screen -ls | grep \$${input_server_name}_SCREEN_NAME)" == "" ]; then
                 if [[ \$retrycount = 1 ]];then
@@ -291,7 +291,7 @@ EOS
         export server_dir
         export server_name
         spinner_progress_status="ファイルの確認中"
-        SPINNER
+        run_spinner
         if [[ -e "\$server_dir/setting.txt" ]]; then
         echo "閲覧したい設定を選んでください。"
         echo " 1.サーバー関連 | 2.バックアップ関連"
@@ -425,12 +425,12 @@ EOS
 done
 EOF
 spinner_progress_status="ファイルの確認中 1/2"
-SPINNER
+run_spinner
 if [[ -e $mc_server_create_file_dir/${input_server_name} ]]; then
     echo "サーバーファイルの作成に成功しました。"
     . usr/lib/intsl_v/server_default_settings.sh
     spinner_progress_status="ファイルの確認中 2/2"
-    SPINNER
+    run_spinner
     if [[ ! -e $mc_server_create_file_dir/${input_server_name}/setting.txt ]]; then
         echo "設定ファイルの生成に失敗しました。"
     fi

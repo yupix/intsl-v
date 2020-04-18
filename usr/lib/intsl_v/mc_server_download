@@ -11,7 +11,7 @@ run_spigot_build() {
             SECOND=0
             if [[ ${setting_resetspigot} = "true" ]]; then
                 local spinner_progress_status="前回の実行環境の削除を開始"
-                SPINNER
+                run_spinner
                 rm -rf ./*
                 local FILECLEARCHECK="y"
             fi
@@ -21,7 +21,7 @@ run_spigot_build() {
                 buildstatus=$(cat ./BuildTools.log.txt | grep "Success! Everything completed successfully. Copying final .jar files now.")
                 #現状
                 local spinner_progress_status="BUILD NOW                 "
-                SPINNER
+                run_spinner
             done
             echo -e "\e[1;37;32mBUILD SUCCESS\e[0m             "
             time=${SECONDS}
@@ -48,7 +48,7 @@ elif [[ ${mc_server_edition} = spigot ]]; then
 fi
 mc_donwload_version="$INPUT_SERVER_VERSION"
 spinner_progress_status="${message_file_check}"
-SPINNER
+run_spinner
 if [ -e ${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar ]; then
     echo "ファイルの確認に成功しました"
     mc_server_create
@@ -72,7 +72,7 @@ else
             [yY] | [yY][eE][sS] | [-][yY])
                 while :; do
                     spinner_progress_status="ファイルのダウンロード中"
-                    SPINNER
+                    run_spinner
                     if [[ -e "${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar" ]]; then
                         echo "${message_download_success}"
                         mc_server_create

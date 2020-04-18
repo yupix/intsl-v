@@ -55,7 +55,7 @@ if [ ${change_setting_number} = 3 -o ${change_setting_number} = 4 ]; then
             case ${final_check_data} in
             [yY] | [yY][eE][sS])
                 spinner_progress_status="設定を更新中"
-                SPINNER
+                run_spinner
                 break
                 ;;
             [nN] | [oO])

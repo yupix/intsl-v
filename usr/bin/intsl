@@ -139,7 +139,7 @@ first_start() {
     fi
 }
 
-SPINNER() {
+run_spinner() {
     for ((i = 0; i < ${#chars}; i++)); do
         sleep 0.05
         echo -en "${chars:$i:1} ${spinner_progress_status} " "\r"
@@ -177,7 +177,7 @@ vcheck() {
     while :; do
         if [[ -e ${TMP_FILE_LOCATIONS}new-version.txt ]]; then
             spinner_progress_status="キャッシュの削除中"
-            SPINNER
+            run_spinner
             rm -rf ${TMP_FILE_LOCATIONS}new-version.txt
         else
             spinner_progress_status="最新バージョンの確認中"
@@ -185,27 +185,30 @@ vcheck() {
             if [[ -e ${TMP_FILE_LOCATIONS}new-version.txt ]]; then
                 . ${TMP_FILE_LOCATIONS}new-version.txt
                 regular_version=$(echo "$NEWVERSION" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
-                if [[ $NEWVERSION -gt ${INTVESION} ]]; then
-                    echo "$message_update_exists            "
-                    echo -e "${ECHO_RED_COLOR}Current: INTSL-${INTVESION}${ECHO_COLOR_EXIT} ->  ${ECHO_GREEN_COLOR}New: INTSL-${regular_version}${ECHO_COLOR_EXIT}"
-                    echo "${message_downalod_file}"
-                    echo "${message_use_possible}"
+                if [[ $NEWVERSION -gt ${INTSL_V_VERSION} ]]; then
+                    echo "$message_update_exists"
+                    echo -e "${ECHO_RED_COLOR}Current: INTSL-V-${INTSL_V_VERSION}${ECHO_COLOR_EXIT} ->  ${ECHO_GREEN_COLOR}New: INTSL-V-${regular_version}${ECHO_COLOR_EXIT}"
+                    cat <<EOS
+${message_downalod_file}
+${message_use_possible}
+EOS
                     read -p ">" input_data
                     input_data=${input_data:-y}
                     case ${input_data} in
-                    [yY]|[yY][eE][sS])
+                    [yY] | [yY][eE][sS])
                         echo "$message_updata_start"
-                        exit
-                        while [[ ! -e ./INTSL-${regular_version}-${INTEDITION}.zip ]]; do
+                        while [[ ! -e ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip ]]; do
                             spinner_progress_status="$DATA_DOWNLOAD_NOW_ME"
-                            SPINNER
-                            wget -q https://repo.akarinext.org/pub/intsl-v/${regular_version}/INTSL-${regular_version}-${INTEDITION}.zip -P ${TMP_FILE_LOCATIONS}
+                            run_spinner
+                            wget -q https://repo.akarinext.org/pub/intsl_v/${regular_version}/INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip -P ${TMP_FILE_LOCATIONS}
                         done
                         echo "${message_download_success}"
+                        #ここまで完成
+                        exit
                         serverlistoutput
-                        unzip -qonu ./INTSL-${regular_version}-${INTEDITION}.zip
-                        if [[ -e INTSL-${regular_version}-${INTEDITION} ]]; then
-                            cd ./INTSL-${regular_version}-${INTEDITION}
+                        unzip -qonu ./INTSL-${regular_version}-${INTSL_V_EDITION}.zip
+                        if [[ -e INTSL-${regular_version}-${INTSL_V_EDITION} ]]; then
+                            cd ./INTSL-${regular_version}-${INTSL_V_EDITION}
                             sudo cp -r . ../
                             cd -
                         else
@@ -221,9 +224,9 @@ vcheck() {
                             wget -q ${INTREPOURL}pub/intsl/news.txt
                             MAXLINE=$(cat news.txt | wc -l)
                             while [[ $COUNT != $MAXLINE ]]; do
-                                . ./assets/settings.txt
+                                . ${SETTING_FILE_LOCATIONS}settings
                                 spinner_progress_status="最新情報の取得中 $COUNT / $MAXLINE"
-                                SPINNER
+                                run_spinner
                                 COUNT=$(($COUNT + 1))
                                 GETLINE=$(sed -n ${COUNT}P news.txt)
                                 echo "$GETLINE"
@@ -232,7 +235,7 @@ vcheck() {
 
                         fi
                         ;;
-                    [nN]|[nN][oO])
+                    [nN] | [nN][oO])
                         echo "キャンセルしました。"
                         ;;
                     esac
@@ -267,10 +270,10 @@ extension_import() {
         MAXLINE=$(cat ${INPUT_EXTENSION_NAME}.txt | wc -l)
         echo "$MAXLINE"
         while [[ $COUNT != $MAXLINE ]]; do
-            . ./assets/settings.txt
+            . ${SETTING_FILE_LOCATIONS}settings
             COUNT=$(($COUNT + 1))
             spinner_progress_status="進捗 $COUNT / $MAXLINE"
-            SPINNER
+            run_spinner
             GETLINE=$(sed -n ${COUNT}P ${INPUT_EXTENSION_NAME}.txt)
             sed -i ''$EXSTENSIONLANE'i '"$GETLINE"'' ./assets/extension.txt
             #新しいラインの数値作成
@@ -286,13 +289,13 @@ extension_import() {
         sed -i ''$EXTADDLINE'i'\#${INPUT_EXTENSION_NAME}START'' ./lib/main/extension_manager.sh
         COUNTADD=$((EXTADDLINE + 1))
         sed -i -e 's/EXTADDLINE="'$EXTADDLINE'"/EXTADDLINE="'$COUNTADD'"/' ./assets/settings.txt
-        . ./assets/settings.txt
+        . ${SETTING_FILE_LOCATIONS}settings
         sed -i ''$EXTADDLINE'i'${INPUT_EXTENSION_NAME}\)'' ./lib/main/extension_manager.sh
         sed -i ''$EXTADDLINE'a ;;' ./lib/main/extension_manager.sh
         sed -i ''$EXTADDLINE'a . ./lib/extensions/'${INPUT_EXTENSION_NAME}.sh'' ./lib/main/extension_manager.sh
         COUNTADD=$((EXTADDLINE + 3))
         sed -i -e 's/EXTADDLINE="'$EXTADDLINE'"/EXTADDLINE="'$COUNTADD'"/' ./assets/settings.txt
-        . ./assets/settings.txt
+        . ${SETTING_FILE_LOCATIONS}settings
         sed -i ''$EXTADDLINE'i'\#${INPUT_EXTENSION_NAME}STOP'' ./lib/main/extension_manager.sh
         COUNTADD=$((EXTADDLINE + 1))
         sed -i -e 's/EXTADDLINE="'$EXTADDLINE'"/EXTADDLINE="'$COUNTADD'"/' ./assets/settings.txt
@@ -306,7 +309,7 @@ extension_import() {
         sed -i -e "s/INTEXT/INT_EXT$EXTENSIONS/g" ./assets/extension.txt
         sed -i -e "s/VURL/V_URL$EXTENSIONS/g" ./assets/extension.txt
         sed -i -e "s/EXDOWNLOAD/EX_DOWNLOAD$EXTENSIONS/g" ./assets/extension.txt
-        . ./assets/settings.txt
+        . ${SETTING_FILE_LOCATIONS}settings
         EXT_MD5=$(echo "$INPUT_EXTENSION_NAME" | md5sum | sed -e "s/-//g")
         sed -i ''$EXSTENSIONLANE'i '"EXTMD5=\"$EXT_MD5\""'' ./assets/extension.txt
         sed -i -e "s/EXTMD5/EXT_MD5$EXTENSIONS/g" ./assets/extension.txt
@@ -389,7 +392,7 @@ DEVELOPER_LOGIN() {
         . etc/intsl_v/passwd/dev_pass
         if [ -e etc/intsl_v/passwd/dev_pass ]; then
             #spinner_progress_status="過去のログイン記録を参照中..."
-            #SPINNER
+            #run_spinner
             echo "パスワードを入力してください"
             read -s -p ">" input_password_data
             input_password_check=$(echo $input_password_data | sha512sum | sed -e "s/-//g")
@@ -404,7 +407,7 @@ DEVELOPER_LOGIN() {
             echo "開発者モードを初めて使用するため、必要なファイルを作成します"
             while [[ ! -e etc/intsl_v/passwd/dev_pass ]]; do
                 spinner_progress_status="パスワードの生成 / ファイルの作成中"
-                SPINNER
+                run_spinner
                 echo "使用するパスワードを入力してください。"
                 read -p ">" input_password_data
                 password_generator=$(echo $input_password_data | sha512sum | sed -e "s/-//g")
@@ -481,9 +484,9 @@ MC_SERVER_IMPORT() {
     if [[ -e OUTPUTSERVERLIST.txt ]]; then
         MAXLINE=$(cat OUTPUTSERVERLIST.txt | wc -l)
         while [[ $COUNT != $MAXLINE ]]; do
-            . ./assets/settings.txt
+            . ${SETTING_FILE_LOCATIONS}settings
             spinner_progress_status="進捗 $COUNT / $MAXLINE"
-            SPINNER
+            run_spinner
             COUNT=$(($COUNT + 1))
             GETLINE=$(sed -n ${COUNT}P OUTPUTSERVERLIST.txt)
             sed -i ''${server_add_line}'i '"$GETLINE"'' ./lib/main/server_list.sh
@@ -590,7 +593,7 @@ main)
             while [[ $PLAYCOUNT != $EXTENSIONS ]]; do
                 . ./assets/extension.txt
                 spinner_progress_status="アップデートの確認中 $3 / $EXTENSIONS"
-                SPINNER
+                run_spinner
                 COUNT=$(($COUNT + 1))
                 PLAYCOUNT=$(($PLAYCOUNT + 1))
                 EXT_NAME="V_URL"
@@ -619,7 +622,7 @@ main)
                         eval $EXT_NAME="\$IE_XT$COUNT"
                         while [[ ! -e ./lib/extensions/old/old_${IE_XT}.sh ]]; do
                             spinner_progress_status="旧バージョンをバックアップ中"
-                            SPINNER
+                            run_spinner
                             mv ./lib/extensions/${IE_XT}.sh ./lib/extensions/old/old_${IE_XT}.sh
                         done
                         echo "ダウンロードを開始します。"

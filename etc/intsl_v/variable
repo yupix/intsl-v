@@ -1,8 +1,8 @@
 #--------------------------------<<INTSL情報>>--------------------------------#
 #バージョン
-readonly INTVESION="100"
+readonly INTSL_V_VERSION="100"
 #エディション
-readonly INTEDITION="linux"
+readonly INTSL_V_EDITION="linux"
 #レポジトリー
 readonly INTREPOURL="https://repo.akarinext.org/"
 
