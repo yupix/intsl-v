@@ -35,7 +35,7 @@ RETRYMAX="3"
 
 
 PASSWORDDILECTORY="./assets/password.txt"
-AMBSETTINGS="./assets/settings.txt"
+AMBSETTINGS="${SETTING_FILE_LOCATIONS}settings"
 SYSTEMFILEMUSIC="./discord/jmusic"
 SYSTEMFILE="discord"
 SYSTEMMV="./discrod/musicbot/"

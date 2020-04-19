@@ -262,60 +262,59 @@ mc_server_create() {
     . usr/lib/intsl_v/server_create
 }
 extension_import() {
-    rm -rf ${INPUT_EXTENSION_NAME}.txt
-    if [[ -e ${INPUT_EXTENSION_NAME}.sh ]]; then
+    rm -rf ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME}
+    if [[ -e ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh ]]; then
         #拡張機能系だけを保存するよう
-        GETIEXT=$(cat ./${INPUT_EXTENSION_NAME}.sh | grep -e IEXT -e INT -e VURL >>./${INPUT_EXTENSION_NAME}.txt)
-        MAXLINE=$(cat ${INPUT_EXTENSION_NAME}.txt | wc -l)
+        GETIEXT=$(cat ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh | grep -e IEXT -e INT -e VURL >>${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME})
+        MAXLINE=$(cat ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME} | wc -l)
         echo "$MAXLINE"
         while [[ $COUNT != $MAXLINE ]]; do
             . ${SETTING_FILE_LOCATIONS}settings
             COUNT=$(($COUNT + 1))
             spinner_progress_status="進捗 $COUNT / $MAXLINE"
             run_spinner
-            GETLINE=$(sed -n ${COUNT}P ${INPUT_EXTENSION_NAME}.txt)
-            sed -i ''$EXSTENSIONLANE'i '"$GETLINE"'' ./assets/extension.txt
+            GETLINE=$(sed -n ${COUNT}P ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME})
+            sed -i ''$EXSTENSIONLANE'i '"$GETLINE"'' ${VAR_LIB_FILE_LOCATIONS}extensions
             #新しいラインの数値作成
             NEWSERVERLANE=$((EXSTENSIONLANE + 1))
             #拡張機能の追加ライン
-            sed -i -e 's/EXSTENSIONLANE="'$EXSTENSIONLANE'"/EXSTENSIONLANE="'$NEWSERVERLANE'"/' ./assets/settings.txt
+            sed -i -e 's/EXSTENSIONLANE="'$EXSTENSIONLANE'"/EXSTENSIONLANE="'$NEWSERVERLANE'"/' ${VAR_LIB_FILE_LOCATIONS}extensions
         done
-        if [[ ! -e ./lib/extensions ]]; then
-            mkdir ./lib/extensions
+        if [[ ! -e ${VAR_LIB_FILE_LOCATIONS}extensions ]]; then
+            mkdir ${VAR_LIB_FILE_LOCATIONS}extensions
         fi
-        MAXLINE=$(cat ${INPUT_EXTENSION_NAME}.sh | wc -l)
-        mv ./${INPUT_EXTENSION_NAME}.sh ./lib/extensions/
-        sed -i ''$EXTADDLINE'i'\#${INPUT_EXTENSION_NAME}START'' ./lib/main/extension_manager.sh
+        MAXLINE=$(cat ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh | wc -l)
+        sed -i ''$EXTADDLINE'i'\#${INPUT_EXTENSION_NAME}START'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
         COUNTADD=$((EXTADDLINE + 1))
-        sed -i -e 's/EXTADDLINE="'$EXTADDLINE'"/EXTADDLINE="'$COUNTADD'"/' ./assets/settings.txt
+        sed -i -e 's/EXTADDLINE="'$EXTADDLINE'"/EXTADDLINE="'$COUNTADD'"/' ${SETTING_FILE_LOCATIONS}settings
         . ${SETTING_FILE_LOCATIONS}settings
-        sed -i ''$EXTADDLINE'i'${INPUT_EXTENSION_NAME}\)'' ./lib/main/extension_manager.sh
-        sed -i ''$EXTADDLINE'a ;;' ./lib/main/extension_manager.sh
-        sed -i ''$EXTADDLINE'a . ./lib/extensions/'${INPUT_EXTENSION_NAME}.sh'' ./lib/main/extension_manager.sh
+        sed -i ''$EXTADDLINE'i'${INPUT_EXTENSION_NAME}\)'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
+        sed -i ''$EXTADDLINE'a ;;' ${VAR_LIB_FILE_LOCATIONS}extension_manager
+        sed -i ''$EXTADDLINE'a . ${HOME_FILE_LOCATIONS}intsl_v/extensions'${INPUT_EXTENSION_NAME}.sh'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
         COUNTADD=$((EXTADDLINE + 3))
-        sed -i -e 's/EXTADDLINE="'$EXTADDLINE'"/EXTADDLINE="'$COUNTADD'"/' ./assets/settings.txt
+        sed -i -e 's/EXTADDLINE="'$EXTADDLINE'"/EXTADDLINE="'$COUNTADD'"/' ${SETTING_FILE_LOCATIONS}settings
         . ${SETTING_FILE_LOCATIONS}settings
-        sed -i ''$EXTADDLINE'i'\#${INPUT_EXTENSION_NAME}STOP'' ./lib/main/extension_manager.sh
+        sed -i ''$EXTADDLINE'i'\#${INPUT_EXTENSION_NAME}STOP'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
         COUNTADD=$((EXTADDLINE + 1))
-        sed -i -e 's/EXTADDLINE="'$EXTADDLINE'"/EXTADDLINE="'$COUNTADD'"/' ./assets/settings.txt
+        sed -i -e 's/EXTADDLINE="'$EXTADDLINE'"/EXTADDLINE="'$COUNTADD'"/' ${SETTING_FILE_LOCATIONS}settings
         #ライン追加のライン数を変更
-        . ./assets/extension.txt
+        . ${VAR_LIB_FILE_LOCATIONS}extensions
         NEWEXTENSIONS=$((EXTENSIONS + 1))
         #エクステンションの数追加
-        sed -i -e 's/EXTENSIONS="'$EXTENSIONS'"/EXTENSIONS="'$NEWEXTENSIONS'"/' ./assets/extension.txt
-        . ./assets/extension.txt
-        sed -i -e "s/IEXT/IE_XT$EXTENSIONS/g" ./assets/extension.txt
-        sed -i -e "s/INTEXT/INT_EXT$EXTENSIONS/g" ./assets/extension.txt
-        sed -i -e "s/VURL/V_URL$EXTENSIONS/g" ./assets/extension.txt
-        sed -i -e "s/EXDOWNLOAD/EX_DOWNLOAD$EXTENSIONS/g" ./assets/extension.txt
+        sed -i -e 's/EXTENSIONS="'$EXTENSIONS'"/EXTENSIONS="'$NEWEXTENSIONS'"/' ${VAR_LIB_FILE_LOCATIONS}extensions
+        . ${VAR_LIB_FILE_LOCATIONS}extensions
+        sed -i -e "s/IEXT/IE_XT$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
+        sed -i -e "s/INTEXT/INT_EXT$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
+        sed -i -e "s/VURL/V_URL$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
+        sed -i -e "s/EXDOWNLOAD/EX_DOWNLOAD$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
         . ${SETTING_FILE_LOCATIONS}settings
         EXT_MD5=$(echo "$INPUT_EXTENSION_NAME" | md5sum | sed -e "s/-//g")
-        sed -i ''$EXSTENSIONLANE'i '"EXTMD5=\"$EXT_MD5\""'' ./assets/extension.txt
-        sed -i -e "s/EXTMD5/EXT_MD5$EXTENSIONS/g" ./assets/extension.txt
+        sed -i ''$EXSTENSIONLANE'i '"EXTMD5=\"$EXT_MD5\""'' ${VAR_LIB_FILE_LOCATIONS}extensions
+        sed -i -e "s/EXTMD5/EXT_MD5$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
         #新しいラインの数値作成
         NEWSERVERLANE=$((EXSTENSIONLANE + 1))
         #拡張機能の追加ライン
-        sed -i -e 's/EXSTENSIONLANE="'$EXSTENSIONLANE'"/EXSTENSIONLANE="'$NEWSERVERLANE'"/' ./assets/settings.txt
+        sed -i -e 's/EXSTENSIONLANE="'$EXSTENSIONLANE'"/EXSTENSIONLANE="'$NEWSERVERLANE'"/' ${SETTING_FILE_LOCATIONS}settings
         echo "shが存在します。"
     else
         echo "shが存在しません"
@@ -491,7 +490,7 @@ MC_SERVER_IMPORT() {
             sed -i ''${server_add_line}'i '"$GETLINE"'' ./lib/main/server_list.sh
             #サーバーの追加する行変更
             NEWSERVERLANE=$((server_add_line + 1))
-            sed -i -e 's/server_add_line="'${server_add_line}'"/server_add_line="'$NEWSERVERLANE'"/' ./assets/settings.txt
+            sed -i -e 's/server_add_line="'${server_add_line}'"/server_add_line="'$NEWSERVERLANE'"/' ${SETTING_FILE_LOCATIONS}settings
         done
         echo -e "\e[1;37;32mIMPORT SUCCESS\e[0m"
     else
@@ -547,12 +546,12 @@ main)
         read -p ">" INPUT_EXTENSION_DATA
         case $INPUT_EXTENSION_DATA in
         use)
-            . ./lib/main/extension_manager.sh
+            . ${VAR_LIB_FILE_LOCATIONS}extension_manager
             ;;
         import)
             echo "インポートするshの名前を入力してください。"
             read -p ">" INPUT_EXTENSION_NAME
-            . ./assets/extension.txt
+            . ${VAR_LIB_FILE_LOCATIONS}extensions
             while [[ $PLAYCOUNT != $EXTENSIONS ]]; do
                 PLAYCOUNT=$(($PLAYCOUNT + 1))
                 if [[ $EXTENSIONS = 0 ]]; then
@@ -569,7 +568,7 @@ main)
             extension_import
             ;;
         list)
-            . ./assets/extension.txt
+            . ${VAR_LIB_FILE_LOCATIONS}extensions
             #拡張機能が入ってない際、不具合が発生する為予め宣言
             COUNT="0"
             echo "拡張機能の数: ${EXTENSIONS}個"
@@ -587,10 +586,10 @@ main)
             done
             ;;
         vcheck)
-            . ./assets/extension.txt
+            . ${VAR_LIB_FILE_LOCATIONS}extensions
             rm -rf ./newversion.txt
             while [[ $PLAYCOUNT != $EXTENSIONS ]]; do
-                . ./assets/extension.txt
+                . ${VAR_LIB_FILE_LOCATIONS}extensions
                 spinner_progress_status="アップデートの確認中 $3 / $EXTENSIONS"
                 run_spinner
                 COUNT=$(($COUNT + 1))
@@ -619,15 +618,15 @@ main)
                     [yY])
                         EXT_NAME="IE_XT"
                         eval $EXT_NAME="\$IE_XT$COUNT"
-                        while [[ ! -e ./lib/extensions/old/old_${IE_XT}.sh ]]; do
+                        while [[ ! -e ${VAR_LIB_FILE_LOCATIONS}extensionsold/old_${IE_XT}.sh ]]; do
                             spinner_progress_status="旧バージョンをバックアップ中"
                             run_spinner
-                            mv ./lib/extensions/${IE_XT}.sh ./lib/extensions/old/old_${IE_XT}.sh
+                            mv ${VAR_LIB_FILE_LOCATIONS}extensions${IE_XT}.sh ${VAR_LIB_FILE_LOCATIONS}extensionsold/old_${IE_XT}.sh
                         done
                         echo "ダウンロードを開始します。"
-                        wget -q $EXDOWNLOAD -O ./lib/extensions/${IE_XT}.sh
+                        wget -q $EXDOWNLOAD -O ${VAR_LIB_FILE_LOCATIONS}extensions${IE_XT}.sh
                         #バージョン情報を更新
-                        sed -i -e 's/INT_EXT'$COUNT'="'$INT_EXT'"/INT_EXT'$COUNT'="'$NEWVERSION'"/' ./assets/extension.txt
+                        sed -i -e 's/INT_EXT'$COUNT'="'$INT_EXT'"/INT_EXT'$COUNT'="'$NEWVERSION'"/' ${VAR_LIB_FILE_LOCATIONS}extensions
                         ;;
                     [nN])
                         echo "キャンセルしました。"

@@ -10,6 +10,9 @@ readonly VARIABLE_FILE_LOCATIONS="/etc/intsl_v/"
 #言語ファイル
 readonly LANGUAGE_FILE_LOCATIONS="/usr/share/intsl_v/locale/"
 
+#ホームディレクトリ
+readonly HOME_FILE_LOCATIONS="/home/$(whoami)/"
+
 #一時ファイル
 readonly TMP_FILE_LOCATIONS="/tmp/"
 
@@ -17,7 +20,7 @@ readonly TMP_FILE_LOCATIONS="/tmp/"
 readonly CACHE_FILE_LOCATIONS="/var/cache/intsl_v/"
 
 #システムファイル系(変更無し)
-readonly LIB_FILE_LOCATIONS="/usr/lib/intsl_v"
+readonly LIB_FILE_LOCATIONS="/usr/lib/intsl_v/"
 
 #システムファイル系(変更有り)
-readonly VAR_LIB_FILE_LOCATIONS="/var/lib/intsl_v"
+readonly VAR_LIB_FILE_LOCATIONS="/var/lib/intsl_v/"
