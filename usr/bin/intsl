@@ -479,15 +479,15 @@ mc_server_version_list() {
     esac
 }
 MC_SERVER_IMPORT() {
-    if [[ -e OUTPUTSERVERLIST.txt ]]; then
-        MAXLINE=$(cat OUTPUTSERVERLIST.txt | wc -l)
+    if [[ -e ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt ]]; then
+        MAXLINE=$(cat ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt | wc -l)
         while [[ $COUNT != $MAXLINE ]]; do
             . ${SETTING_FILE_LOCATIONS}settings
             spinner_progress_status="進捗 $COUNT / $MAXLINE"
             run_spinner
             COUNT=$(($COUNT + 1))
-            GETLINE=$(sed -n ${COUNT}P OUTPUTSERVERLIST.txt)
-            sed -i ''${server_add_line}'i '"$GETLINE"'' ./lib/main/server_list.sh
+            GETLINE=$(sed -n ${COUNT}P ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt)
+            sed -i ''${server_add_line}'i '"$GETLINE"'' ${VAR_LIB_FILE_LOCATIONS}server_list
             #サーバーの追加する行変更
             NEWSERVERLANE=$((server_add_line + 1))
             sed -i -e 's/server_add_line="'${server_add_line}'"/server_add_line="'$NEWSERVERLANE'"/' ${SETTING_FILE_LOCATIONS}settings
