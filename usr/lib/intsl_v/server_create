@@ -122,7 +122,7 @@ while :; do
                     break
                     ;;
                 *)
-                    screen -S \$SCREEN_NAME -p 0 -X stuff "say 残り10 秒\$(echo -ne '\r')"
+                    screen -S \$screen_name -p 0 -X stuff "say 残り10 秒\$(echo -ne '\r')"
                     ;;
                 esac
             else
@@ -132,6 +132,8 @@ while :; do
         done
         ;;
     start)
+        . ${SETTING_FILE_LOCATIONS}settings
+        . \${HOME_FILE_LOCATIONS}intsl_v/${input_server_name}/setting.txt
         cd \$server_dir
         #本番時は$INPUT系に置き換え
         #SERVER_NAME="${input_server_name}" +
@@ -139,8 +141,6 @@ while :; do
         FILE_SERVER_PATH="${input_server_name}"
         #${mc_server_edition}${mc_donwload_version}.jar
         FILE_SERVER_FILE="${mc_server_edition}${mc_donwload_version}.jar"
-
-        . ./setting.txt
 
         spinner_progress_status="ファイルの確認中"
         run_spinner
@@ -206,7 +206,7 @@ while :; do
             else
                 echo "eulaファイルが存在しません。JARファイルを一度実行します。"
                 . ./setting.txt
-                screen -AdmS \$${input_server_name}_SCREEN_NAME \$${input_server_name}_JAVA_HOME \$${input_server_name}_JVM_ARGUMENT -jar \$FILE_SERVER_FILE nogui
+                screen -AdmS \$${input_server_name}_screen_name \$${input_server_name}_java_home \$${input_server_name}_jvm_argument -jar \$FILE_SERVER_FILE nogui
             fi
         else
             echo "JARファイルのチェックに失敗"
@@ -215,7 +215,7 @@ while :; do
         #サーバー起動
         . ./setting.txt
         if [[ \$${input_server_name}_backup = yes ]];then
-            kill \$${input_server_name}_BACKUP_PID
+            kill \$${input_server_name}_BACKUP_PID >/dev/null 2>&1
             WORLD_BACKUP &
             sed -i -e 's/'${input_server_name}_BACKUP_PID'="'\$${input_server_name}_BACKUP_PID'"/'${input_server_name}_BACKUP_PID'="'\$!'"/' ./setting.txt
         fi
@@ -226,19 +226,19 @@ while :; do
 {"avatar_url":"\$${input_server_name}_webhook_avator","username":"\$${input_server_name}_discord_webhook_name","content":"✅ **Server has started**"}
 EOS
         fi
-        if [ "\$(screen -ls | grep \$${input_server_name}_SCREEN_NAME)" == "" ]; then
+        if [ "\$(screen -ls | grep \$${input_server_name}_screen_name)" == "" ]; then
             spinner_progress_status="サーバーを起動中"
             run_spinner
-            screen -AdmS \$${input_server_name}_SCREEN_NAME \$${input_server_name}_JAVA_HOME \$${input_server_name}_JVM_ARGUMENT -jar \$FILE_SERVER_FILE nogui
+            screen -AdmS \$${input_server_name}_screen_name \$${input_server_name}_java_home \$${input_server_name}_jvm_argument -jar \$FILE_SERVER_FILE nogui
         else
             echo "サーバーは既に起動しています。"
         fi
 
         #PID取得用
         #治す↓
-        getpid=\$(screen -ls | grep \$${input_server_name}_SCREEN_NAME | sed -e 's/[^0-9]//g')
+        getpid=\$(screen -ls | grep \$${input_server_name}_screen_name | sed -e 's/[^0-9]//g')
         sed -i -e 's/${input_server_name}_pid="'\$${input_server_name}_pid'"/${input_server_name}_pid="'\$getpid'"/' ./setting.txt
-        echo "SCREENNAME: \$${input_server_name}_SCREEN_NAME"
+        echo "SCREENNAME: \$${input_server_name}_screen_name"
         ;;
 
     #サーバー停止
@@ -256,7 +256,7 @@ EOS
                 break
             else
                 . ./setting.txt
-                kill \$${input_server_name}_pid
+                kill \$${input_server_name}_pid  >/dev/null 2>&1
                 retrycount="1"
             fi
         done
@@ -301,15 +301,13 @@ EOS
             [1])
                 echo "~サーバー設定~"
                 echo "1.サーバーのプロセス名"
-                echo "└ \$${input_server_name}_SCREEN_NAME"
+                echo "└ \$${input_server_name}_screen_name"
                 echo "2.サーバーJAR名"
-                echo "└ \$${input_server_name}_JAVA_HOME"
+                echo "└ \$${input_server_name}_java_home"
                 echo "3.サーバーメモリ最小"
-                echo "└ \$${input_server_name}_MEM_MIN"
+                echo "└ \$${input_server_name}_mem_min"
                 echo "4.サーバーメモリ最大"
-                echo "└ \$${input_server_name}_MEM_MAX"
-                echo "5.JAVAPATH"
-                echo "└ \$${input_server_name}_JAVA_HOME"
+                echo "└ \$${input_server_name}_mem_max"
                     read INPUT_SERVER_SETTING
                     case \$INPUT_SERVER_SETTING in
                         1)
@@ -333,11 +331,6 @@ EOS
                             export change_setting_number
                             usr/lib/intsl_v/setting_function
                             ;;
-                        5)
-                            change_setting_number="5"
-                            export change_setting_number
-                            usr/lib/intsl_v/setting_function
-                                            ;;
                         *)
                             echo "使用できないキー入力です"
                             ;;

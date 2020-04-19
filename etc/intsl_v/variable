@@ -23,7 +23,7 @@ ECHO_RED_COLOR="\033[1;31m"
 ECHO_COLOR_EXIT="\033[0;39m"
 
 #SYSTEM関係
-SCREEN_NAME=test
+screen_name=test
 USER=$(whoami)
 
 cryptography=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 | sort | uniq)
