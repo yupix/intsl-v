@@ -731,7 +731,6 @@ main)
             ;;
         uninstall)
             echo "拡張機能をアンインストールします。"
-            echo "この機能は現在未完成です。"
             read -p ">" input_data
             #拡張機能リストから削除
             get_ext_list_start_line=$(grep -nw ${input_data,,}START ${VAR_LIB_FILE_LOCATIONS}extensions | grep -o '[0-9]*')
