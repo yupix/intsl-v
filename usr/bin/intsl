@@ -732,6 +732,26 @@ main)
         uninstall)
             echo "拡張機能をアンインストールします。"
             echo "この機能は現在未完成です。"
+            read -p ">" input_data
+            #拡張機能リストから削除
+            get_ext_list_start_line=$(grep -nw ${input_data,,}START ${VAR_LIB_FILE_LOCATIONS}extensions | grep -o '[0-9]*')
+            get_ext_list_exit_line=$(grep -nw ${input_data,,}EXIT ${VAR_LIB_FILE_LOCATIONS}extensions | grep -o '[0-9]*')
+            sed -i -e ''${get_ext_list_start_line}','${get_ext_list_exit_line}'d' ${VAR_LIB_FILE_LOCATIONS}extensions
+
+            #拡張機能マネージャー
+            get_ext_manager_start_line=$(grep -nw ${input_data,,}START ${VAR_LIB_FILE_LOCATIONS}extension_manager | grep -o '[0-9]*')
+            get_ext_manager_exit_line=$(grep -nw ${input_data,,}STOP ${VAR_LIB_FILE_LOCATIONS}extension_manager | grep -o '[0-9]*')
+            sed -i -e ''${get_ext_manager_start_line}','${get_ext_manager_exit_line}'d' ${VAR_LIB_FILE_LOCATIONS}extension_manager
+
+            . ${VAR_LIB_FILE_LOCATIONS}extensions
+            #拡張機能数の増加
+            NEWEXTENSIONS=$((EXTENSIONS - 1))
+            sed -i -e 's/EXTENSIONS="'${EXTENSIONS}'"/EXTENSIONS="'${NEWEXTENSIONS}'"/' ${VAR_LIB_FILE_LOCATIONS}extensions
+            #設定の行追加のやつを修正
+            NEW_INTSL_EXTENSION_LIST_ADD_LINE=$((INTSL_EXTENSION_LIST_ADD_LINE - 6))
+            sed -i -e 's/INTSL_EXTENSION_LIST_ADD_LINE="'${INTSL_EXTENSION_LIST_ADD_LINE}'"/INTSL_EXTENSION_LIST_ADD_LINE="'${NEW_INTSL_EXTENSION_LIST_ADD_LINE}'"/' ${SETTING_FILE_LOCATIONS}settings
+            NEW_INTSL_EXTENSION_MANAGER_ADD_LINE=$((INTSL_EXTENSION_MANAGER_ADD_LINE - 5))
+            sed -i -e 's/INTSL_EXTENSION_MANAGER_ADD_LINE="'${INTSL_EXTENSION_MANAGER_ADD_LINE}'"/INTSL_EXTENSION_MANAGER_ADD_LINE="'${NEW_INTSL_EXTENSION_MANAGER_ADD_LINE}'"/' ${SETTING_FILE_LOCATIONS}settings
             ;;
         cloud)
             echo "クラウドから拡張機能をダウンロードします"
