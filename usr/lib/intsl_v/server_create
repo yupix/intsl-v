@@ -54,9 +54,27 @@ if [ ${mc_server_edition} = official -o ${mc_server_edition} = spigot -o ${mc_se
     srce_edision="server"
     cp ${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar ${mc_server_create_file_dir}/${input_server_name}
 fi
-sed -i ''${server_add_line}'i'${input_server_name}\)'' var/lib/intsl_v/server_list
-sed -i ''${server_add_line}'a ;;' var/lib/intsl_v/server_list
-sed -i ''${server_add_line}'a . 'usr/lib/intsl_v/mc_server_run/${input_server_name}'''' var/lib/intsl_v/server_list
+
+. ${SETTING_FILE_LOCATIONS}settings
+sed -i ''${server_add_line}'i'"\#${input_server_name}START"'' ${VAR_LIB_FILE_LOCATIONS}server_list
+NEWSERVERLANE=$((server_add_line + 1))
+sed -i -e 's/server_add_line="'$server_add_line'/server_add_line="'$NEWSERVERLANE'/' ${SETTING_FILE_LOCATIONS}settings
+
+. ${SETTING_FILE_LOCATIONS}settings
+
+sed -i ''${server_add_line}'i'${input_server_name}\)'' ${VAR_LIB_FILE_LOCATIONS}server_list
+sed -i ''${server_add_line}'a ;;' ${VAR_LIB_FILE_LOCATIONS}server_list
+sed -i ''${server_add_line}'a . 'usr/lib/intsl_v/mc_server_run/${input_server_name}'''' ${VAR_LIB_FILE_LOCATIONS}server_list
+
+NEWSERVERLANE=$((server_add_line + 3))
+sed -i -e 's/server_add_line="'$server_add_line'/server_add_line="'$NEWSERVERLANE'/' ${SETTING_FILE_LOCATIONS}settings
+
+. ${SETTING_FILE_LOCATIONS}settings
+
+sed -i ''$server_add_line'i'"\#${input_server_name}EXIT"'' ${VAR_LIB_FILE_LOCATIONS}server_list
+NEWSERVERLANE=$((server_add_line + 1))
+sed -i -e 's/server_add_line="'$server_add_line'/server_add_line="'$NEWSERVERLANE'/' ${SETTING_FILE_LOCATIONS}settings
+
 cat <<EOF >usr/lib/intsl_v/mc_server_run/${input_server_name}
 #!/usr/bin/env bash
 #バックアップ用
@@ -431,7 +449,4 @@ else
     echo "サーバーファイルの作成に失敗しました。"
     exit 1
 fi
-
-NEWSERVERLANE=$((server_add_line + 3))
-sed -i -e 's/server_add_line="'$server_add_line'/server_add_line="'$NEWSERVERLANE'/' etc/intsl_v/settings
 exit 0
