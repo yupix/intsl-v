@@ -11,8 +11,8 @@ setting_resetspigot="false"
 #パッケージモード
 setting_package_mode="false"
 
-EXSTENSIONLANE="2"
-EXTADDLINE="6"
+INTSL_EXTENSION_LIST_ADD_LINE="2"
+INTSL_EXTENSION_MANAGER_ADD_LINE="6"
 
 #--------------------------------<<開発者向け設定 一覧>>--------------------------#
 #サーバー起動分の追加行

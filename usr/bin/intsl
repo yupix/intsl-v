@@ -40,7 +40,6 @@ fi
 
 #オプション取得
 get_optision=$(echo $@ | grep -o "\-f")
-
 #コマンド
 first_start() {
     if [[ ${get_optision} != "-f" ]]; then
@@ -140,12 +139,11 @@ first_start() {
 }
 
 run_spinner() {
-    for ((i = 0; i < ${#chars}; i++)); do
+    for ((n = 0; n < ${#chars}; n++)); do
         sleep 0.05
-        echo -en "${chars:$i:1} ${spinner_progress_status} " "\r"
+        echo -en "${chars:$n:1} ${spinner_progress_status} " "\r"
     done
 }
-
 serverlistoutput() {
     #TODO: サーバー数を作成し、0の場合は動かないようにする(2019/4/18)
     echo "サーバーリストをアウトプットします。"
@@ -262,63 +260,156 @@ mc_server_create() {
     . usr/lib/intsl_v/server_create
 }
 extension_import() {
-    rm -rf ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME}
     if [[ -e ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh ]]; then
-        #拡張機能系だけを保存するよう
+
+        rm -rf ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME}
+
         GETIEXT=$(cat ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh | grep -e IEXT -e INT -e VURL >>${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME})
         MAXLINE=$(cat ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME} | wc -l)
-        echo "$MAXLINE"
-        while [[ $COUNT != $MAXLINE ]]; do
+
+        sed -i ''$INTSL_EXTENSION_LIST_ADD_LINE'i'\#${INPUT_EXTENSION_NAME}START'' ${VAR_LIB_FILE_LOCATIONS}extensions
+
+        NEW_INTSL_EXTENSION_LIST_ADD_LINE=$((INTSL_EXTENSION_LIST_ADD_LINE + 1))
+        sed -i -e 's/INTSL_EXTENSION_LIST_ADD_LINE="'$INTSL_EXTENSION_LIST_ADD_LINE'"/INTSL_EXTENSION_LIST_ADD_LINE="'$NEW_INTSL_EXTENSION_LIST_ADD_LINE'"/' ${SETTING_FILE_LOCATIONS}settings
+
+        #拡張機能リストの生成
+        for i in $(seq $MAXLINE); do
+            #Config再読込
             . ${SETTING_FILE_LOCATIONS}settings
-            COUNT=$(($COUNT + 1))
-            spinner_progress_status="進捗 $COUNT / $MAXLINE"
+
+            spinner_progress_status="進捗 ${i} / $MAXLINE"
             run_spinner
-            GETLINE=$(sed -n ${COUNT}P ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME})
-            sed -i ''$EXSTENSIONLANE'i '"$GETLINE"'' ${VAR_LIB_FILE_LOCATIONS}extensions
-            #新しいラインの数値作成
-            NEWSERVERLANE=$((EXSTENSIONLANE + 1))
-            #拡張機能の追加ライン
-            sed -i -e 's/EXSTENSIONLANE="'$EXSTENSIONLANE'"/EXSTENSIONLANE="'$NEWSERVERLANE'"/' ${VAR_LIB_FILE_LOCATIONS}extensions
+
+            GETLINE=$(sed -n ${i}P ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME})
+            sed -i ''$INTSL_EXTENSION_LIST_ADD_LINE'i '"$GETLINE"'' ${VAR_LIB_FILE_LOCATIONS}extensions
+
+            NEW_INTSL_EXTENSION_LIST_ADD_LINE=$((INTSL_EXTENSION_LIST_ADD_LINE + 1))
+            sed -i -e 's/INTSL_EXTENSION_LIST_ADD_LINE="'$INTSL_EXTENSION_LIST_ADD_LINE'"/INTSL_EXTENSION_LIST_ADD_LINE="'$NEW_INTSL_EXTENSION_LIST_ADD_LINE'"/' ${SETTING_FILE_LOCATIONS}settings
         done
-        if [[ ! -e ${VAR_LIB_FILE_LOCATIONS}extensions ]]; then
-            mkdir ${VAR_LIB_FILE_LOCATIONS}extensions
-        fi
+
+        #行の取得
         MAXLINE=$(cat ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh | wc -l)
-        sed -i ''$EXTADDLINE'i'\#${INPUT_EXTENSION_NAME}START'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
-        COUNTADD=$((EXTADDLINE + 1))
-        sed -i -e 's/EXTADDLINE="'$EXTADDLINE'"/EXTADDLINE="'$COUNTADD'"/' ${SETTING_FILE_LOCATIONS}settings
-        . ${SETTING_FILE_LOCATIONS}settings
-        sed -i ''$EXTADDLINE'i'${INPUT_EXTENSION_NAME}\)'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
-        sed -i ''$EXTADDLINE'a ;;' ${VAR_LIB_FILE_LOCATIONS}extension_manager
-        sed -i ''$EXTADDLINE'a . ${HOME_FILE_LOCATIONS}intsl_v/extensions'${INPUT_EXTENSION_NAME}.sh'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
-        COUNTADD=$((EXTADDLINE + 3))
-        sed -i -e 's/EXTADDLINE="'$EXTADDLINE'"/EXTADDLINE="'$COUNTADD'"/' ${SETTING_FILE_LOCATIONS}settings
-        . ${SETTING_FILE_LOCATIONS}settings
-        sed -i ''$EXTADDLINE'i'\#${INPUT_EXTENSION_NAME}STOP'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
-        COUNTADD=$((EXTADDLINE + 1))
-        sed -i -e 's/EXTADDLINE="'$EXTADDLINE'"/EXTADDLINE="'$COUNTADD'"/' ${SETTING_FILE_LOCATIONS}settings
-        #ライン追加のライン数を変更
-        . ${VAR_LIB_FILE_LOCATIONS}extensions
-        NEWEXTENSIONS=$((EXTENSIONS + 1))
-        #エクステンションの数追加
-        sed -i -e 's/EXTENSIONS="'$EXTENSIONS'"/EXTENSIONS="'$NEWEXTENSIONS'"/' ${VAR_LIB_FILE_LOCATIONS}extensions
-        . ${VAR_LIB_FILE_LOCATIONS}extensions
-        sed -i -e "s/IEXT/IE_XT$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
-        sed -i -e "s/INTEXT/INT_EXT$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
-        sed -i -e "s/VURL/V_URL$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
-        sed -i -e "s/EXDOWNLOAD/EX_DOWNLOAD$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
-        . ${SETTING_FILE_LOCATIONS}settings
-        EXT_MD5=$(echo "$INPUT_EXTENSION_NAME" | md5sum | sed -e "s/-//g")
-        sed -i ''$EXSTENSIONLANE'i '"EXTMD5=\"$EXT_MD5\""'' ${VAR_LIB_FILE_LOCATIONS}extensions
-        sed -i -e "s/EXTMD5/EXT_MD5$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
-        #新しいラインの数値作成
-        NEWSERVERLANE=$((EXSTENSIONLANE + 1))
-        #拡張機能の追加ライン
-        sed -i -e 's/EXSTENSIONLANE="'$EXSTENSIONLANE'"/EXSTENSIONLANE="'$NEWSERVERLANE'"/' ${SETTING_FILE_LOCATIONS}settings
-        echo "shが存在します。"
+        for a in $(seq 7); do
+            #Config再読込
+            . ${SETTING_FILE_LOCATIONS}settings
+
+            if [[ ${a} = 1 ]]; then
+                #拡張機能スタート
+                sed -i ''$INTSL_EXTENSION_MANAGER_ADD_LINE'i'\#${INPUT_EXTENSION_NAME}START'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
+                NEW_INTSL_EXTENSION_MANAGER_ADD_LINE=$((INTSL_EXTENSION_MANAGER_ADD_LINE + 1))
+                sed -i -e 's/INTSL_EXTENSION_MANAGER_ADD_LINE="'$INTSL_EXTENSION_MANAGER_ADD_LINE'"/INTSL_EXTENSION_MANAGER_ADD_LINE="'$NEW_INTSL_EXTENSION_MANAGER_ADD_LINE'"/' ${SETTING_FILE_LOCATIONS}settings
+            elif [[ ${a} = 2 ]]; then
+                #マネージャーに起動スクリプトを生成
+                sed -i ''$INTSL_EXTENSION_MANAGER_ADD_LINE'i'${INPUT_EXTENSION_NAME}\)'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
+                sed -i ''$INTSL_EXTENSION_MANAGER_ADD_LINE'a ;;' ${VAR_LIB_FILE_LOCATIONS}extension_manager
+                sed -i ''$INTSL_EXTENSION_MANAGER_ADD_LINE'a . ${HOME_FILE_LOCATIONS}intsl_v/extensions'${INPUT_EXTENSION_NAME}.sh'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
+                NEW_INTSL_EXTENSION_MANAGER_ADD_LINE=$((INTSL_EXTENSION_MANAGER_ADD_LINE + 3))
+                sed -i -e 's/INTSL_EXTENSION_MANAGER_ADD_LINE="'$INTSL_EXTENSION_MANAGER_ADD_LINE'"/INTSL_EXTENSION_MANAGER_ADD_LINE="'$NEW_INTSL_EXTENSION_MANAGER_ADD_LINE'"/' ${SETTING_FILE_LOCATIONS}settings
+            elif [[ ${a} = 3 ]]; then
+                #STOPの追加
+                sed -i ''$INTSL_EXTENSION_MANAGER_ADD_LINE'i'\#${INPUT_EXTENSION_NAME}STOP'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
+                NEW_INTSL_EXTENSION_MANAGER_ADD_LINE=$((INTSL_EXTENSION_MANAGER_ADD_LINE + 1))
+                sed -i -e 's/INTSL_EXTENSION_MANAGER_ADD_LINE="'$INTSL_EXTENSION_MANAGER_ADD_LINE'"/INTSL_EXTENSION_MANAGER_ADD_LINE="'$NEW_INTSL_EXTENSION_MANAGER_ADD_LINE'"/' ${SETTING_FILE_LOCATIONS}settings
+            elif [[ ${a} = 4 ]]; then
+                . ${VAR_LIB_FILE_LOCATIONS}extensions
+                #拡張機能数の増加
+                NEWEXTENSIONS=$((EXTENSIONS + 1))
+                sed -i -e 's/EXTENSIONS="'$EXTENSIONS'"/EXTENSIONS="'$NEWEXTENSIONS'"/' ${VAR_LIB_FILE_LOCATIONS}extensions
+            elif [[ ${a} = 5 ]]; then
+                sed -i -e "s/IEXT/IE_XT$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
+                sed -i -e "s/INTEXT/INT_EXT$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
+                sed -i -e "s/VURL/V_URL$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
+                sed -i -e "s/EXDOWNLOAD/EX_DOWNLOAD$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
+            elif [[ ${a} = 6 ]]; then
+                #MD5値取得
+                EXT_MD5=$(echo "$INPUT_EXTENSION_NAME" | md5sum | sed -e "s/-//g")
+                sed -i ''$INTSL_EXTENSION_LIST_ADD_LINE'i '"EXTMD5=\"$EXT_MD5\""'' ${VAR_LIB_FILE_LOCATIONS}extensions
+                sed -i -e "s/EXTMD5/EXT_MD5$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
+                NEW_INTSL_EXTENSION_LIST_ADD_LINE=$((INTSL_EXTENSION_LIST_ADD_LINE + 1))
+                sed -i -e 's/INTSL_EXTENSION_LIST_ADD_LINE="'$INTSL_EXTENSION_LIST_ADD_LINE'"/INTSL_EXTENSION_LIST_ADD_LINE="'$NEW_INTSL_EXTENSION_LIST_ADD_LINE'"/' ${SETTING_FILE_LOCATIONS}settings
+            fi
+        done
+
+        #拡張機能終了
+        sed -i ''$INTSL_EXTENSION_LIST_ADD_LINE'i'\#${INPUT_EXTENSION_NAME}EXIT'' ${VAR_LIB_FILE_LOCATIONS}extensions
+        #追加行変更1
+        NEW_INTSL_EXTENSION_LIST_ADD_LINE=$((INTSL_EXTENSION_LIST_ADD_LINE + 1))
+        sed -i -e 's/INTSL_EXTENSION_LIST_ADD_LINE="'$INTSL_EXTENSION_LIST_ADD_LINE'"/INTSL_EXTENSION_LIST_ADD_LINE="'$NEW_INTSL_EXTENSION_LIST_ADD_LINE'"/' ${SETTING_FILE_LOCATIONS}settings
+
     else
         echo "shが存在しません"
     fi
+
+}
+
+extension_cloud_install() {
+    #キャッシュの削除
+    rm -rf ${TMP_FILE_LOCATIONS}extensions ${TMP_FILE_LOCATIONS}extensions_list
+    #拡張機能一覧を取得
+    wget -q ${INTREPOURL}pub/intsl_v/extensions -P ${TMP_FILE_LOCATIONS}
+    #拡張機能一覧を使えるように
+    . ${TMP_FILE_LOCATIONS}extensions
+    touch ${TMP_FILE_LOCATIONS}extensions_list
+    sed -i -e '1s/^/\n/' ${TMP_FILE_LOCATIONS}extensions_list
+    echo -e '\e[1;37m名前 バージョン\e[m' | awk '{printf "%-15s %s\n",$1,$2}'
+    for i in $(seq ${number_of_extensions}); do
+        #拡張機能名
+        overwrite_ext_name="main_ext_name"
+        eval ${overwrite_ext_name}="\$CLOUD_EXT_NAME${i}"
+        #拡張機能バージョン
+        overwrite_ext_version="main_ext_version"
+        eval ${overwrite_ext_version}="\$CLOUD_EXT_VERSION${i}"
+        #拡張機能URL
+        overwrite_ext_url="main_ext_url"
+        eval ${overwrite_ext_url}="\$CLOUD_EXT_URL${i}"
+
+        echo "=================================" >>${TMP_FILE_LOCATIONS}extensions_list
+        echo "${main_ext_name} ${main_ext_version}" >>${TMP_FILE_LOCATIONS}extensions_list
+    done
+    echo "=================================" >>${TMP_FILE_LOCATIONS}extensions_list
+    cat ${TMP_FILE_LOCATIONS}extensions_list | column -t | awk '{printf "%-15s %s\n",$1,$2}'
+    echo "拡張機能の取得に成功しました"
+    echo "取得した拡張機能数: ${i}"
+    read -p ">" input_install_extension_name
+    for e in $(seq ${number_of_extensions}); do
+        #拡張機能名
+        overwrite_ext_name="main_ext_name"
+        eval ${overwrite_ext_name}="\$CLOUD_EXT_NAME${e}"
+        #拡張機能URL
+        overwrite_ext_url="main_ext_url"
+        eval ${overwrite_ext_url}="\$CLOUD_EXT_URL${e}"
+        spinner_progress_status="拡張機能を検索中"
+        run_spinner
+        rm -rf ${input_install_extension_name,,}.sh
+        if [[ ${input_install_extension_name,,} = ${main_ext_name,,} ]]; then
+            echo "拡張機能が存在します!"
+            echo "インストールを行いますか?"
+            echo "${message_use_possible}"
+            read -p ">" INPUT_Y_OR_N
+            case $INPUT_Y_OR_N in
+            [yY] | [yY][eE][sS])
+                echo "インストールを開始します..."
+                spinner_progress_status="インストールを開始しています..."
+                run_spinner
+                wget -q ${main_ext_url} -P ${TMP_FILE_LOCATIONS}
+                if [[ ! -e ${TMP_FILE_LOCATIONS}${main_ext_name,,}.sh ]]; then
+                    spinner_progress_status="拡張機能をダウンロード中"
+                else
+                    echo "ダウンロードに成功"
+                    mv ${TMP_FILE_LOCATIONS}${main_ext_name,,}.sh ${HOME_FILE_LOCATIONS}intsl_v/extensions
+                    INPUT_EXTENSION_NAME="${main_ext_name,,}"
+                    extension_import
+                fi
+                ;;
+            [nN] | [nN][oO])
+                echo "キャンセルしました"
+                ;;
+            esac
+            break
+        elif [[ ${e} = ${number_of_extensions} ]]; then
+            echo "拡張機能が見つかりませんでした..."
+        fi
+    done
 }
 DEV_HELP_MESSAGE() {
     echo "使用方法: linux.sh main dev [args...] "
@@ -642,9 +733,9 @@ main)
             echo "拡張機能をアンインストールします。"
             echo "この機能は現在未完成です。"
             ;;
-        donwload)
+        cloud)
             echo "クラウドから拡張機能をダウンロードします"
-            echo "この機能は現在未完成です。"
+            extension_cloud_install
             ;;
         esac
         ;;

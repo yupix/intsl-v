@@ -3,9 +3,9 @@ stages:
 #  - server_create_test
 
 test:
-    tags:
-        - linux
-        - archlinux
+    #tags:
+        #- linux
+        #- archlinux
     stage: run_check
     script:
         - export PATH="$(pwd)/usr/bin:$PATH"
