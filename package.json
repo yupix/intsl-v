@@ -1,0 +1,19 @@
+{
+  "name": "intsl-v",
+  "version": "1.0.0",
+  "repository": "git@dev.akarinext.org:yupix/intsl-v.git",
+  "author": "yupix <yupi0982@outlook.jp>",
+  "license": "MPL-2.0",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "commitlint": "^8.3.5",
+    "husky": "^4.2.5"
+  }
+}

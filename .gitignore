@@ -12,3 +12,5 @@ tmp
 dev_pass
 #新バージョンのデータ記載ファイル
 new-version.txt
+#node_modules
+node_modules
