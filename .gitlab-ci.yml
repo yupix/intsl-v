@@ -3,9 +3,10 @@ stages:
 #  - server_create_test
 
 test:
-    #tags:
-        #- linux
-        #- archlinux
+    tags:
+        - linux
+        - archlinux
+        - docker
     stage: run_check
     script:
         - export PATH="$(pwd)/usr/bin:$PATH"
