@@ -20,7 +20,7 @@ readonly message_file_check="ファイルの確認中"
 readonly message_downalod_file="ファイルをダウンロードしますか?"
 readonly message_download_file_now="ファイルのダウンロード中"
 readonly message_download_failed="ファイルのダウンロードに失敗しました。"
-readonly message_download_success="ファイルのダウンロードにダウンロードに成功"
+readonly message_download_success="ファイルのダウンロードに成功しました"
 
 ##設定系メッセージ
 CHANGED_SETTINGS_ME="設定を変更しました。"
