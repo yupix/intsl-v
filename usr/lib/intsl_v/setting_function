@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+run_spinner() {
+    for ((n = 0; n < ${#chars}; n++)); do
+        sleep 0.05
+        echo -en "${chars:$n:1} ${spinner_progress_status} " "\r"
+    done
+}
+
 #TODO: 最大メモリが最初を下回らないように作る (2020/4/17)
 #解説系
 description1="サーバーのプロセス名を変更"
@@ -9,24 +16,21 @@ description4="最小メモリを変更"
 #サーバーのオプション系
 use_option1="screen_name"
 use_option2="file_server_file"
-use_option3="mem_max"
-use_option4="mem_min"
+use_option3="mem_min"
+use_option4="mem_max"
 
 #sedコマンド
-. $server_dir/setting.txt
+. ${mc_settings_file_locations}/setting.txt
 
 for a in $(seq 1 4); do
     if [[ ${a} = ${change_setting_number} ]]; then
         option="use_option"
         eval $option="\$use_option$a"
-        #echo "eval $use_option="\$option${a}""
-        #use_sed="sed_command"
-        #eval $use_sed="\$${server_name}_${use_option}"
         use_description="description"
         eval ${use_description}="\$description${change_setting_number}"
-        use_sed="${server_name}_${use_option}"
+        use_sed="mc_run_server_${use_option}"
         use_sed2="sed_comman"
-        eval $use_sed2="\$${server_name}_${use_option}"
+        eval $use_sed2="\$mc_run_server_${use_option}"
         break
     fi
 done
@@ -52,6 +56,7 @@ if [ ${change_setting_number} = 3 -o ${change_setting_number} = 4 ]; then
             done
             echo "最終確認: ${input_data}${use_unit^}Bでよろしいですか?"
             read -p ">" final_check_data
+            final_check_data=${final_check_data:-y}
             case ${final_check_data} in
             [yY] | [yY][eE][sS])
                 spinner_progress_status="設定を更新中"
@@ -63,7 +68,7 @@ if [ ${change_setting_number} = 3 -o ${change_setting_number} = 4 ]; then
                 ;;
             *)
                 echo "(Y)es または (N)oを入力してください。"
-            ;;
+                ;;
             esac
         else
             echo "数字を入力してください。"
@@ -73,5 +78,4 @@ else
     echo "使用する名前を入力してください"
     read -p ">" input_data
 fi
-
 sed -i -e 's/'$use_sed'="'${sed_comman}'"/'$use_sed'="'${input_data}${use_unit}'"/' $server_dir/setting.txt

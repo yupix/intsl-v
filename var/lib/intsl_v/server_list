@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 if [[ -z $serverstartlist ]];then
-    echo "管理するサーバーのコマンドを入力してください"
+    echo "管理するサーバー名を入力してください"
     read -p ">" serverstartlist
 fi
 case $serverstartlist in
@@ -13,6 +13,8 @@ case $serverstartlist in
 #ENDSERVERLIST
 *)
     #不正なキー入力
-    echo "上記に出ているコマンドを入力してください。"
+    echo "存在しないサーバーです"
     ;;
 esac
+export mc_settings_file_locations
+${LIB_FILE_LOCATIONS}mc_server_run/server_default_manager
