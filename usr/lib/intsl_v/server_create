@@ -3,11 +3,14 @@ echo "サーバー名を入力してください。"
 if [[ -z "${input_server_name}" ]]; then
     read -p ">" input_server_name
 fi
+if [[ ! -e ${HOME_FILE_LOCATIONS}/intsl_v ]];then
+    mkdir ${HOME_FILE_LOCATIONS}/intsl_v
+fi
 if [[ ${setting_package_mode} = "false" ]]; then
     echo "サーバーのディレクトリーを指定してください。"
-    echo "default: home/test_user/intsl_v"
+    echo "default: ${HOME_FILE_LOCATIONS}intsl_v"
     read -p ">" input_data
-    input_data=${input_data:-home/test_user/intsl_v}
+    input_data=${input_data:-${HOME_FILE_LOCATIONS}intsl_v}
     mc_server_create_file_dir="$input_data"
 elif [[ ${setting_package_mode} = "true" ]]; then
     mc_server_create_file_dir="${HOME}/intsl_v"
