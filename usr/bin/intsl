@@ -23,6 +23,8 @@ SERVER_PAPERLIST_PATH="./minecraft/versionlist/paper/"
 #Spigot
 SERVER_SPIGOTLIST_PATH="./minecraft/versionlist/spigot/"
 
+sudo -s
+
 #その他使用ファイルの存在確認
 if [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/official" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/spigot" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/paper" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/forge" -o ! -e "${LIB_FILE_LOCATIONS}" -o ! -e "${USR_SHARE_FILE_LOCATIONS}doc/intsl_v/" -o ! -e "${USR_SHARE_FILE_LOCATIONS}intsl_v/locale" -o ! -e "${SETTING_FILE_LOCATIONS}" ]; then
     echo "intslを使用する上で必要なファイルが不足しています。"
@@ -49,7 +51,7 @@ first_start() {
         else
             local max_settings="3"
         fi
-        if [ ! -e ${VAR_FILE_LOCATIONS}dummy ]; then
+        if [ ! -e ${CACHE_FILE_LOCATIONS}dummy ]; then
             echo "INTSLをインストールして頂きありがとうございます。"
             echo "本Projectのご利用をスムーズにスタートする為に初期設定をする事を推奨します！"
             while :; do
@@ -114,7 +116,7 @@ first_start() {
                         fi
                         local count=$((${count} + 1))
                     done
-                    touch ${VAR_FILE_LOCATIONS}dummy
+                    touch ${CACHE_FILE_LOCATIONS}dummy
                     echo "これで初回設定は終了です！"
                     echo "それでは良いINTSL V ライフを！"
                     echo "3秒後に元の動作に自動で戻ります..."
@@ -122,7 +124,7 @@ first_start() {
                     break
                     ;;
                 [nN] | [nN][oO])
-                    touch ${VAR_FILE_LOCATIONS}dummy
+                    touch ${CACHE_FILE_LOCATIONS}dummy
                     echo "初回設定をキャンセルしました。"
                     echo "設定はいつでも mainコマンドで変更可能です!"
                     echo "3秒後に元の動作に自動で戻ります..."
