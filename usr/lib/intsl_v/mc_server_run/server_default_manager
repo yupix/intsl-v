@@ -155,7 +155,6 @@ while :; do
 {"avatar_url":"${mc_run_server_webhook_avator}","username":"${mc_run_server_discord_webhook_name}","content":"✅ **Server has started**"}
 EOS
         fi
-
         if [ "$(screen -ls | grep ${mc_run_server_screen_name})" == "" ]; then
             spinner_progress_status="サーバーを起動中"
             run_spinner
