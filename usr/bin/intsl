@@ -24,7 +24,7 @@ SERVER_PAPERLIST_PATH="./minecraft/versionlist/paper/"
 SERVER_SPIGOTLIST_PATH="./minecraft/versionlist/spigot/"
 
 #その他使用ファイルの存在確認
-if [ ! -e "var/cache/intsl_v/minecraft_jar/official" -o ! -e "var/cache/intsl_v/minecraft_jar/spigot" -o ! -e "var/cache/intsl_v/minecraft_jar/paper" -o ! -e "var/cache/intsl_v/minecraft_jar/forge" -o ! -e "usr/lib/intsl_v/" -o ! -e "usr/share/doc/intsl_v/" -o ! -e "usr/share/intsl_v/locale" -o ! -e "etc/intsl_v/" ]; then
+if [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/official" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/spigot" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/paper" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/forge" -o ! -e "${LIB_FILE_LOCATIONS}" -o ! -e "${USR_SHARE_FILE_LOCATIONS}doc/intsl_v/" -o ! -e "${USR_SHARE_FILE_LOCATIONS}intsl_v/locale" -o ! -e "${SETTING_FILE_LOCATIONS}" ]; then
     echo "intslを使用する上で必要なファイルが不足しています。"
     echo "不足しているファイルを作成する為、sudoのパスワードを入力してください。"
     sudo mkdir -p ${CACHE_FILE_LOCATIONS}minecraft_jar/official ${CACHE_FILE_LOCATIONS}minecraft_jar/spigot ${CACHE_FILE_LOCATIONS}minecraft_jar/paper ${CACHE_FILE_LOCATIONS}minecraft_jar/forge \
