@@ -49,7 +49,7 @@ first_start() {
         else
             local max_settings="3"
         fi
-        if [ ! -e var/dummy ]; then
+        if [ ! -e ${VAR_FILE_LOCATIONS}dummy ]; then
             echo "INTSLをインストールして頂きありがとうございます。"
             echo "本Projectのご利用をスムーズにスタートする為に初期設定をする事を推奨します！"
             while :; do
@@ -114,7 +114,7 @@ first_start() {
                         fi
                         local count=$((${count} + 1))
                     done
-                    touch var/dummy
+                    touch ${VAR_FILE_LOCATIONS}dummy
                     echo "これで初回設定は終了です！"
                     echo "それでは良いINTSL V ライフを！"
                     echo "3秒後に元の動作に自動で戻ります..."
@@ -122,7 +122,7 @@ first_start() {
                     break
                     ;;
                 [nN] | [nN][oO])
-                    touch var/dummy
+                    touch ${VAR_FILE_LOCATIONS}dummy
                     echo "初回設定をキャンセルしました。"
                     echo "設定はいつでも mainコマンドで変更可能です!"
                     echo "3秒後に元の動作に自動で戻ります..."
@@ -149,8 +149,8 @@ serverlistoutput() {
     #TODO: サーバー数を作成し、0の場合は動かないようにする(2019/4/18)
     echo "サーバーリストをアウトプットします。"
     while :; do
-        if [[ -e OUTPUTSERVERLIST.txt ]]; then
-            rm -rf OUTPUTSERVERLIST.txt
+        if [[ -e ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt ]]; then
+            rm -rf ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt
         else
             while [[ ! -e ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt ]]; do
                 spinner_progress_status="出力中"
@@ -258,7 +258,7 @@ DONWLOAD_CANCELLATION() {
 }
 
 mc_server_create() {
-    . usr/lib/intsl_v/server_create
+    . ${LIB_FILE_LOCATIONS}server_create
 }
 extension_import() {
     if [[ -e ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh ]]; then
@@ -479,8 +479,8 @@ EOF
 }
 DEVELOPER_LOGIN() {
     while [[ $RETRYCOUNT != $RETRYMAX ]]; do
-        . etc/intsl_v/passwd/dev_pass
-        if [ -e etc/intsl_v/passwd/dev_pass ]; then
+        . ${SETTING_FILE_LOCATIONS}passwd/dev_pass
+        if [ -e ${SETTING_FILE_LOCATIONS}passwd/dev_pass ]; then
             #spinner_progress_status="過去のログイン記録を参照中..."
             #run_spinner
             echo "パスワードを入力してください"
@@ -495,17 +495,17 @@ DEVELOPER_LOGIN() {
             fi
         else
             echo "開発者モードを初めて使用するため、必要なファイルを作成します"
-            while [[ ! -e etc/intsl_v/passwd/dev_pass ]]; do
+            while [[ ! -e ${SETTING_FILE_LOCATIONS}passwd/dev_pass ]]; do
                 spinner_progress_status="パスワードの生成 / ファイルの作成中"
                 run_spinner
                 echo "使用するパスワードを入力してください。"
                 read -p ">" input_password_data
                 password_generator=$(echo $input_password_data | sha512sum | sed -e "s/-//g")
-                cat <<EOF >etc/intsl_v/passwd/dev_pass
+                cat <<EOF >${SETTING_FILE_LOCATIONS}passwd/dev_pass
 password="$password_generator"
 EOF
             done
-            . etc/intsl_v/passwd/dev_pass
+            . ${SETTING_FILE_LOCATIONS}passwd/dev_pass
             echo "パスワードの生成にしました"
         fi
     done
@@ -549,22 +549,22 @@ mc_server_version_list() {
             echo -e "|1.14|1.14.1|1.14.2|1.14.3|1.14.4|1.15|1.15.1|1.15.2|" | column
         mc_server_edition="official"
         echo "OfficialServer"
-        . usr/lib/intsl_v/officialserver.sh
-        . usr/lib/intsl_v/mc_server_download
+        . ${VAR_LIB_FILE_LOCATIONS}officialserver.sh
+        . ${VAR_LIB_FILE_LOCATIONS}mc_server_download
         exit 0
         ;;
     [2])
         mc_server_edition="paper"
         echo "PaperServer"
         echo -e "VersionList: | \033[1;37m1.7.10\033[0;39m | \033[1;37m1.8.8\033[0;39m | \033[1;37m1.9.4\033[0;39m | \033[1;37m1.10.2\033[0;39m | \033[1;37m1.11.2\033[0;39m | \033[1;37m1.12.2\033[0;39m | \033[1;37m1.13.2\033[0;39m | \033[1;37m1.14.4\033[0;39m | \033[1;37m1.15.2\033[0;39m |"
-        . usr/lib/intsl_v/paperserver.sh
-        . usr/lib/intsl_v/mc_server_download
+        . ${VAR_LIB_FILE_LOCATIONS}paperserver.sh
+        . ${VAR_LIB_FILE_LOCATIONS}mc_server_download
         ;;
     [3])
         mc_server_edition="spigot"
         echo "SpigotServer"
-        . usr/lib/intsl_v/spigotserver.sh
-        . usr/lib/intsl_v/mc_server_download
+        . ${VAR_LIB_FILE_LOCATIONS}spigotserver.sh
+        . ${VAR_LIB_FILE_LOCATIONS}mc_server_download
         ;;
     [4])
         mc_server_edition="forge"
@@ -809,7 +809,7 @@ mc)
             mc_server_version_list
             ;;
         manage)
-            . var/lib/intsl_v/server_list
+            . ${VAR_LIB_FILE_LOCATIONS}server_list
             ;;
         import)
             MC_SERVER_IMPORT
@@ -856,10 +856,12 @@ discord)
         read -p ">" input_data
         case "${input_data}" in
         eew)
-            . ./lib/main/discord/eew.sh
+            echo "Coming Soon..."
+            #. ./lib/main/discord/eew.sh
             ;;
         jmusic)
-            . ./lib/main/discord/jmusic.sh
+            echo "Coming Soon..."
+            #. ./lib/main/discord/jmusic.sh
             ;;
         esac
     done

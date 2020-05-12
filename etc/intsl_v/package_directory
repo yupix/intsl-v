@@ -27,3 +27,8 @@ readonly VAR_LIB_FILE_LOCATIONS="/var/lib/intsl_v/"
 
 #USR_SHARE
 readonly USR_SHARE_FILE_LOCATIONS="/usr/share/"
+
+#<======SYSTEM======>#
+readonly ETC_FILE_LOCATIONS="/etc/"
+readonly USR_FILE_LOCATIONS="/usr/"
+readonly VAR_FILE_LOCATIONS="/var/"
