@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 run_spigot_build() {
     while :; do
-        if [[ -e tmp/BuildTools.jar ]]; then
-            cd tmp
+        if [[ -e ${TMP_FILE_LOCATIONS}BuildTools.jar ]]; then
+            cd ${TMP_FILE_LOCATIONS}
             if [[ -e BuildTools.log.txt ]]; then
                 rm -rf BuildTools.log.txt
             fi
@@ -12,7 +12,9 @@ run_spigot_build() {
             if [[ ${setting_resetspigot} = "true" ]]; then
                 local spinner_progress_status="前回の実行環境の削除を開始"
                 run_spinner
-                rm -rf ./*
+                if [[ ${PWD} = "tmp" ]]; then
+                    rm -rf ./*
+                fi
                 local FILECLEARCHECK="y"
             fi
             screen -AdmS ${cryptography} java -jar BuildTools.jar --rev ${buildversion} nogui
@@ -31,7 +33,7 @@ run_spigot_build() {
             echo "掛かった時間: ${time_calculation}"
             #ファイル移動
             cd -
-            mv tmp/spigot-${buildversion}.jar var/cache/intsl_v/minecraft_jar/spigot/spigot${buildversion}.jar
+            mv ${TMP_FILE_LOCATIONS}spigot-${buildversion}.jar ${CACHE_FILE_LOCATIONS}cache/intsl_v/minecraft_jar/spigot/spigot${buildversion}.jar
             mc_server_create
         else
             wget -q ${SPIGOT_BUILD_TOOLS_URL} -P tmp
@@ -42,9 +44,9 @@ run_spigot_build() {
 cryptography=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 | sort | uniq)
 
 if [ ${mc_server_edition} = official -o ${mc_server_edition} = paper ]; then
-    mc_server_jar_file="var/cache/intsl_v/minecraft_jar/$mc_server_edition/"
+    mc_server_jar_file="${CACHE_FILE_LOCATIONS}minecraft_jar/$mc_server_edition/"
 elif [[ ${mc_server_edition} = spigot ]]; then
-    mc_server_jar_file="var/cache/intsl_v/minecraft_jar/$mc_server_edition/"
+    mc_server_jar_file="${CACHE_FILE_LOCATIONS}minecraft_jar/$mc_server_edition/"
 fi
 mc_donwload_version="$INPUT_SERVER_VERSION"
 spinner_progress_status="${message_file_check}"
