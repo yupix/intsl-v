@@ -24,3 +24,6 @@ readonly LIB_FILE_LOCATIONS="/usr/lib/intsl_v/"
 
 #システムファイル系(変更有り)
 readonly VAR_LIB_FILE_LOCATIONS="/var/lib/intsl_v/"
+
+#USR_SHARE
+readonly USR_SHARE_FILE_LOCATIONS="/usr/share/"
