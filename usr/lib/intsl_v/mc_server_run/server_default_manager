@@ -242,22 +242,22 @@ EOS
                 1)
                     change_setting_number="1"
                     export change_setting_number
-                    usr/lib/intsl_v/setting_function
+                    ${LIB_FILE_LOCATIONS}setting_function
                     ;;
                 2)
                     change_setting_number="2"
                     export change_setting_number
-                    usr/lib/intsl_v/setting_function
+                    ${LIB_FILE_LOCATIONS}setting_function
                     ;;
                 3)
                     change_setting_number="3"
                     export change_setting_number
-                    usr/lib/intsl_v/setting_function
+                    ${LIB_FILE_LOCATIONS}setting_function
                     ;;
                 4)
                     change_setting_number="4"
                     export change_setting_number
-                    usr/lib/intsl_v/setting_function
+                    ${LIB_FILE_LOCATIONS}setting_function
                     ;;
                 *)
                     echo "使用できないキー入力です"
