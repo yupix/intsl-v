@@ -32,7 +32,7 @@ if [ ! -e "var/cache/intsl_v/minecraft_jar/official" -o ! -e "var/cache/intsl_v/
 fi
 
 #基本システムファイルの存在確認
-if [ ! -e "etc/intsl_v/settings" -o ! -e "etc/intsl_v/variable" -o ! -e "usr/share/intsl_v/locale/" ]; then
+if [ ! -e "${SETTING_FILE_LOCATIONS}settings" -o ! -e "${VARIABLE_FILE_LOCATIONS}variable" -o ! -e "${LANGUAGE_FILE_LOCATIONS}${setting_use_lang}" ]; then
     echo "システムファイルが破損している、又は存在しない為、起動に失敗しました。"
     echo "復元を試みますか?"
     echo "Coming Soon..."
