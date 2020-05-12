@@ -23,8 +23,6 @@ SERVER_PAPERLIST_PATH="./minecraft/versionlist/paper/"
 #Spigot
 SERVER_SPIGOTLIST_PATH="./minecraft/versionlist/spigot/"
 
-sudo -s
-
 #その他使用ファイルの存在確認
 if [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/official" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/spigot" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/paper" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/forge" -o ! -e "${LIB_FILE_LOCATIONS}" -o ! -e "${USR_SHARE_FILE_LOCATIONS}doc/intsl_v/" -o ! -e "${USR_SHARE_FILE_LOCATIONS}intsl_v/locale" -o ! -e "${SETTING_FILE_LOCATIONS}" ]; then
     echo "intslを使用する上で必要なファイルが不足しています。"
