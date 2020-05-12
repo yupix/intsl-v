@@ -786,7 +786,7 @@ mc)
         #サーバー管理オプション
         elif [[ ${2} = manage ]]; then
             serverstartlist="${3}"
-            . var/lib/intsl_v/server_list
+            . ${LIB_FILE_LOCATIONS}server_list
         elif [[ ${2} = output ]]; then
             serverlistoutput
         #サーバーインポートオプション
