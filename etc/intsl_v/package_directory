@@ -14,7 +14,7 @@ readonly LANGUAGE_FILE_LOCATIONS="/usr/share/intsl_v/locale/"
 USERNAME=${SUDO_USER:-$USER}
 
 #ホームディレクトリ
-readonly HOME_FILE_LOCATIONS="/home/$(USERNAME)/"
+readonly HOME_FILE_LOCATIONS="/home/${USERNAME}/"
 
 #一時ファイル
 readonly TMP_FILE_LOCATIONS="/tmp/"
