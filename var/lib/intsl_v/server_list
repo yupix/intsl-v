@@ -16,3 +16,5 @@ case $serverstartlist in
     echo "存在しないサーバーです"
     ;;
 esac
+export mc_settings_file_locations
+${LIB_FILE_LOCATIONS}mc_server_run/server_default_manager

@@ -64,10 +64,9 @@ sed -i -e 's/server_add_line="'$server_add_line'/server_add_line="'$NEWSERVERLAN
 
 sed -i ''${server_add_line}'i'${input_server_name}\)'' ${VAR_LIB_FILE_LOCATIONS}server_list
 sed -i ''${server_add_line}'a ;;' ${VAR_LIB_FILE_LOCATIONS}server_list
-sed -i ''${server_add_line}'a . 'usr/lib/intsl_v/mc_server_run/${input_server_name}'''' ${VAR_LIB_FILE_LOCATIONS}server_list
 sed -i ''${server_add_line}'a mc_settings_file_locations="'${mc_server_create_file_dir}/${input_server_name}'"''' ${VAR_LIB_FILE_LOCATIONS}server_list
 
-NEWSERVERLANE=$((server_add_line + 4))
+NEWSERVERLANE=$((server_add_line + 3))
 sed -i -e 's/server_add_line="'$server_add_line'/server_add_line="'$NEWSERVERLANE'/' ${SETTING_FILE_LOCATIONS}settings
 
 . ${SETTING_FILE_LOCATIONS}settings
