@@ -549,22 +549,22 @@ mc_server_version_list() {
             echo -e "|1.14|1.14.1|1.14.2|1.14.3|1.14.4|1.15|1.15.1|1.15.2|" | column
         mc_server_edition="official"
         echo "OfficialServer"
-        . ${VAR_LIB_FILE_LOCATIONS}officialserver.sh
-        . ${VAR_LIB_FILE_LOCATIONS}mc_server_download
+        . ${LIB_FILE_LOCATIONS}officialserver.sh
+        . ${LIB_FILE_LOCATIONS}mc_server_download
         exit 0
         ;;
     [2])
         mc_server_edition="paper"
         echo "PaperServer"
         echo -e "VersionList: | \033[1;37m1.7.10\033[0;39m | \033[1;37m1.8.8\033[0;39m | \033[1;37m1.9.4\033[0;39m | \033[1;37m1.10.2\033[0;39m | \033[1;37m1.11.2\033[0;39m | \033[1;37m1.12.2\033[0;39m | \033[1;37m1.13.2\033[0;39m | \033[1;37m1.14.4\033[0;39m | \033[1;37m1.15.2\033[0;39m |"
-        . ${VAR_LIB_FILE_LOCATIONS}paperserver.sh
-        . ${VAR_LIB_FILE_LOCATIONS}mc_server_download
+        . ${LIB_FILE_LOCATIONS}paperserver.sh
+        . ${LIB_FILE_LOCATIONS}mc_server_download
         ;;
     [3])
         mc_server_edition="spigot"
         echo "SpigotServer"
-        . ${VAR_LIB_FILE_LOCATIONS}spigotserver.sh
-        . ${VAR_LIB_FILE_LOCATIONS}mc_server_download
+        . ${LIB_FILE_LOCATIONS}spigotserver.sh
+        . ${LIB_FILE_LOCATIONS}mc_server_download
         ;;
     [4])
         mc_server_edition="forge"
