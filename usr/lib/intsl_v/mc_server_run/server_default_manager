@@ -156,7 +156,7 @@ while :; do
         if [[ ${mc_run_server_slack_webhook} = true ]]; then
             echo "└ ${mc_run_server_discord_webhook}"
         elif [[ ${mc_run_server_discord_webhook} = true ]]; then
-            curl -X POST -H "Content-Type: application/json" X POST -d @- ${mc_run_server_discord_webhook_URL} <<EOS
+            curl -X POST -H "Content-Type: application/json" -d @- ${mc_run_server_discord_webhook_URL} <<EOS
 {"avatar_url":"${mc_run_server_webhook_avator}","username":"${mc_run_server_discord_webhook_name}","content":"✅ **Server has started**"}
 EOS
         fi
@@ -170,7 +170,6 @@ EOS
 
         #PID取得用
         getpid=$(screen -ls | grep ${mc_run_server_screen_name} | sed -e 's/[^0-9]//g')
-        echo "        sed -i -e 's/mc_run_server_pid="'${mc_run_server_pid}'"/mc_run_server_pid="'$getpid'"/' ./setting.txt"
         echo "SCREENNAME: ${mc_run_server_screen_name}"
         ;;
 
