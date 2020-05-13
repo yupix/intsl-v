@@ -318,7 +318,7 @@ EOS
                     [4])
                         echo "WebHook URLを入力してください。"
                         read -p ">" INPUT_WEBHOOK_URL
-                        sed -i -e 's/'mc_run_server_discord_webhook_URL'="'${mc_run_server_discord_webhook_URL}'"/'mc_run_server_discord_webhook_URL'="'$INPUT_WEBHOOK_URL'"/' ./setting.txt
+                        sed -i -e 's,'mc_run_server_discord_webhook_URL'="'${mc_run_server_discord_webhook_URL}'",'mc_run_server_discord_webhook_URL'="'$INPUT_WEBHOOK_URL'",' ./setting.txt
                         . ./setting.txt
                         if [[ $INPUT_WEBHOOK_URL = ${mc_run_server_discord_webhook_URL} ]]; then
                             echo "変更に成功しました。"
