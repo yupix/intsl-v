@@ -171,7 +171,6 @@ EOS
         #PID取得用
         getpid=$(screen -ls | grep ${mc_run_server_screen_name} | sed -e 's/[^0-9]//g')
         echo "        sed -i -e 's/mc_run_server_pid="'${mc_run_server_pid}'"/mc_run_server_pid="'$getpid'"/' ./setting.txt"
-        sed -i -e 's/mc_run_server_pid="'${mc_run_server_pid}'"/mc_run_server_pid="'$getpid'"/' ./setting.txt
         echo "SCREENNAME: ${mc_run_server_screen_name}"
         ;;
 
