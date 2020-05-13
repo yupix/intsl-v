@@ -221,12 +221,11 @@ EOS
             server_dir="${mc_server_create_file_dir}/${input_server_name}"
             global_server_dir="$server_dir"
         fi
-        . $server_dir/setting.txt
         export server_dir
         export server_name
         spinner_progress_status="ファイルの確認中"
         run_spinner
-        if [[ -e "$server_dir/setting.txt" ]]; then
+        if [[ -e "./setting.txt" ]]; then
             echo "閲覧したい設定を選んでください。"
             echo " 1.サーバー関連 | 2.バックアップ関連"
             echo " 3.WebHook関連  |"
@@ -319,8 +318,7 @@ EOS
                     [4])
                         echo "WebHook URLを入力してください。"
                         read -p ">" INPUT_WEBHOOK_URL
-                        sed -i -e 's/'${mc_run_server_discord_webhook_URL}'="'${mc_run_server_discord_webhook_URL}'"/'${mc_run_server_discord_webhook_URL}'="'$INPUT_WEBHOOK_URL'"/' ./setting.txt
-                        sed -i -e 's/'${mc_run_server_discord_webhook_URL}'="'${mc_run_server_discord_webhook_URL}'"/'${mc_run_server_discord_webhook_URL}'="'\"$INPUT_WEBHOOK_URL""'"/' ./setting.txt
+                        sed -i -e 's/'mc_run_server_discord_webhook_URL'="'${mc_run_server_discord_webhook_URL}'"/'mc_run_server_discord_webhook_URL'="'$INPUT_WEBHOOK_URL'"/' ./setting.txt
                         . ./setting.txt
                         if [[ $INPUT_WEBHOOK_URL = ${mc_run_server_discord_webhook_URL} ]]; then
                             echo "変更に成功しました。"
