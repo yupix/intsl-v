@@ -42,7 +42,7 @@ if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
             fi
             ;;
         [nN] | [nN][oO])
-            echo "キャンセルしました。"
+            echo "${message_system_canceled}"
             exit 0
             ;;
         *)

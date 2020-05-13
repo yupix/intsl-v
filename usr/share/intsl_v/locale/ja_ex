@@ -11,11 +11,10 @@ readonly message_output_success="アウトプットに成功しました"
 ##システム系メッセージ
 readonly message_use_possible="使用可能 (Y)es (N)o default(Y)es"
 readonly message_available_languages="| ja | en | (Default = ja)"
-readonly message_nonexistent_language="存在しない言語または、対応中の言語です。"
-readonly message_system_warning="注意"
-readonly message_system_error="警告"
+readonly message_nonexistent_language="存在しない言語または、対応中の言語です"
+readonly message_system_warning="WARN"
+readonly message_system_error="ERR"
 readonly message_system_canceled="キャンセルしました"
-
 
 ##ファイル系メッセージ
 readonly message_file_check="ファイルの確認中"
@@ -23,19 +22,19 @@ readonly message_file_check="ファイルの確認中"
 ##ダウンロード系メッセージ
 readonly message_downalod_file="ファイルをダウンロードしますか?"
 readonly message_download_file_now="ファイルのダウンロード中"
-readonly message_download_failed="ファイルのダウンロードに失敗しました。"
+readonly message_download_failed="ファイルのダウンロードに失敗しました"
 readonly message_download_success="ファイルのダウンロードに成功しました"
 
 ##設定系メッセージ
-CHANGED_SETTINGS_ME="設定を変更しました。"
+CHANGED_SETTINGS_ME="設定を変更しました"
 
 ##開発者系メッセージ
-DEV_WELCOME_ME="ようこそ"
+DEV_WELCOME_ME="Welcome to"
 
 ##マイクラサーバー系
-INPUT_MC_SERVER_TYPE_ME="サーバータイプを入力してください。"
+INPUT_MC_SERVER_TYPE_ME="サーバータイプを入力してください"
 
 ##サービス系メッセージ
 MISSING_INPUT_DATA_ME="(Y)es or (N)o を入力してください"
-END_THE_SERVICE_ME="サービスを終了します。"
+END_THE_SERVICE_ME="サービスを終了します"
 #----------------------------------------------------------------------------------------#

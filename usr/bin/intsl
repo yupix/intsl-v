@@ -6,9 +6,12 @@
 #設定ファイル
 . ${SETTING_FILE_LOCATIONS}settings
 #変数ファイル
-. ${VARIABLE_FILE_LOCATIONS}variable
+. ${SETTING_FILE_LOCATIONS}variable
 #言語ファイル
 . ${LANGUAGE_FILE_LOCATIONS}${setting_use_lang}
+export setting_use_lang
+export SETTING_FILE_LOCATIONS
+export LANGUAGE_FILE_LOCATIONS
 #----------------------------------------------------------------------------------------#
 SELF_DIR_PATH=$(
     cd $(dirname $0)
@@ -210,7 +213,7 @@ EOS
                             echo "ファイルの解凍に成功"
                             sudo cp -r ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}/. .
                         else
-                            echo -e "${ECHO_RED_COLOR}ERROR:${ECHO_COLOR_EXIT} ファイルの解凍に失敗しました"
+                            echo -e "${ECHO_RED_COLOR}${message_system_error}:${ECHO_COLOR_EXIT} ファイルの解凍に失敗しました"
                             echo "Systemを保護するためにサービスを終了します。"
                             break
                         fi
@@ -234,7 +237,7 @@ EOS
                         fi
                         ;;
                     [nN] | [nN][oO])
-                        echo "キャンセルしました。"
+                        echo "${message_system_canceled}"
                         ;;
                     esac
                     echo $name
@@ -403,7 +406,7 @@ extension_cloud_install() {
                 fi
                 ;;
             [nN] | [nN][oO])
-                echo "キャンセルしました"
+                echo "${message_system_canceled}"
                 ;;
             esac
             break
@@ -466,7 +469,7 @@ password="${input_new_password_check}"
 EOF
                 ;;
             [nN])
-                echo "キャンセルしました"
+                echo "${message_system_canceled}"
                 exit 0
                 ;;
             esac
@@ -726,7 +729,7 @@ main)
                         sed -i -e 's/INT_EXT'$COUNT'="'$INT_EXT'"/INT_EXT'$COUNT'="'$NEWVERSION'"/' ${VAR_LIB_FILE_LOCATIONS}extensions
                         ;;
                     [nN])
-                        echo "キャンセルしました。"
+                        echo "${message_system_canceled}"
                         ;;
                     esac
                 else

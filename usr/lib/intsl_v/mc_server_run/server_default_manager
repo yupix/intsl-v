@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 . ${mc_settings_file_locations}/setting.txt
+
+. ${SETTING_FILE_LOCATIONS}variable
+
+. ${LANGUAGE_FILE_LOCATIONS}${setting_use_lang}
+
 cd $server_dir
 
 run_spinner() {
@@ -42,7 +47,7 @@ DISCORD_WEBHOOK_ON_OFF() {
         echo "$MISSING_INPUT_DATA_ME"
         ;;
     esac
-    sed -i -e 's/'mc_run_server_discord_webhook'="'${mc_run_server_discord_webhook}'"/'${mc_run_server_discord_webhook}'="'$TRUE_OR_FALSE'"/' ./setting.txt
+    sed -i -e 's/'mc_run_server_discord_webhook'="'${mc_run_server_discord_webhook}'"/'mc_run_server_discord_webhook'="'$TRUE_OR_FALSE'"/' ./setting.txt
     . ./setting.txt
     if [[ $TRUE_OR_FALSE = ${mc_run_server_discord_webhook} ]]; then
         echo "変更に成功しました。"
@@ -123,7 +128,7 @@ while :; do
                             break
                             ;;
                         [nN] | [oO])
-                            echo "キャンセルしました。"
+                            echo "${message_system_canceled}"
                             break
                             ;;
                         *)
@@ -194,7 +199,7 @@ EOS
     #サーバーのログ
     log)
         if [ "$(screen -ls | grep ${mc_run_server_screen_name})" == "" ]; then
-            echo "サーバーが起動していません"
+            echo -e "${ECHO_YELLOW_COLOR}${message_system_warning}:${ECHO_COLOR_EXIT} サーバーが起動していません"
         else
             screen -r ${mc_run_server_screen_name}
         fi

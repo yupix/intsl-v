@@ -36,7 +36,7 @@ mc_run_server_slack_webhook_URL="none"
 #Discord WebHook通知
 mc_run_server_discord_webhook="false"
 #Discord User Name
-mc_run_server_discord_webhook_name=" ${mc_run_server} Server"
+mc_run_server_discord_webhook_name=" ${server_name} Server"
 #Discord WebHook Avator
 mc_run_server_discord_webhook_avator="https://repo.akarinext.org/assets/image/intsl_on_mindustry.png"
 #Discord WebHook URL
