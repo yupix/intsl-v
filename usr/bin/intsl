@@ -539,11 +539,6 @@ mc_server_version_list() {
         echo "$INPUT_MC_SERVER_TYPE_ME"
         read -p ">" input_server_type
     fi
-    if [[ -z "${input_server_type}" ]]; then
-        case ${input_server_type} in
-        [1] | [2] | [3] | [4]) ;;
-        esac
-    fi
     case ${input_server_type} in
     [1])
         echo -e "VersionList:|1.2.5|1.3.1|1.3.2|1.4.2|1.4.4|1.4.5|1.4.6|1.4.7|1.5.2|1.5.2|1.6.1|1.6.2|1.6.4|" &&
@@ -789,6 +784,7 @@ mc)
         #サーバー管理オプション
         elif [[ ${2} = manage ]]; then
             serverstartlist="${3}"
+            purpose="server_list"
             . ${VAR_LIB_FILE_LOCATIONS}server_list
         elif [[ ${2} = output ]]; then
             serverlistoutput
@@ -827,7 +823,10 @@ mc)
             get_ext_manager_start_line=$(grep -nw ${input_data}START ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d\: -f1)
             get_ext_manager_exit_line=$(grep -nw ${input_data,,}EXIT ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d\: -f1)
             sed -i -e ''${get_ext_manager_start_line}','${get_ext_manager_exit_line}'d' ${VAR_LIB_FILE_LOCATIONS}server_list
+            purpose="remove"
             . ${SETTING_FILE_LOCATIONS}settings
+            echo "${mc_settings_file_locations}"
+            exit 0
             #拡張機能数の増加
             new_server_add_line=$((server_add_line - 5))
             sed -i -e 's/server_add_line="'${server_add_line}'"/server_add_line="'${new_server_add_line}'"/' ${SETTING_FILE_LOCATIONS}settings

@@ -60,6 +60,7 @@ while :; do
     echo "log | サーバーのlogを表示します"
     echo "cd | サーバーにコマンドを送信します"
     echo "settings | サーバー起動時の設定を変更できます"
+    echo "back | 元いた画面に戻ります"
     read -p ">" server
     case $server in
     cd)
@@ -213,8 +214,11 @@ EOS
         fi
         echo "| STATUS | BACKUP_STATUS |"
         ;;
+    [bB][aA][cC][kK])
+        break
+        ;;
     #設定変更コマンド
-    settings)
+    [sS][eE][tT][iI][nN][gG][sS])
         if [[ -z "$server_dir" ]]; then
             server_dir="${mc_server_create_file_dir}/${input_server_name}"
             global_server_dir="$server_dir"
