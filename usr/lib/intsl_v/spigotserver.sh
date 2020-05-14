@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 while :; do
-    echo "入力したバージョン: $INPUT_SERVER_VERSION"
     if [[ -z $INPUT_SERVER_VERSION ]]; then
         read -p ">" INPUT_SERVER_VERSION
+    else
+        echo "入力したバージョン: $INPUT_SERVER_VERSION"
     fi
     case $INPUT_SERVER_VERSION in
     1.8)
