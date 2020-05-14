@@ -17,4 +17,6 @@ case $serverstartlist in
     ;;
 esac
 export mc_settings_file_locations
+if [[ ${purpose} != remove ]];then
 ${LIB_FILE_LOCATIONS}mc_server_run/server_default_manager
+fi

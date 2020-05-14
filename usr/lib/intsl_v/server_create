@@ -12,6 +12,9 @@ if [[ ${setting_package_mode} = "false" ]]; then
     read -p ">" input_data
     input_data=${input_data:-${HOME_FILE_LOCATIONS}intsl_v}
     mc_server_create_file_dir="$input_data"
+    if [[ -e ${input_data} ]];then
+        mkdir -p ${input_data}
+    fi
 elif [[ ${setting_package_mode} = "true" ]]; then
     mc_server_create_file_dir="${HOME}/intsl_v"
 fi
