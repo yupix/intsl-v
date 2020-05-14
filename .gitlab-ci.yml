@@ -9,8 +9,8 @@ test:
         - docker
     stage: run_check
     script:
-        - export PATH="$(pwd)/usr/bin:$PATH"
-        - intsl
+        export PATH="$(pwd)/usr/bin:$PATH"
+        intsl
 
 #server_create_test:
 #    tags:
