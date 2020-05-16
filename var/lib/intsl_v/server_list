@@ -14,9 +14,7 @@ case $serverstartlist in
 *)
     #不正なキー入力
     echo "存在しないサーバーです"
-    if [[ ${purpose} = remove ]]; then
-        exit 1
-    fi
+    exit 1
     ;;
 esac
 if [[ ${purpose} = remove ]]; then
