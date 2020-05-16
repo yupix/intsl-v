@@ -150,7 +150,7 @@ run_spinner() {
 
 serverlistoutput() {
     #TODO: サーバー数を作成し、0の場合は動かないようにする(2019/4/18)
-    if [[ ${number_of_server} = 0 ]];then
+    if [[ ${number_of_server} = 0 ]]; then
         echo "サーバーが存在しません \n サーバーを作成してから再度実行してください"
     fi
     echo "サーバーリストをアウトプットします。"
@@ -817,7 +817,9 @@ mc)
             ;;
         list)
             echo "サーバー数: ${number_of_server}"
-        ;;
+            purpose="list"
+            . ${VAR_LIB_FILE_LOCATIONS}server_list
+            ;;
         import)
             MC_SERVER_IMPORT
             ;;
