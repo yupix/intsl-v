@@ -808,6 +808,7 @@ mc)
             mc_server_version_list
             ;;
         manage)
+            word="管理するサーバー名"
             . ${VAR_LIB_FILE_LOCATIONS}server_list
             ;;
         import)
@@ -817,31 +818,9 @@ mc)
             serverlistoutput
             ;;
         remove)
-            echo "サーバーを削除します"
-            read -p ">" input_data
-            #拡張機能マネージャー
-            get_ext_manager_start_line=$(grep -nw ${input_data}START ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d\: -f1)
-            get_ext_manager_exit_line=$(grep -nw ${input_data,,}EXIT ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d\: -f1)
-            sed -i -e ''${get_ext_manager_start_line}','${get_ext_manager_exit_line}'d' ${VAR_LIB_FILE_LOCATIONS}server_list
+            word="削除するサーバー名"
             purpose="remove"
-            . ${SETTING_FILE_LOCATIONS}settings
-            echo "${mc_settings_file_locations}"
-            exit 0
-            #拡張機能数の増加
-            new_server_add_line=$((server_add_line - 5))
-            sed -i -e 's/server_add_line="'${server_add_line}'"/server_add_line="'${new_server_add_line}'"/' ${SETTING_FILE_LOCATIONS}settings
-            rm -rf ${LIB_FILE_LOCATIONS}mc_server_run/$input_data
-            if [[ ${get_optision} = "-f" ]]; then
-                echo "aaa"
-                rm -rf ${HOME_FILE_LOCATIONS}${input_data}
-            fi
-            if [ -e "${LIB_FILE_LOCATIONS}mc_server_run/${input_data}" -o -e ${HOME_FILE_LOCATIONS}${input_data} ]; then
-                echo "一部のファイルの削除に失敗しました"
-            else
-                echo "操作は正常に終了しました..."
-                echo "サーバーディレクトリは ${HOME_FILE_LOCATIONS}${input_data} です。"
-                echo "手動削除をお願いします"
-            fi
+            . ${VAR_LIB_FILE_LOCATIONS}server_list
             ;;
         esac
     done
