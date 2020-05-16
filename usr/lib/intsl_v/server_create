@@ -77,6 +77,10 @@ sed -i -e 's/server_add_line="'$server_add_line'/server_add_line="'$NEWSERVERLAN
 
 . ${SETTING_FILE_LOCATIONS}settings
 
+# サーバー数を増やす
+new_number_of_server=$((number_of_server + 1))
+sed -i -e 's/number_of_server="'$number_of_server'/number_of_server="'$new_number_of_server'/' ${SETTING_FILE_LOCATIONS}settings
+
 sed -i ''$server_add_line'i'"\#${input_server_name}EXIT"'' ${VAR_LIB_FILE_LOCATIONS}server_list
 NEWSERVERLANE=$((server_add_line + 1))
 sed -i -e 's/server_add_line="'$server_add_line'/server_add_line="'$NEWSERVERLANE'/' ${SETTING_FILE_LOCATIONS}settings

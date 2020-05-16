@@ -23,6 +23,10 @@ get_ext_manager_exit_line=$(grep -nw ${serverstartlist,,}EXIT ${VAR_LIB_FILE_LOC
 sed -i -e ''${get_ext_manager_start_line}','${get_ext_manager_exit_line}'d' ${VAR_LIB_FILE_LOCATIONS}server_list
 new_server_add_line=$((server_add_line - 5))
 sed -i -e 's/server_add_line="'${server_add_line}'"/server_add_line="'${new_server_add_line}'"/' ${SETTING_FILE_LOCATIONS}settings
+#サーバー数増減
+new_number_of_server=$((number_of_server - 1))
+sed -i -e 's/number_of_server="'${number_of_server}'"/number_of_server="'${new_number_of_server}'"/' ${SETTING_FILE_LOCATIONS}settings
+
 rm -rf ${LIB_FILE_LOCATIONS}mc_server_run/${serverstartlist}
 echo "操作は正常に終了しました..."
 echo "サーバーディレクトリは ${mc_settings_file_locations} です。"
