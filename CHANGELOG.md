@@ -1,3 +1,12 @@
+## [1.0.4](https://dev.akarinext.org/yupix/intsl-v/compare/v1.0.3...v1.0.4) (2020-05-16)
+
+
+### Bug Fixes
+
+* server list can be output when there is no server ([f503d9d](https://dev.akarinext.org/yupix/intsl-v/commits/f503d9d9de6c1852081a138af52f7362f7d4d369))
+
+
+
 ## 1.0.3 (2020-05-16)
 
 
