@@ -1,22 +1,59 @@
 #!/usr/bin/env bash
-if [[ -z $serverstartlist ]];then
-    echo "管理するサーバー名を入力してください"
-    read -p ">" serverstartlist
+SERVER_LIST() {
+    case $serverstartlist in
+    #STARTSERVERLIST
+
+
+
+
+
+    #ENDSERVERLIST
+    *)
+        #不正なキー入力
+        echo "存在しないサーバーです"
+        exit 1
+        ;;
+    esac
+}
+if [[ ${purpose} = list ]]; then
+    for a in $(seq ${number_of_server}); do
+        purpose="list"
+        serverstartlist="${a}"
+        SERVER_LIST
+        . ${mc_settings_file_locations}/setting.txt
+        echo "${server_name}"
+        if [[ ${mc_run_server_status} = offline ]];then
+        echo -e "┗   ${ECHO_RED_COLOR}${mc_run_server_status}${ECHO_COLOR_EXIT}"
+        else
+        echo -e "┗   ${ECHO_GREEN_COLOR}${mc_run_server_status}${ECHO_COLOR_EXIT}"
+        fi
+    done
 fi
-case $serverstartlist in
-#STARTSERVERLIST
+if [[ -z $serverstartlist ]]; then
+    echo "${word}を入力してください"
+    read -p ">" serverstartlist
+    SERVER_LIST
+fi
 
+if [[ ${purpose} = remove ]]; then
+    get_ext_manager_start_line=$(grep -nw ${serverstartlist,,}START ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d\: -f1)
+    get_ext_manager_exit_line=$(grep -nw ${serverstartlist,,}EXIT ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d\: -f1)
+    sed -i -e ''${get_ext_manager_start_line}','${get_ext_manager_exit_line}'d' ${VAR_LIB_FILE_LOCATIONS}server_list
+    new_server_add_line=$((server_add_line - 5))
+    sed -i -e 's/server_add_line="'${server_add_line}'"/server_add_line="'${new_server_add_line}'"/' ${SETTING_FILE_LOCATIONS}settings
+    #サーバー数増減
+    new_number_of_server=$((number_of_server - 1))
+    sed -i -e 's/number_of_server="'${number_of_server}'"/number_of_server="'${new_number_of_server}'"/' ${SETTING_FILE_LOCATIONS}settings
 
-
-
-
-#ENDSERVERLIST
-*)
-    #不正なキー入力
-    echo "存在しないサーバーです"
-    ;;
-esac
-export mc_settings_file_locations
-if [[ ${purpose} != remove ]];then
-${LIB_FILE_LOCATIONS}mc_server_run/server_default_manager
+    rm -rf ${LIB_FILE_LOCATIONS}mc_server_run/${serverstartlist}
+    echo "操作は正常に終了しました..."
+    echo "サーバーディレクトリは ${mc_settings_file_locations} です。"
+    echo "手動削除をお願いします"
+    if [[ ${get_optision} = "-f" ]]; then
+        echo "Coming Soon..."
+        #rm -rf ${mc_settings_file_locations}
+    fi
+else
+    export mc_settings_file_locations
+    ${LIB_FILE_LOCATIONS}mc_server_run/server_default_manager
 fi

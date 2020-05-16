@@ -12,7 +12,7 @@ if [[ ${setting_package_mode} = "false" ]]; then
     read -p ">" input_data
     input_data=${input_data:-${HOME_FILE_LOCATIONS}intsl_v}
     mc_server_create_file_dir="$input_data"
-    if [[ -e ${input_data} ]];then
+    if [[ ! -e ${input_data} ]];then
         mkdir -p ${input_data}
     fi
 elif [[ ${setting_package_mode} = "true" ]]; then
@@ -67,12 +67,17 @@ NEWSERVERLANE=$((server_add_line + 1))
 sed -i -e 's/server_add_line="'$server_add_line'/server_add_line="'$NEWSERVERLANE'/' ${SETTING_FILE_LOCATIONS}settings
 
 . ${SETTING_FILE_LOCATIONS}settings
+# サーバー数を増やす
+new_number_of_server=$((number_of_server + 1))
+sed -i -e 's/number_of_server="'$number_of_server'/number_of_server="'$new_number_of_server'/' ${SETTING_FILE_LOCATIONS}settings
+. ${SETTING_FILE_LOCATIONS}settings
 
-sed -i ''${server_add_line}'i'${input_server_name}\)'' ${VAR_LIB_FILE_LOCATIONS}server_list
+sed -i ''${server_add_line}'i'${input_server_name}\|${number_of_server}\)'' ${VAR_LIB_FILE_LOCATIONS}server_list
 sed -i ''${server_add_line}'a ;;' ${VAR_LIB_FILE_LOCATIONS}server_list
 sed -i ''${server_add_line}'a mc_settings_file_locations="'${mc_server_create_file_dir}/${input_server_name}'"''' ${VAR_LIB_FILE_LOCATIONS}server_list
+sed -i ''${server_add_line}'a mc_server_id="'${number_of_server}'"''' ${VAR_LIB_FILE_LOCATIONS}server_list
 
-NEWSERVERLANE=$((server_add_line + 3))
+NEWSERVERLANE=$((server_add_line + 4))
 sed -i -e 's/server_add_line="'$server_add_line'/server_add_line="'$NEWSERVERLANE'/' ${SETTING_FILE_LOCATIONS}settings
 
 . ${SETTING_FILE_LOCATIONS}settings
