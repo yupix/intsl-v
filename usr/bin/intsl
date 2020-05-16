@@ -783,6 +783,7 @@ mc)
             mc_server_version_list
         #サーバー管理オプション
         elif [[ ${2} = manage ]]; then
+            word="管理するサーバー名"
             serverstartlist="${3}"
             purpose="server_list"
             . ${VAR_LIB_FILE_LOCATIONS}server_list

@@ -33,5 +33,7 @@ if [[ ${get_optision} = "-f" ]]; then
     echo "Coming Soon..."
     #rm -rf ${mc_settings_file_locations}
 fi
-
+else
+export mc_settings_file_locations
+${LIB_FILE_LOCATIONS}mc_server_run/server_default_manager
 fi
