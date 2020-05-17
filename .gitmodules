@@ -1,5 +1,5 @@
-[submodule "intsl-debian"]
-	path = intsl-debian
+[submodule "debian"]
+	path = debian
 	url = https://dev.akarinext.org/teampimc/intsl-debian.git
 [submodule "debian"]
 	path = debian
