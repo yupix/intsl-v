@@ -16,6 +16,7 @@ SERVER_LIST() {
     esac
 }
 if [[ ${purpose} = list ]]; then
+    echo "=========================="
     for a in $(seq ${number_of_server}); do
         purpose="list"
         serverstartlist="${a}"
@@ -27,7 +28,12 @@ if [[ ${purpose} = list ]]; then
         else
         echo -e "┗   ${ECHO_GREEN_COLOR}${mc_run_server_status}${ECHO_COLOR_EXIT}"
         fi
+        echo "=========================="
     done
+    if [[ -z $serverstartlist ]];then
+        echo "サーバーが存在しません"
+        exit 0
+    fi
 fi
 if [[ -z $serverstartlist ]]; then
     echo "${word}を入力してください"
