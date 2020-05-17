@@ -39,6 +39,8 @@ INTSLの際なかった機能一覧です
 
 ### システム関連
 
+- 現在存在しません
+
 ### Minecraftサーバー関連
 
 - サーバーの作成ができない
@@ -82,25 +84,40 @@ INTSLの際なかった機能一覧です
 ### 推奨Shell
 
 現在最低限で動作確認が行えるものです。
-※非推奨が付いている物は正常に動作しない可能性があります。
 
 - zsh
 - Bash
-- Dash ※非推奨
 
 ## インストール
 
-### Ubuntu
-
 ### ArchLinux
 
-準備中
+INTSL　VはArchLinuxではパッケージとして利用が可能です
+インストールするには以下のコマンドを使用してください
+intslのインストール確認にsudoが付いているのはファイルが不足している場合自動で生成する為です。
+基本的にintslを使用する際はsudoを付けてください。
+
+```bash
+#プロジェクトをクローン
+git clone https://dev.akarinext.org/teampimc/intsl-arch.git
+#ファイルに入る
+cd intsl-arch
+#ビルドする （パスワードを求められたら、入力する）
+makepkg -sfi
+#インストールできたかテスト
+sudo intsl
+```
+
+### Ubuntu
+
+現在対応中
 
 ### Windows
 
 準備中
 
 ## author
+
 - [MainSYSTEM / yupix](https://github.com/yupix/)
 - [Support / sousuke0422](https://github.com/sousuke0422/)
 
@@ -109,10 +126,12 @@ INTSLの際なかった機能一覧です
 バグの発見または機能の追加に付きましては以下のページ等に報告していただけると助かります。
 Issuesは確認までに時間がかかると思われます、早めの対応を
 望む場合はDiscordへの参加を推奨します。
+
 - [Discord](https://discord.gg/uDNyePY)
 - [issues](https://github.com/yupix/amb/issues)
 
 ## ライセンス
+
 |         |                                    |
 | ------- | ---------------------------------- |
 | INTSL V | Mozilla Public License Version 2.0 |
