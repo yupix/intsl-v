@@ -7,7 +7,7 @@ if [[ ! -e ${HOME_FILE_LOCATIONS}/intsl_v ]];then
     mkdir ${HOME_FILE_LOCATIONS}/intsl_v
 fi
 if [[ ${setting_package_mode} = "false" ]]; then
-    echo "サーバーのディレクトリーを指定してください。"
+    echo "サーバーのディレクトリーを指定してください"
     echo "default: ${HOME_FILE_LOCATIONS}intsl_v"
     read -p ">" input_data
     input_data=${input_data:-${HOME_FILE_LOCATIONS}intsl_v}
@@ -19,7 +19,7 @@ elif [[ ${setting_package_mode} = "true" ]]; then
     mc_server_create_file_dir="${HOME}/intsl_v"
 fi
 if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
-    echo "既に使用されているサーバー名です。"
+    echo "既にディレクトリが存在します"
     echo "使用可能な代替案:"
     for i in $(seq 1 7); do
         if [[ ! -e "${mc_server_create_file_dir}/${input_server_name}${i}" ]]; then
@@ -29,10 +29,10 @@ if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
             not_available_count=$((not_available_count + 1))
         fi
         if [[ ${not_available_count} = "7" ]]; then
-            echo "全ての代替手段が使用できません。"
+            echo "全ての代替手段が使用できません"
         fi
     done
-    echo "変更する場合は代替案の数字を、しない場合は、nを入力してください。"
+    echo "変更する場合は代替案の数字を、しない場合は、nを入力してください"
     while :; do
         read -p ">" input_alternate_name
         case $input_alternate_name in
@@ -41,7 +41,7 @@ if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
                 input_server_name="${input_server_name}${input_alternate_name}"
                 break
             else
-                echo "使用不可能なサーバー名です。"
+                echo "使用不可能なサーバー名です"
             fi
             ;;
         [nN] | [nN][oO])
@@ -49,7 +49,7 @@ if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
             exit 0
             ;;
         *)
-            echo "代替案の数字、またはnを入力してください。"
+            echo "代替案の数字、またはnを入力してください"
             ;;
         esac
     done
@@ -94,10 +94,10 @@ if [[ -e $mc_server_create_file_dir/${input_server_name} ]]; then
     spinner_progress_status="ファイルの確認中 2/2"
     run_spinner
     if [[ ! -e $mc_server_create_file_dir/${input_server_name}/setting.txt ]]; then
-        echo "設定ファイルの生成に失敗しました。"
+        echo "設定ファイルの生成に失敗しました"
     fi
 else
-    echo "サーバーファイルの作成に失敗しました。"
+    echo "サーバーファイルの作成に失敗しました"
     exit 1
 fi
 exit 0

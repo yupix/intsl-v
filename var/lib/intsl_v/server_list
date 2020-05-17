@@ -16,6 +16,7 @@ SERVER_LIST() {
     esac
 }
 if [[ ${purpose} = list ]]; then
+    echo "=========================="
     for a in $(seq ${number_of_server}); do
         purpose="list"
         serverstartlist="${a}"
@@ -27,7 +28,12 @@ if [[ ${purpose} = list ]]; then
         else
         echo -e "┗   ${ECHO_GREEN_COLOR}${mc_run_server_status}${ECHO_COLOR_EXIT}"
         fi
+        echo "=========================="
     done
+    if [[ -z $serverstartlist ]];then
+        echo "サーバーが存在しません"
+        exit 0
+    fi
 fi
 if [[ -z $serverstartlist ]]; then
     echo "${word}を入力してください"
@@ -46,6 +52,7 @@ if [[ ${purpose} = remove ]]; then
     sed -i -e 's/number_of_server="'${number_of_server}'"/number_of_server="'${new_number_of_server}'"/' ${SETTING_FILE_LOCATIONS}settings
 
     rm -rf ${LIB_FILE_LOCATIONS}mc_server_run/${serverstartlist}
+    echo "サーバーリストから正常に削除しました"
     echo "操作は正常に終了しました..."
     echo "サーバーディレクトリは ${mc_settings_file_locations} です。"
     echo "手動削除をお願いします"
