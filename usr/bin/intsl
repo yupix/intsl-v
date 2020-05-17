@@ -5,6 +5,8 @@
 . etc/intsl_v/directory
 #設定ファイル
 . ${SETTING_FILE_LOCATIONS}settings
+#設定ファイル
+. ${SETTING_FILE_LOCATIONS}info
 #変数ファイル
 . ${SETTING_FILE_LOCATIONS}variable
 #言語ファイル
@@ -606,6 +608,12 @@ main)
     read -p ">" input_data
     case ${input_data} in
     #開発者向け機能
+    [vV][eE][rR][sS][iI][oO][nN])
+        regular_intsl_v_version=$(echo "${INTSL_V_VERSION}" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
+        echo "バージョン:  ${regular_intsl_v_version}"
+        echo "エディション:${INTSL_V_EDITION}"
+        echo "Build:       ${INTSL_V_BUILD_VERSION} "
+        ;;
     report)
         echo "INTSLに欲しい機能、又は不具合を報告できます。"
         echo "要望(request) | 不具合(bug)"

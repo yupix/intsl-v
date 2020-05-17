@@ -60,6 +60,7 @@ if [[ ${purpose} = remove ]]; then
         echo "Coming Soon..."
         #rm -rf ${mc_settings_file_locations}
     fi
+    unset serverstartlist
 else
     export mc_settings_file_locations
     ${LIB_FILE_LOCATIONS}mc_server_run/server_default_manager
