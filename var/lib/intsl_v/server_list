@@ -54,11 +54,16 @@ if [[ ${purpose} = remove ]]; then
     rm -rf ${LIB_FILE_LOCATIONS}mc_server_run/${serverstartlist}
     echo "サーバーリストから正常に削除しました"
     echo "操作は正常に終了しました..."
-    echo "サーバーディレクトリは ${mc_settings_file_locations} です。"
-    echo "手動削除をお願いします"
-    if [[ ${get_optision} = "-f" ]]; then
-        echo "Coming Soon..."
-        #rm -rf ${mc_settings_file_locations}
+    if [[ ${auto_remove} = "true" ]]; then
+        echo -e "${ECHO_GREEN_COLOR}==> Removefile${ECHO_COLOR_EXIT}"
+        echo -e "${ECHO_BLUE_COLOR}  ->${ECHO_COLOR_EXIT} ${ECHO_WHITE_BOLD_COLOR}Running Removing File${ECHO_COLOR_EXIT}"
+        rm -rf ${mc_settings_file_locations}
+        if [[ -e ${mc_settings_file_locations} ]];then
+            echo -e "${ECHO_GREEN_COLOR}==> Successful on Remove file${ECHO_COLOR_EXIT}"
+        fi
+    else
+        echo "サーバーディレクトリは ${mc_settings_file_locations} です。"
+        echo "手動削除をお願いします"
     fi
     unset serverstartlist
 else

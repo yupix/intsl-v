@@ -43,7 +43,8 @@ while :; do
         ;;
 
     *)
-        echo "変な数値打たないで"
+        echo "存在しないバージョンです"
+        read -p ">" INPUT_SERVER_VERSION
         ;;
     esac
 done

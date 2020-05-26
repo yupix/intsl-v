@@ -1,7 +1,7 @@
 ![IntegrationShell](https://repo.akarinext.org/pub/intsl_v/intsl_v.gif "Image")
 [![pipeline status](https://dev.akarinext.org/yupix/intsl-v/badges/master/pipeline.svg)](https://dev.akarinext.org/yupix/intsl-v/-/commits/master)
 
-# INTSL V
+# INTSL V (AKARI)
 
 IntegrationShell（統合シェル）
 このProjectは私が開発している[INTSL](https://dev.akarinext.org/yupix/INTSL/-/commits/master)PROJECTの
@@ -22,6 +22,7 @@ INTSLの際なかった機能一覧です
 
 #### 表向き
 
+- オプション
 - サーバーの一覧 / ステータスを確認できるコマンドの追加
 - サーバーのWebHookに対応（Discord/Slackのみ）
 - 拡張機能のCloudインストールの追加
@@ -29,19 +30,13 @@ INTSLの際なかった機能一覧です
 #### 内部的
 
 - サーバーの起動時に使用するShellを1つで済ませられるように
-- firststartの大幅な改善
+- 全体的な大幅な改善
 
 ## 既知の不具合
 
 - 一部のサーバーエディションを使用できない可能性が有ります
 
 ## 修正済みの不具合
-
-### システム関連
-
-- 現在存在しません
-
-### Minecraftサーバー関連
 
 - サーバーの作成ができない
 - サーバー管理ができない
@@ -50,6 +45,26 @@ INTSLの際なかった機能一覧です
 - カスタムディレクトリを指定した際ディレクトリがないとエラーがでる
 - カスタムディレクトリにした際サーバーが正常に削除できない
 - カスタムディレクトリにした際指定ディレクトリがない際ファイルを自動生成しない
+- 存在しないサーバーのバージョンを選ぶとスパムされる
+
+### システム関連
+
+- 現在なし
+
+### Minecraftサーバー関連
+
+- 現在なし
+
+## リポジトリの更新名
+
+- release
+  ┗ stable
+- master
+  ┗ npm（NextPreviewMaster ※決してnpm（nodejs）とは関係ありません）
+- develop
+  ┗ unstable
+- testing
+  ┗ experimental
 
 ## 注意事項
 
@@ -74,12 +89,34 @@ INTSLの際なかった機能一覧です
 
 ### テスト済みOS
 
+推奨事項をすべて守っている場合に限り安定した可動を望めます
+
 - [UBUNTU](https://ubuntu.com/)
 - [ARCHLINUX](https://www.archlinux.org/)
+- [WINDOWS(WSL2)](https://www.microsoft.com/ja-jp/software-download/windows10ISO)
+  確認済みWSL　ディストリビューション⬇
+  - [UBUNTU](https://www.microsoft.com/ja-jp/p/ubuntu/9nblggh4msv6)
+  - [ARCHLINUX](https://github.com/yuk7/ArchWSL)
+
+### 一部正常に動作しないOS
+
+一部の機能が正常に動作にしない可能性があります
+
+- BSD系OS
+- MAC
+- [WINDOWS(WSL1)](https://www.microsoft.com/ja-jp/software-download/windows10ISO)
+
+### 正常に動作しないOS
+
+すべての機能が使用できません
+
+- [WINDOWS(非WSL)]
 
 ### 推奨JAVA
 
 - [Amazon Corretto 8](https://docs.aws.amazon.com/ja_jp/corretto/latest/corretto-8-ug/downloads-list.html)
+- [AdoptOpenJDK](https://adoptopenjdk.net/)
+    ┗ArchLinuxの場合は[こちら](https://github.com/TeamOrangeServer/jdk8-adoptopenjdk-openj9)を使用できます
 
 ### 推奨Shell
 

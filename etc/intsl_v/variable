@@ -1,50 +1,51 @@
-#--------------------------------<<INTSL情報>>--------------------------------#
+#--------------------------------<<SYSTEM INFO>>---------------------------------#
+screen_name=test
+USER=$(whoami)
+home_directory=$(echo ~$USERNAME)
+#--------------------------------<<INTSL V INFO>>--------------------------------#
 #バージョン
-INTSL_V_VERSION="105"
+INTSL_V_VERSION="106"
+#コードネーム
+INTSL_V_CODENAME="AKARI"
+#BUILDバージョン
+INTSL_V_BUILDVERSION="012526"
+#ブランチ
+INTSL_V_BRANCH="AKARI"
 #エディション
 INTSL_V_EDITION="linux"
 #レポジトリー
 INTREPOURL="https://repo.akarinext.org/"
 
-home_directory=$(echo ~$USERNAME)
+INTSL_V_BRANCH_URL_STABLE=""
 
-#EEWBOT関係
-EEW_VERSION="207"
-EEWFILE="./discord/eew/"
-JAR_FILE="./discord/eew/eewbot-$EEW_VERSION.jar"
-EEW_SYSTEM_FILE="./discord/eew"
+INTSL_V_BRANCH_URL_NPM="https://dev.akarinext.org/yupix/intsl-v/-/archive/master/intsl-v-master.zip"
 
-#ECHO色 (太文字)
-##緑
-ECHO_GREEN_COLOR="\033[1;32m"
-##赤
+INTSL_V_BRANCH_URL_TESTING="https://dev.akarinext.org/yupix/intsl-v/-/archive/develop/intsl-v-develop.zip"
+
+INTSL_V_BRANCH_URL_EXPERIMENTAL=""
+#--------------------------------<<ECHO COLOR LIST>>-----------------------------#
+##WHITE BOLD
+ECHO_WHITE_BOLD_COLOR="\033[1;37m"
+##RED
 ECHO_RED_COLOR="\033[1;31m"
-##黄
+##GREEN
+ECHO_GREEN_COLOR="\033[1;32m"
+##YELLOW
 ECHO_YELLOW_COLOR="\033[1;33m"
-##白
+##BLUE
+ECHO_BLUE_COLOR="\e[34;1m"
+##WHITE
 ECHO_WHITE_COLOR="\033[1;37m"
-##終了
+##EXIT
 ECHO_COLOR_EXIT="\033[0;39m"
-
-#SYSTEM関係
-screen_name=test
-USER=$(whoami)
-
+#--------------------------------------------------------------------------------#
 cryptography=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 | sort | uniq)
 
 chars="/-\|"
 
 #リトライ上限
 RETRYMAX="3"
-
-
-PASSWORDDILECTORY="./assets/password.txt"
-AMBSETTINGS="${SETTING_FILE_LOCATIONS}settings"
-SYSTEMFILEMUSIC="./discord/jmusic"
-SYSTEMFILE="discord"
-SYSTEMMV="./discrod/musicbot/"
 #--------------------------------<<Minecraft情報>>-----------------------------#
 #BuildToolsのurl(デフォルト: 最新の安定版)
 SPIGOT_BUILD_TOOLS_URL="https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/artifact/target/BuildTools.jar"
-
 #------------------------------------------------------------------------------#
