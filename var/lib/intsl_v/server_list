@@ -58,7 +58,7 @@ if [[ ${purpose} = remove ]]; then
         echo -e "${ECHO_GREEN_COLOR}==> Removefile${ECHO_COLOR_EXIT}"
         echo -e "${ECHO_BLUE_COLOR}  ->${ECHO_COLOR_EXIT} ${ECHO_WHITE_BOLD_COLOR}Running Removing File${ECHO_COLOR_EXIT}"
         rm -rf ${mc_settings_file_locations}
-        if [[ -e ${mc_settings_file_locations} ]];then
+        if [[ ! -e ${mc_settings_file_locations} ]];then
             echo -e "${ECHO_GREEN_COLOR}==> Successful on Remove file${ECHO_COLOR_EXIT}"
         fi
     else
