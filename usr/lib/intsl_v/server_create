@@ -3,7 +3,7 @@ echo "サーバー名を入力してください。"
 if [[ -z "${input_server_name}" ]]; then
     read -p ">" input_server_name
 fi
-if [[ ! -e ${HOME_FILE_LOCATIONS}/intsl_v ]];then
+if [[ ! -e ${HOME_FILE_LOCATIONS}/intsl_v ]]; then
     mkdir ${HOME_FILE_LOCATIONS}/intsl_v
 fi
 if [[ ${setting_package_mode} = "false" ]]; then
@@ -12,14 +12,30 @@ if [[ ${setting_package_mode} = "false" ]]; then
     read -p ">" input_data
     input_data=${input_data:-${HOME_FILE_LOCATIONS}intsl_v}
     mc_server_create_file_dir="$input_data"
-    if [[ ! -e ${input_data} ]];then
+    if [[ ! -e ${input_data} ]]; then
         mkdir -p ${input_data}
     fi
 elif [[ ${setting_package_mode} = "true" ]]; then
     mc_server_create_file_dir="${HOME}/intsl_v"
 fi
+
+check_input_server_name="1"
+
+while [[ ${check_input_server_name} -gt "0" ]]; do
+    # 変数内に/, #, !,-,',$,",(,),,,;,:があるか確認する
+    check_input_server_name=$(echo $input_server_name | egrep '/|\#|\"|\;|\)|\!|\(|\:|\,|\-|'\' | wc -c)
+
+    if [ $check_input_server_name -gt 0 ]; then
+        echo "$check_input_server_name に「/  #  \! - \' $ \" ( )  ; :」が含まれいます"
+        echo "再度入力してください"
+        read -p ">" input_server_name
+    else
+        echo -e "${ECHO_GREEN_COLOR}文字のスペルチェックに成功${ECHO_COLOR_EXIT}"
+    fi
+done
+
 if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
-    echo "既にディレクトリが存在します"
+    echo -e "${ECHO_YELLOW_COLOR}==> WARNING: 既にディレクトリが存在します${ECHO_COLOR_EXIT}"
     echo "使用可能な代替案:"
     for i in $(seq 1 7); do
         if [[ ! -e "${mc_server_create_file_dir}/${input_server_name}${i}" ]]; then
@@ -54,7 +70,16 @@ if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
         esac
     done
 fi
+
+echo -e "${ECHO_GREEN_COLOR}==> Createfile${ECHO_COLOR_EXIT}"
+
+echo -e "${ECHO_BLUE_COLOR}  ->${ECHO_COLOR_EXIT} ${ECHO_WHITE_BOLD_COLOR}Running createfile hook: ${input_server_name}${ECHO_COLOR_EXIT}"
 mkdir $mc_server_create_file_dir/${input_server_name}
+if [[ -e $mc_server_create_file_dir/${input_server_name} ]];then
+    echo -e "${ECHO_GREEN_COLOR}==> Createfile Successful${ECHO_COLOR_EXIT}"
+else
+    echo -e "${ECHO_RED_COLOR}==> ERROR: file is not found${ECHO_COLOR_EXIT}"
+fi
 mc_donwload_version="$INPUT_SERVER_VERSION"
 if [ ${mc_server_edition} = official -o ${mc_server_edition} = spigot -o ${mc_server_edition} = paper ]; then
     srce_edision="server"
