@@ -35,6 +35,36 @@ if [ ! -e "${SETTING_FILE_LOCATIONS}settings" -o ! -e "${VARIABLE_FILE_LOCATIONS
     echo "復元を試みますか?"
     echo "Coming Soon..."
 fi
+usage_exit() {
+    cat <<EOF
+##========================================##
+##██╗███╗   ██╗████████╗███████╗██╗       ##
+##██║████╗  ██║╚══██╔══╝██╔════╝██║       ##
+##██║██╔██╗ ██║   ██║   ███████╗██║       ##
+##██║██║╚██╗██║   ██║   ╚════██║██║       ##
+##██║██║ ╚████║   ██║   ███████║███████╗  ##
+##╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚══════╝  ##
+##========================================##
+使用方法: intsl mc [-options] [args...]
+            (Minecraft関連機能を使う場合)
+    または intsl main [-options] [args...]
+            (標準機能を使う場合)
+optionには次のものがあります。
+    -h (--help)         ヘルプを表示します        
+    -v (--version)      INTSLのバージョンを表示します
+    --auto_remove       サーバーのファイル削除時などにファイルを削除します
+詳しくは https://dev.akarinext.org/yupix/intsl-v を参照してください。
+EOF
+    exit 1
+}
+
+version() {
+    regular_version=$(echo "${INTSL_V_VERSION}" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
+    echo "VERSION:          ${regular_version}"
+    echo "BUILD VERSION:    ${INTSL_V_BUILDVERSION}"
+    echo "CODENAME:         ${INTSL_V_CODENAME}"
+    echo "${regular_version}-${INTSL_V_BUILDVERSION}-${INTSL_V_CODENAME}"
+}
 
 #オプション取得
 get_optision=$(echo $@ | grep -o "\-f")
@@ -800,8 +830,10 @@ mc)
         fi
         echo "■ make   | サーバーを作成します"
         echo "■ manage | サーバーを管理します"
+        echo "■ list   | サーバーリストを表示します"
         echo "■ import | サーバーリストをインポートします"
         echo "■ export | サーバーリストを出力します"
+        echo "■ remove | サーバーを削除します"
         read -p ">" input_data
         case "${input_data}" in
         make)
@@ -877,14 +909,16 @@ discord)
     echo -e "\033[0;31mmc\033[1;39m: Minecraftに関する機能を使用可能です"
     echo -e "   └   \033[0;31mmake\033[1;39m: サーバーを作成します"
     echo -e "   └   \033[0;31mmanage\033[1;39m: サーバーを管理します"
+    echo -e "   └   \033[0;31mlist\033[1;39m: サーバーリストを表示します"
     echo -e "   └   \033[0;31mexport\033[1;39m: サーバーリストを出力します"
     echo -e "   └   \033[0;31mimport\033[1;39m: サーバーリストをインポートします"
+    echo -e "   └   \033[0;31mremove\033[1;39m: サーバーを削除します"
     #echo -e "\033[0;31mdiscord\033[1;39m: Discordに関する機能を開始します"
     #echo -e "   └   \033[0;31meew\033[1;39m: eewBotをスタートします"
     #echo -e "       └   \033[0;31mstart\033[1;39m: EEWBotを起動します"
     #echo -e "   └   \033[0;31mjmusic\033[1;39m: JMusiBotをスタートします"
     #echo -e "       └   \033[0;31mstart\033[1;39m: JMusicBotを起動します"
-
     ;;
 esac
+
 exit 0
