@@ -45,7 +45,7 @@ if [[ ${purpose} = remove ]]; then
     get_ext_manager_start_line=$(grep -nw ${serverstartlist,,}START ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d\: -f1)
     get_ext_manager_exit_line=$(grep -nw ${serverstartlist,,}EXIT ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d\: -f1)
     sed -i -e ''${get_ext_manager_start_line}','${get_ext_manager_exit_line}'d' ${VAR_LIB_FILE_LOCATIONS}server_list
-    new_server_add_line=$((server_add_line - 5))
+    new_server_add_line=$((server_add_line - 6))
     sed -i -e 's/server_add_line="'${server_add_line}'"/server_add_line="'${new_server_add_line}'"/' ${SETTING_FILE_LOCATIONS}settings
     #サーバー数増減
     new_number_of_server=$((number_of_server - 1))

@@ -66,6 +66,15 @@ version() {
     echo "${regular_version}-${INTSL_V_BUILDVERSION}-${INTSL_V_CODENAME}"
 }
 
+for OPT in "$@"; do
+
+    case $OPT in
+        --auto_remove)
+            auto_remove="true"
+        ;;
+    esac
+
+done
 #オプション取得
 get_optision=$(echo $@ | grep -o "\-f")
 #コマンド
