@@ -10,7 +10,7 @@ test:
     stage: run_check
     script:
         - export PATH="$(pwd)/usr/bin:$PATH"
-        - intsl
+        - intsl -V
 
 #server_create_test:
 #    tags:
