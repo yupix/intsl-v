@@ -30,18 +30,18 @@ while [[ ${check_input_server_name} -gt "0" ]]; do
         echo "再度入力してください"
         read -p ">" input_server_name
     else
-        echo -e "${ECHO_GREEN_COLOR}文字のスペルチェックに成功${ECHO_COLOR_EXIT}"
+        echo -e "${ECHO_GREEN_BOLD_COLOR}文字のスペルチェックに成功${ECHO_COLOR_EXIT}"
     fi
 done
 
 if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
-    echo -e "${ECHO_YELLOW_COLOR}==> WARNING: 既にディレクトリが存在します${ECHO_COLOR_EXIT}"
+    echo -e "${ECHO_YELLOW_BOLD_COLOR}==> WARNING: 既にディレクトリが存在します${ECHO_COLOR_EXIT}"
     echo "使用可能な代替案:"
     for i in $(seq 1 7); do
         if [[ ! -e "${mc_server_create_file_dir}/${input_server_name}${i}" ]]; then
-            echo -e "- ${ECHO_GREEN_COLOR}${i}: ${input_server_name}${i} ✓使用可能 ${ECHO_COLOR_EXIT}"
+            echo -e "- ${ECHO_GREEN_BOLD_COLOR}${i}: ${input_server_name}${i} ✓使用可能 ${ECHO_COLOR_EXIT}"
         else
-            echo -e "- ${ECHO_RED_COLOR}${i}: ${input_server_name}${i} ✕使用不可${ECHO_COLOR_EXIT}"
+            echo -e "- ${ECHO_RED_BOLD_COLOR}${i}: ${input_server_name}${i} ✕使用不可${ECHO_COLOR_EXIT}"
             not_available_count=$((not_available_count + 1))
         fi
         if [[ ${not_available_count} = "7" ]]; then
@@ -71,14 +71,14 @@ if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
     done
 fi
 
-echo -e "${ECHO_GREEN_COLOR}==> Createfile${ECHO_COLOR_EXIT}"
+echo -e "${ECHO_GREEN_BOLD_COLOR}==> Createfile${ECHO_COLOR_EXIT}"
 
-echo -e "${ECHO_BLUE_COLOR}  ->${ECHO_COLOR_EXIT} ${ECHO_WHITE_BOLD_COLOR}Running createfile hook: ${input_server_name}${ECHO_COLOR_EXIT}"
+echo -e "${ECHO_BLUE_BOLD_COLOR}  ->${ECHO_COLOR_EXIT} ${ECHO_WHITE_BOLD_COLOR}Running createfile hook: ${input_server_name}${ECHO_COLOR_EXIT}"
 mkdir $mc_server_create_file_dir/${input_server_name}
 if [[ -e $mc_server_create_file_dir/${input_server_name} ]];then
-    echo -e "${ECHO_GREEN_COLOR}==> Createfile Successful${ECHO_COLOR_EXIT}"
+    echo -e "${ECHO_GREEN_BOLD_COLOR}==> Createfile Successful${ECHO_COLOR_EXIT}"
 else
-    echo -e "${ECHO_RED_COLOR}==> ERROR: file is not found${ECHO_COLOR_EXIT}"
+    echo -e "${ECHO_RED_BOLD_COLOR}==> ERROR: file is not found${ECHO_COLOR_EXIT}"
 fi
 mc_donwload_version="$INPUT_SERVER_VERSION"
 if [ ${mc_server_edition} = official -o ${mc_server_edition} = spigot -o ${mc_server_edition} = paper ]; then

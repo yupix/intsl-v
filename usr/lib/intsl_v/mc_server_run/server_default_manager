@@ -61,8 +61,11 @@ while :; do
     echo "cd | サーバーにコマンドを送信します"
     echo "settings | サーバー起動時の設定を変更できます"
     echo "back | 元いた画面に戻ります"
-    read -p ">" server
-    case $server in
+
+    if [[ -z "${input_server_behavior}" ]]; then
+        read -p ">" input_server_behavior
+    fi
+    case $input_server_behavior in
     cd)
         while :; do
             . ./setting.txt
@@ -198,7 +201,7 @@ EOS
     #サーバーのログ
     log)
         if [ "$(screen -ls | grep ${mc_run_server_screen_name})" == "" ]; then
-            echo -e "${ECHO_YELLOW_COLOR}${message_system_warning}:${ECHO_COLOR_EXIT} サーバーが起動していません"
+            echo -e "${ECHO_YELLOW_BOLD_COLOR}${message_system_warning}:${ECHO_COLOR_EXIT} サーバーが起動していません"
         else
             screen -r ${mc_run_server_screen_name}
         fi

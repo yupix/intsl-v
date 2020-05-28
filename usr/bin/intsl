@@ -55,26 +55,85 @@ optionには次のものがあります。
     --auto_remove       サーバーのファイル削除時などにファイルを削除します
 詳しくは https://dev.akarinext.org/yupix/intsl-v を参照してください。
 EOF
-    exit 1
+    exit 0
 }
 
 version() {
     regular_version=$(echo "${INTSL_V_VERSION}" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
+    cat <<EOF
+MMMMMMMMMMMMNMMMMMMMMMMMM
+MMMMMMMMMMMs:hMMMMMMMMMMM       
+MMNsooyNMNo:::yMMmsooyMMM       
+MMMm/::+m+-:::-sd/::oNMMM
+MMMMN+-:/:::-:::/::yMMMMM       INTEGRATION SHELL V v${regular_version}
+MMMNNmo////://////yNMNMMM       Copyright (C) 2020 Pimc Intsl Development Team
+MMMNMMNy///////:/mMMMNMMM
+MMMNo++oh/::/::+ho++yMMMM
+MMm/-:/hmh::::/dmy:::oNMM       This program may be freely redistributed under
+Md::::-:/:----://:-:::/NM       the terms of the Mozilla Public License Version 2.0.
+NhyyyyyyyyyyyyyyyyyyyyyhM
+MMMMMMMMMMMMMMMMMMMMMMMMM
+EOF
+exit 0
     echo "VERSION:          ${regular_version}"
     echo "BUILD VERSION:    ${INTSL_V_BUILDVERSION}"
     echo "CODENAME:         ${INTSL_V_CODENAME}"
     echo "${regular_version}-${INTSL_V_BUILDVERSION}-${INTSL_V_CODENAME}"
+    exit 0
 }
 
 for OPT in "$@"; do
 
     case $OPT in
-        --auto_remove)
-            auto_remove="true"
+    -y)
+        INPUT_Y_OR_N="y"
+        ;;
+    --auto_remove)
+        auto_remove="true"
+        ;;
+    -V | --version)
+        version
+        ;;
+    -h | --help)
+        usage_exit
+        ;;
+    -f | --force)
+        force_mode="TRUE"
+        ;;
+    --start)
+        input_server_behavior="start"
+        ;;
+    --mcversion)
+        for a in $(seq $#); do
+            echo "$a"
+            VAR=$(eval echo '$'$a)
+            if [[ $VAR = "--mcversion" ]]; then
+                echo "MC HIT"
+                count=$(($a + 1))
+                VAR=$(eval echo '$'$count)
+                break
+            fi
+        done
+        INPUT_SERVER_VERSION="${VAR}"
+        ;;
+    --type)
+        for i in $(seq $#); do
+            VAR=$(eval echo '$'$i)
+            if [[ $VAR = "--type" ]]; then
+                echo "HIT"
+                count=$(($i + 1))
+                VAR=$(eval echo '$'$count)
+                break
+            fi
+        done
+        input_server_type="${VAR}"
+        echo "$input_server_type"
         ;;
     esac
 
 done
+
+trap 'echo "安全性の為INTSLをCtrl + C で終了することは推奨されません";exit 1' 2
 #オプション取得
 get_optision=$(echo $@ | grep -o "\-f")
 #コマンド
@@ -228,7 +287,7 @@ vcheck() {
                 regular_version=$(echo "$NEWVERSION" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
                 if [[ $NEWVERSION -gt ${INTSL_V_VERSION} ]]; then
                     echo "$message_update_exists"
-                    echo -e "${ECHO_RED_COLOR}Current: INTSL-V-${INTSL_V_VERSION}${ECHO_COLOR_EXIT} ->  ${ECHO_GREEN_COLOR}New: INTSL-V-${regular_version}${ECHO_COLOR_EXIT}"
+                    echo -e "${ECHO_RED_BOLD_COLOR}Current: INTSL-V-${INTSL_V_VERSION}${ECHO_COLOR_EXIT} ->  ${ECHO_GREEN_BOLD_COLOR}New: INTSL-V-${regular_version}${ECHO_COLOR_EXIT}"
                     cat <<EOS
 ${message_downalod_file}
 ${message_use_possible}
@@ -250,7 +309,7 @@ EOS
                             echo "ファイルの解凍に成功"
                             sudo cp -r ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}/. .
                         else
-                            echo -e "${ECHO_RED_COLOR}${message_system_error}:${ECHO_COLOR_EXIT} ファイルの解凍に失敗しました"
+                            echo -e "${ECHO_RED_BOLD_COLOR}${message_system_error}:${ECHO_COLOR_EXIT} ファイルの解凍に失敗しました"
                             echo "Systemを保護するためにサービスを終了します。"
                             break
                         fi
@@ -530,7 +589,7 @@ DEVELOPER_LOGIN() {
                 echo "認証に成功"
                 break
             else
-                echo -e "${ECHO_RED_COLOR}認証に失敗${ECHO_COLOR_EXIT}"
+                echo -e "${ECHO_RED_BOLD_COLOR}認証に失敗${ECHO_COLOR_EXIT}"
                 exit 1
             fi
         else
@@ -817,12 +876,10 @@ mc)
     while :; do
         #サーバー作成オプション
         if [[ ${2} = "make" ]]; then
-            input_server_type="${3}"
             if [[ -n ${4} ]]; then
                 INPUT_SERVER_VERSION="${4}"
             fi
             input_server_name="${5}"
-            INPUT_Y_OR_N="${6}"
             mc_server_version_list
         #サーバー管理オプション
         elif [[ ${2} = manage ]]; then
@@ -908,20 +965,20 @@ discord)
     echo "##██║██║ ╚████║   ██║   ███████║███████╗  ##"
     echo "##╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚══════╝  ##"
     echo -e "\033[1;37m##========================================##\033[0;39m"
-    echo -e "\033[0;31mmain\033[1;39m: メイン機能を使用可能です"
-    echo -e "   └   \033[0;31mextension\033[1;39m: 拡張機能を管理します"
-    echo -e "       └   \033[0;31muse\033[1;39m: 拡張機能を使用します"
-    echo -e "       └   \033[0;31mlist\033[1;39m: 拡張機能の一覧を表示します"
-    echo -e "       └   \033[0;31mimport\033[1;39m: 拡張機能をインポートします"
-    echo -e "       └   \033[0;31mvcheck\033[1;39m: 拡張機能の更新を確認 /更新 します"
-    echo -e "       └   \033[0;31mcloud\033[1;39m: クラウドから拡張機能をダウンロードします"
-    echo -e "\033[0;31mmc\033[1;39m: Minecraftに関する機能を使用可能です"
-    echo -e "   └   \033[0;31mmake\033[1;39m: サーバーを作成します"
-    echo -e "   └   \033[0;31mmanage\033[1;39m: サーバーを管理します"
-    echo -e "   └   \033[0;31mlist\033[1;39m: サーバーリストを表示します"
-    echo -e "   └   \033[0;31mexport\033[1;39m: サーバーリストを出力します"
-    echo -e "   └   \033[0;31mimport\033[1;39m: サーバーリストをインポートします"
-    echo -e "   └   \033[0;31mremove\033[1;39m: サーバーを削除します"
+    echo -e "${ECHO_RED_COLOR}main${ECHO_COLOR_EXIT}: メイン機能を使用可能です"
+    echo -e "   └   ${ECHO_RED_COLOR}extension${ECHO_COLOR_EXIT}: 拡張機能を管理します"
+    echo -e "       └   ${ECHO_RED_COLOR}use${ECHO_COLOR_EXIT}: 拡張機能を使用します"
+    echo -e "       └   ${ECHO_RED_COLOR}list${ECHO_COLOR_EXIT}: 拡張機能の一覧を表示します"
+    echo -e "       └   ${ECHO_RED_COLOR}import${ECHO_COLOR_EXIT}: 拡張機能をインポートします"
+    echo -e "       └   ${ECHO_RED_COLOR}vcheck${ECHO_COLOR_EXIT}: 拡張機能の更新を確認 /更新 します"
+    echo -e "       └   ${ECHO_RED_COLOR}cloud${ECHO_COLOR_EXIT}: クラウドから拡張機能をダウンロードします"
+    echo -e "${ECHO_RED_COLOR}mc${ECHO_COLOR_EXIT}: Minecraftに関する機能を使用可能です"
+    echo -e "   └   ${ECHO_RED_COLOR}make${ECHO_COLOR_EXIT}: サーバーを作成します"
+    echo -e "   └   ${ECHO_RED_COLOR}manage${ECHO_COLOR_EXIT}: サーバーを管理します"
+    echo -e "   └   ${ECHO_RED_COLOR}list${ECHO_COLOR_EXIT}: サーバーリストを表示します"
+    echo -e "   └   ${ECHO_RED_COLOR}export${ECHO_COLOR_EXIT}: サーバーリストを出力します"
+    echo -e "   └   ${ECHO_RED_COLOR}import${ECHO_COLOR_EXIT}: サーバーリストをインポートします"
+    echo -e "   └   ${ECHO_RED_COLOR}remove${ECHO_COLOR_EXIT}: サーバーを削除します"
     #echo -e "\033[0;31mdiscord\033[1;39m: Discordに関する機能を開始します"
     #echo -e "   └   \033[0;31meew\033[1;39m: eewBotをスタートします"
     #echo -e "       └   \033[0;31mstart\033[1;39m: EEWBotを起動します"

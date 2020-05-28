@@ -24,9 +24,9 @@ if [[ ${purpose} = list ]]; then
         . ${mc_settings_file_locations}/setting.txt
         echo "${server_name}"
         if [[ ${mc_run_server_status} = offline ]];then
-        echo -e "┗   ${ECHO_RED_COLOR}${mc_run_server_status}${ECHO_COLOR_EXIT}"
+        echo -e "┗   ${ECHO_RED_BOLD_COLOR}${mc_run_server_status}${ECHO_COLOR_EXIT}"
         else
-        echo -e "┗   ${ECHO_GREEN_COLOR}${mc_run_server_status}${ECHO_COLOR_EXIT}"
+        echo -e "┗   ${ECHO_GREEN_BOLD_COLOR}${mc_run_server_status}${ECHO_COLOR_EXIT}"
         fi
         echo "=========================="
     done
@@ -55,11 +55,11 @@ if [[ ${purpose} = remove ]]; then
     echo "サーバーリストから正常に削除しました"
     echo "操作は正常に終了しました..."
     if [[ ${auto_remove} = "true" ]]; then
-        echo -e "${ECHO_GREEN_COLOR}==> Removefile${ECHO_COLOR_EXIT}"
-        echo -e "${ECHO_BLUE_COLOR}  ->${ECHO_COLOR_EXIT} ${ECHO_WHITE_BOLD_COLOR}Running Removing File${ECHO_COLOR_EXIT}"
+        echo -e "${ECHO_GREEN_BOLD_COLOR}==> Removefile${ECHO_COLOR_EXIT}"
+        echo -e "${ECHO_BLUE_BOLD_COLOR}  ->${ECHO_COLOR_EXIT} ${ECHO_WHITE_BOLD_COLOR}Running Removing File${ECHO_COLOR_EXIT}"
         rm -rf ${mc_settings_file_locations}
         if [[ ! -e ${mc_settings_file_locations} ]];then
-            echo -e "${ECHO_GREEN_COLOR}==> Successful on Remove file${ECHO_COLOR_EXIT}"
+            echo -e "${ECHO_GREEN_BOLD_COLOR}==> Successful on Remove file${ECHO_COLOR_EXIT}"
         fi
     else
         echo "サーバーディレクトリは ${mc_settings_file_locations} です。"
