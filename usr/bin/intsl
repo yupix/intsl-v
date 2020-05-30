@@ -75,11 +75,6 @@ NhyyyyyyyyyyyyyyyyyyyyyhM
 MMMMMMMMMMMMMMMMMMMMMMMMM
 EOF
 exit 0
-    echo "VERSION:          ${regular_version}"
-    echo "BUILD VERSION:    ${INTSL_V_BUILDVERSION}"
-    echo "CODENAME:         ${INTSL_V_CODENAME}"
-    echo "${regular_version}-${INTSL_V_BUILDVERSION}-${INTSL_V_CODENAME}"
-    exit 0
 }
 
 for OPT in "$@"; do
