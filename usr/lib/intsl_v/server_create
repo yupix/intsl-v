@@ -1,20 +1,27 @@
 #!/usr/bin/env bash
-echo "サーバー名を入力してください。"
 if [[ -z "${input_server_name}" ]]; then
+    echo "サーバー名を入力してください。"
     read -p ">" input_server_name
 fi
+echo $input_server_name
 if [[ ! -e ${HOME_FILE_LOCATIONS}/intsl_v ]]; then
     mkdir ${HOME_FILE_LOCATIONS}/intsl_v
 fi
 if [[ ${setting_package_mode} = "false" ]]; then
-    echo "サーバーのディレクトリーを指定してください"
-    echo "default: ${HOME_FILE_LOCATIONS}intsl_v"
-    read -p ">" input_data
-    input_data=${input_data:-${HOME_FILE_LOCATIONS}intsl_v}
-    mc_server_create_file_dir="$input_data"
-    if [[ ! -e ${input_data} ]]; then
-        mkdir -p ${input_data}
+    if [[ -n ${INPUT_SERVER_DIRECTORY} ]]; then
+        if [[ ${default_mode} = "true" ]]; then
+            INPUT_SERVER_DIRECTORY=${INPUT_SERVER_DIRECTORY:-${HOME_FILE_LOCATIONS}intsl_v}
+        fi
+    else
+        echo "サーバーのディレクトリーを指定してください"
+        echo "default: ${HOME_FILE_LOCATIONS}intsl_v"
+        read -p ">" INPUT_SERVER_DIRECTORY
+        INPUT_SERVER_DIRECTORY=${INPUT_SERVER_DIRECTORY:-${HOME_FILE_LOCATIONS}intsl_v}
     fi
+    if [[ ! -e ${INPUT_SERVER_DIRECTORY} ]]; then
+        mkdir -p ${INPUT_SERVER_DIRECTORY}
+    fi
+    mc_server_create_file_dir="$INPUT_SERVER_DIRECTORY"
 elif [[ ${setting_package_mode} = "true" ]]; then
     mc_server_create_file_dir="${HOME}/intsl_v"
 fi
@@ -75,10 +82,11 @@ echo -e "${ECHO_GREEN_BOLD_COLOR}==> Createfile${ECHO_COLOR_EXIT}"
 
 echo -e "${ECHO_BLUE_BOLD_COLOR}  ->${ECHO_COLOR_EXIT} ${ECHO_WHITE_BOLD_COLOR}Running createfile hook: ${input_server_name}${ECHO_COLOR_EXIT}"
 mkdir $mc_server_create_file_dir/${input_server_name}
-if [[ -e $mc_server_create_file_dir/${input_server_name} ]];then
+if [[ -e $mc_server_create_file_dir/${input_server_name} ]]; then
     echo -e "${ECHO_GREEN_BOLD_COLOR}==> Createfile Successful${ECHO_COLOR_EXIT}"
 else
     echo -e "${ECHO_RED_BOLD_COLOR}==> ERROR: file is not found${ECHO_COLOR_EXIT}"
+    exit 1
 fi
 mc_donwload_version="$INPUT_SERVER_VERSION"
 if [ ${mc_server_edition} = official -o ${mc_server_edition} = spigot -o ${mc_server_edition} = paper ]; then

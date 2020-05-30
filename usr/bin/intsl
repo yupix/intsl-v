@@ -98,12 +98,21 @@ for OPT in "$@"; do
     --start)
         input_server_behavior="start"
         ;;
+    --type)
+        for i in $(seq $#); do
+            VAR=$(eval echo '$'$i)
+            if [[ $VAR = "--type" ]]; then
+                count=$(($i + 1))
+                VAR=$(eval echo '$'$count)
+                break
+            fi
+        done
+        input_server_type="${VAR}"
+        ;;
     --mcversion)
         for a in $(seq $#); do
-            echo "$a"
             VAR=$(eval echo '$'$a)
             if [[ $VAR = "--mcversion" ]]; then
-                echo "MC HIT"
                 count=$(($a + 1))
                 VAR=$(eval echo '$'$count)
                 break
@@ -111,19 +120,33 @@ for OPT in "$@"; do
         done
         INPUT_SERVER_VERSION="${VAR}"
         ;;
-    --type)
-        for i in $(seq $#); do
-            VAR=$(eval echo '$'$i)
-            if [[ $VAR = "--type" ]]; then
-                echo "HIT"
-                count=$(($i + 1))
+    --directory)
+        for a in $(seq $#); do
+            VAR=$(eval echo '$'$a)
+            if [[ $VAR = "--directory" ]]; then
+                count=$(($a + 1))
                 VAR=$(eval echo '$'$count)
                 break
             fi
         done
-        input_server_type="${VAR}"
-        echo "$input_server_type"
-        ;;
+        INPUT_SERVER_DIRECTORY="${VAR}"
+    ;;
+    --server-name)
+        for a in $(seq $#); do
+            VAR=$(eval echo '$'$a)
+            if [[ $VAR = "--server-name" ]]; then
+                count=$(($a + 1))
+                VAR=$(eval echo '$'{$count})
+                break
+            fi
+        done
+            echo $VAR
+            input_server_name="${VAR}"
+            echo "$input_server_name"
+    ;;
+    --default)
+        default_mode="true"
+    ;;
     esac
 
 done
@@ -871,10 +894,6 @@ mc)
     while :; do
         #サーバー作成オプション
         if [[ ${2} = "make" ]]; then
-            if [[ -n ${4} ]]; then
-                INPUT_SERVER_VERSION="${4}"
-            fi
-            input_server_name="${5}"
             mc_server_version_list
         #サーバー管理オプション
         elif [[ ${2} = manage ]]; then
