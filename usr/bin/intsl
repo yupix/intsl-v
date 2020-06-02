@@ -120,6 +120,30 @@ for OPT in "$@"; do
         done
         INPUT_SERVER_VERSION="${VAR}"
         ;;
+    --set-max-memory)
+        for a in $(seq $#); do
+            VAR=$(eval echo '$'$a)
+            if [[ $VAR = "--set-max-memory" ]]; then
+                count=$(($a + 1))
+                VAR=$(eval echo '$'$count)
+                echo "$VAR"
+                break
+            fi
+        done
+        SET_MAX_MEMORY="$VAR"
+        ;;
+    --set-min-memory)
+        for a in $(seq $#); do
+            VAR=$(eval echo '$'$a)
+            if [[ $VAR = "--set-min-memory" ]]; then
+                count=$(($a + 1))
+                VAR=$(eval echo '$'$count)
+                echo "$VAR"
+                break
+            fi
+        done
+        SET_MIN_MEMORY="$VAR"
+        ;;
     --directory)
         for a in $(seq $#); do
             VAR=$(eval echo '$'$a)

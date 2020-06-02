@@ -123,6 +123,12 @@ spinner_progress_status="ファイルの確認中 1/2"
 run_spinner
 if [[ -e $mc_server_create_file_dir/${input_server_name} ]]; then
     echo "サーバーファイルの作成に成功しました。"
+    if [ -z "$SET_MAX_MEMORY" ]; then
+        SET_MIN_MEMORY=${SET_MAX_MEMORY:-1G}
+    fi
+    if [ -z "$SET_MIN_MEMORY" ]; then
+        SET_MIN_MEMORY=${SET_MIN_MEMORY:-1G}
+    fi
     . ${LIB_FILE_LOCATIONS}server_default_settings.sh
     spinner_progress_status="ファイルの確認中 2/2"
     run_spinner

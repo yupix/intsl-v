@@ -4,9 +4,9 @@ cat <<EOF >${mc_server_create_file_dir}/${input_server_name}/setting.txt
 #サーバー名
 server_name="${input_server_name}"
 #最大メモリ
-mc_run_server_mem_max="1G"
+mc_run_server_mem_max="${SET_MAX_MEMORY}"
 #最小メモリ
-mc_run_server_mem_min="1G"
+mc_run_server_mem_min="${SET_MIN_MEMORY}"
 #サーバーディレクトリー
 server_dir="${mc_server_create_file_dir}/\${server_name}"
 mc_run_server_jvm_argument="-Xmx\${mc_run_server_mem_max} -Xms\${mc_run_server_mem_min} -XX:+UseG1GC -XX:+UnlockExperimentalVMOptions -XX:MaxGCPauseMillis=100 -XX:+DisableExplicitGC -XX:TargetSurvivorRatio=90 -XX:G1NewSizePercent=50 -XX:G1MaxNewSizePercent=80 -XX:G1MixedGCLiveThresholdPercent=35 -XX:+AlwaysPreTouch -XX:+ParallelRefProcEnabled -Dusing.aikars.flags=mcflags.emc.gs"
