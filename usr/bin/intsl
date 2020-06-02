@@ -129,7 +129,8 @@ for OPT in "$@"; do
                 break
             fi
         done
-        INPUT_SERVER_DIRECTORY="${VAR}"
+        INPUT_SERVER_DIRECTORY="$VAR"
+        echo "$INPUT_SERVER_DIRECTORY"
         ;;
     --server-name)
         for a in $(seq $#); do
@@ -140,7 +141,6 @@ for OPT in "$@"; do
                 break
             fi
         done
-        echo $VAR
         input_server_name="${VAR}"
         echo "$input_server_name"
         ;;
