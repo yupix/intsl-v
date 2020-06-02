@@ -8,7 +8,7 @@ if [[ ! -e ${HOME_FILE_LOCATIONS}/intsl_v ]]; then
     mkdir ${HOME_FILE_LOCATIONS}/intsl_v
 fi
 if [[ ${setting_package_mode} = "false" ]]; then
-    if [[ -n ${INPUT_SERVER_DIRECTORY} ]]; then
+    if [[ -z ${INPUT_SERVER_DIRECTORY} ]]; then
         if [[ ${default_mode} = "true" ]]; then
             INPUT_SERVER_DIRECTORY=${INPUT_SERVER_DIRECTORY:-${HOME_FILE_LOCATIONS}intsl_v}
         fi

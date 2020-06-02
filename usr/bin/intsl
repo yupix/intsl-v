@@ -126,6 +126,7 @@ for OPT in "$@"; do
             if [[ $VAR = "--directory" ]]; then
                 count=$(($a + 1))
                 VAR=$(eval echo '$'$count)
+                echo "$VAR"
                 break
             fi
         done
