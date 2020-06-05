@@ -70,16 +70,42 @@ MMMNNmo////://////yNMNMMM       Copyright (C) 2020 Pimc Intsl Development Team
 MMMNMMNy///////:/mMMMNMMM
 MMMNo++oh/::/::+ho++yMMMM
 MMm/-:/hmh::::/dmy:::oNMM       This program may be freely redistributed under
-Md::::-:/:----://:-:::/NM       the terms of the Mozilla Public License Version 2.0.
+Md::::-:/:----://:-:::/NM       the terms of the Mozilla Public License Version 2.0
 NhyyyyyyyyyyyyyyyyyyyyyhM
 MMMMMMMMMMMMMMMMMMMMMMMMM
 EOF
     exit 0
 }
-
+spell_check_option() {
+    if [[ -n "$VAR" ]]; then
+        if [ $VAR = "--type" -o $VAR = "--mcversion" -o $VAR = "--set-max-memory" -o $VAR = "--set-min-memory" -o $VAR = "--directory" -o $VAR = "--server-name" ]; then
+            echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) [ ${cache_option} ] オプションには引数が必要です"
+            echo "原因: オプションにオプションが指定されています"
+            exit 1
+        fi
+    else
+        if [ ${cache_option} = "--type" -o ${cache_option} = "--mcversion" ]; then
+            echo "$(tput bold && tput setaf 3)${message_system_warning}:$(tput sgr0) [ ${cache_option} ] オプションには引数が必要です。"
+            echo "不要なオプションは予期せぬ不具合の原因になります"
+        fi
+    fi
+}
+spell_check_memory_option() {
+    UNIT_CHECK=$(echo ${VAR} | grep -o -e "G" -e "M")
+    SED_UNIT=$(echo ${VAR} | sed -e 's/[^0-9]//g')
+    if [[ ${UNIT_CHECK,,} = "g" ]]; then
+        echo "dummy text" >/dev/null
+    elif [[ ${UNIT_CHECK,,} = "m" ]]; then
+        if [[ ${SED_UNIT} -lt "512" ]]; then
+            echo "$(tput bold && tput setaf 3)${message_system_warning}:$(tput sgr0) メモリが512MBを下回っています (指定されたメモリ: ${VAR,,})"
+            echo "あまりにも低すぎるメモリはサーバーのパフォーマンスを低下させます"
+        fi
+    else
+        echo "メモリの指定には(G)Bまたは(M)Bが使用可能です"
+    fi
+}
 for OPT in "$@"; do
-
-    case $OPT in
+    case ${OPT} in
     -y)
         INPUT_Y_OR_N="y"
         ;;
@@ -103,71 +129,95 @@ for OPT in "$@"; do
             VAR=$(eval echo '$'$i)
             if [[ $VAR = "--type" ]]; then
                 count=$(($i + 1))
-                VAR=$(eval echo '$'$count)
+                VAR=$(eval echo '$''{'$count'}')
                 break
             fi
         done
+        cache_option="--type"
+        spell_check_option
         input_server_type="${VAR}"
         ;;
     --mcversion)
         for a in $(seq $#); do
-            VAR=$(eval echo '$'$a)
+            VAR=$(eval echo '$''{'$a'}')
             if [[ $VAR = "--mcversion" ]]; then
                 count=$(($a + 1))
-                VAR=$(eval echo '$'$count)
+                VAR=$(eval echo '$''{'$count'}')
                 break
             fi
         done
+        cache_option="--mcversion"
+        spell_check_option
         INPUT_SERVER_VERSION="${VAR}"
         ;;
     --set-max-memory)
         for a in $(seq $#); do
-            VAR=$(eval echo '$'$a)
+            VAR=$(eval echo '$''{'$a'}')
             if [[ $VAR = "--set-max-memory" ]]; then
                 count=$(($a + 1))
-                VAR=$(eval echo '$'$count)
-                echo "$VAR"
+                VAR=$(eval echo '$''{'$count'}')
                 break
             fi
         done
-        SET_MAX_MEMORY="$VAR"
+        cache_option="--set-max-memory"
+        spell_check_option
+        spell_check_memory_option
+        SET_MAX_MEMORY="${VAR,,}"
         ;;
     --set-min-memory)
         for a in $(seq $#); do
-            VAR=$(eval echo '$'$a)
+            VAR=$(eval echo '$''{'$a'}')
             if [[ $VAR = "--set-min-memory" ]]; then
                 count=$(($a + 1))
-                VAR=$(eval echo '$'$count)
-                echo "$VAR"
+                VAR=$(eval echo '$''{'$count'}')
                 break
             fi
         done
-        SET_MIN_MEMORY="$VAR"
+        if [[ -z "${SET_MAX_MEMORY}" ]]; then
+            echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) 最大メモリが指定されていません [ --set-max-memory ] を使って指定してください"
+            echo "原因: [ --set-max-memory ] が指定されていない、または [ --set-min-memory ] よりあとにあります"
+            exit 1
+        else
+            SED_MEMORY_MAX_UNIT=$(echo ${SET_MAX_MEMORY} | sed -e 's/[^0-9]//g')
+            SED_MEMORY_MIN_UNIT=$(echo ${VAR} | sed -e 's/[^0-9]//g')
+            if [[ ${SED_MEMORY_MAX_UNIT} -lt ${SED_MEMORY_MIN_UNIT} ]]; then
+                echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) 最小メモリが最大メモリを上回っています"
+                echo "解決方法: 最小メモリを最大メモリと同じ、または以下にしてください"
+                exit 1
+            fi
+        fi
+        cache_option="--set-min-memory"
+        spell_check_option
+        spell_check_memory_option
+        SET_MIN_MEMORY="${VAR,,}"
         ;;
     --directory)
         for a in $(seq $#); do
-            VAR=$(eval echo '$'$a)
+            VAR=$(eval echo '$''{'$a'}')
             if [[ $VAR = "--directory" ]]; then
                 count=$(($a + 1))
-                VAR=$(eval echo '$'$count)
+                VAR=$(eval echo '$''{'$count'}')
                 echo "$VAR"
                 break
             fi
         done
+        cache_option="--directory"
+        spell_check_option
         INPUT_SERVER_DIRECTORY="$VAR"
-        echo "$INPUT_SERVER_DIRECTORY"
         ;;
     --server-name)
         for a in $(seq $#); do
-            VAR=$(eval echo '$'$a)
+            VAR=$(eval echo '$''{'$a'}')
             if [[ $VAR = "--server-name" ]]; then
                 count=$(($a + 1))
-                VAR=$(eval echo '$'{$count})
+                VAR=$(eval echo '$''{'$count'}')
                 break
             fi
         done
+        echo "aaawwww"
+        cache_option="--server-name"
+        spell_check_option
         input_server_name="${VAR}"
-        echo "$input_server_name"
         ;;
     --default)
         default_mode="true"

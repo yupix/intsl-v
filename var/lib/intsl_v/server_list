@@ -15,37 +15,13 @@ SERVER_LIST() {
         ;;
     esac
 }
-if [[ ${purpose} = list ]]; then
-    echo "=========================="
-    for a in $(seq ${number_of_server}); do
-        purpose="list"
-        serverstartlist="${a}"
-        SERVER_LIST
-        . ${mc_settings_file_locations}/setting.txt
-        echo "${server_name}"
-        if [[ ${mc_run_server_status} = offline ]];then
-        echo -e "┗   ${ECHO_RED_BOLD_COLOR}${mc_run_server_status}${ECHO_COLOR_EXIT}"
-        else
-        echo -e "┗   ${ECHO_GREEN_BOLD_COLOR}${mc_run_server_status}${ECHO_COLOR_EXIT}"
-        fi
-        echo "=========================="
-    done
-    if [[ -z $serverstartlist ]];then
-        echo "サーバーが存在しません"
-        exit 0
-    fi
-fi
-if [[ -z $serverstartlist ]]; then
-    echo "${word}を入力してください"
-    read -p ">" serverstartlist
-    SERVER_LIST
-fi
 
 if [[ ${purpose} = remove ]]; then
-    get_ext_manager_start_line=$(grep -nw ${serverstartlist,,}START ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d\: -f1)
-    get_ext_manager_exit_line=$(grep -nw ${serverstartlist,,}EXIT ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d\: -f1)
-    sed -i -e ''${get_ext_manager_start_line}','${get_ext_manager_exit_line}'d' ${VAR_LIB_FILE_LOCATIONS}server_list
-    new_server_add_line=$((server_add_line - 6))
+    if [[ -z $serverstartlist ]]; then
+        echo "${word}を入力してください"
+        read -p ">" serverstartlist
+        SERVER_LIST
+    fi
     sed -i -e 's/server_add_line="'${server_add_line}'"/server_add_line="'${new_server_add_line}'"/' ${SETTING_FILE_LOCATIONS}settings
     #サーバー数増減
     new_number_of_server=$((number_of_server - 1))
@@ -58,7 +34,7 @@ if [[ ${purpose} = remove ]]; then
         echo -e "${ECHO_GREEN_BOLD_COLOR}==> Removefile${ECHO_COLOR_EXIT}"
         echo -e "${ECHO_BLUE_BOLD_COLOR}  ->${ECHO_COLOR_EXIT} ${ECHO_WHITE_BOLD_COLOR}Running Removing File${ECHO_COLOR_EXIT}"
         rm -rf ${mc_settings_file_locations}
-        if [[ ! -e ${mc_settings_file_locations} ]];then
+        if [[ ! -e ${mc_settings_file_locations} ]]; then
             echo -e "${ECHO_GREEN_BOLD_COLOR}==> Successful on Remove file${ECHO_COLOR_EXIT}"
         fi
     else
@@ -66,7 +42,44 @@ if [[ ${purpose} = remove ]]; then
         echo "手動削除をお願いします"
     fi
     unset serverstartlist
+elif [[ ${purpose} = get ]]; then
+    for a in $(seq ${number_of_server}); do
+        purpose="get"
+        serverstartlist="${a}"
+        SERVER_LIST
+        . ${mc_settings_file_locations}/setting.txt
+        if [[ ${server_name} = ${input_server_name} ]]; then
+            covering_check="true"
+            break
+        fi
+    done
+
+elif [[ ${purpose} = list ]]; then
+    echo "=========================="
+    for a in $(seq ${number_of_server}); do
+        purpose="list"
+        serverstartlist="${a}"
+        SERVER_LIST
+        . ${mc_settings_file_locations}/setting.txt
+        echo "${server_name}"
+        if [[ ${mc_run_server_status} = offline ]]; then
+            echo -e "┗   ${ECHO_RED_BOLD_COLOR}${mc_run_server_status}${ECHO_COLOR_EXIT}"
+        else
+            echo -e "┗   ${ECHO_GREEN_BOLD_COLOR}${mc_run_server_status}${ECHO_COLOR_EXIT}"
+        fi
+        echo "=========================="
+    done
+    if [[ -z $serverstartlist ]]; then
+        echo "サーバーが存在しません"
+        exit 0
+    fi
+
 else
+    if [[ -z $serverstartlist ]]; then
+        echo "${word}を入力してください"
+        read -p ">" serverstartlist
+        SERVER_LIST
+    fi
     export mc_settings_file_locations
     ${LIB_FILE_LOCATIONS}mc_server_run/server_default_manager
 fi

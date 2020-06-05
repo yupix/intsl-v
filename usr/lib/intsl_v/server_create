@@ -7,25 +7,22 @@ echo $input_server_name
 if [[ ! -e ${HOME_FILE_LOCATIONS}/intsl_v ]]; then
     mkdir ${HOME_FILE_LOCATIONS}/intsl_v
 fi
-if [[ ${setting_package_mode} = "false" ]]; then
-    if [[ -z ${INPUT_SERVER_DIRECTORY} ]]; then
-        if [[ ${default_mode} = "true" ]]; then
-            INPUT_SERVER_DIRECTORY=${INPUT_SERVER_DIRECTORY:-${HOME_FILE_LOCATIONS}intsl_v}
-        fi
+
+if [[ -z ${INPUT_SERVER_DIRECTORY} ]]; then
+    if [[ ${default_mode} = "true" ]]; then
+        INPUT_SERVER_DIRECTORY=${INPUT_SERVER_DIRECTORY:-${HOME_FILE_LOCATIONS}intsl_v}
     else
         echo "サーバーのディレクトリーを指定してください"
         echo "default: ${HOME_FILE_LOCATIONS}intsl_v"
         read -p ">" INPUT_SERVER_DIRECTORY
         INPUT_SERVER_DIRECTORY=${INPUT_SERVER_DIRECTORY:-${HOME_FILE_LOCATIONS}intsl_v}
     fi
-    if [[ ! -e ${INPUT_SERVER_DIRECTORY} ]]; then
-        mkdir -p ${INPUT_SERVER_DIRECTORY}
-    fi
-    mc_server_create_file_dir="$INPUT_SERVER_DIRECTORY"
-elif [[ ${setting_package_mode} = "true" ]]; then
-    mc_server_create_file_dir="${HOME}/intsl_v"
 fi
-
+#ファイルの確認
+if [[ ! -e ${INPUT_SERVER_DIRECTORY} ]]; then
+    mkdir -p ${INPUT_SERVER_DIRECTORY}
+fi
+mc_server_create_file_dir="$INPUT_SERVER_DIRECTORY"
 check_input_server_name="1"
 
 while [[ ${check_input_server_name} -gt "0" ]]; do
@@ -40,6 +37,12 @@ while [[ ${check_input_server_name} -gt "0" ]]; do
         echo -e "${ECHO_GREEN_BOLD_COLOR}文字のスペルチェックに成功${ECHO_COLOR_EXIT}"
     fi
 done
+purpose="get"
+. ${VAR_LIB_FILE_LOCATIONS}server_list
+if [[ ${covering_check} = "true" ]]; then
+    echo "$(tput bold && tput setaf 3)==> WARNING:$(tput sgr0) 既にサーバーリストに登録されています)"
+fi
+exit
 
 if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
     echo -e "${ECHO_YELLOW_BOLD_COLOR}==> WARNING: 既にディレクトリが存在します${ECHO_COLOR_EXIT}"
