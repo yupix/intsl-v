@@ -42,7 +42,6 @@ purpose="get"
 if [[ ${covering_check} = "true" ]]; then
     echo "$(tput bold && tput setaf 3)==> WARNING:$(tput sgr0) 既にサーバーリストに登録されています)"
 fi
-exit
 
 if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
     echo -e "${ECHO_YELLOW_BOLD_COLOR}==> WARNING: 既にディレクトリが存在します${ECHO_COLOR_EXIT}"
