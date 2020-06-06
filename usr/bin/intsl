@@ -78,7 +78,7 @@ EOF
 }
 spell_check_option() {
     if [[ -n "$VAR" ]]; then
-        if [ $VAR = "--type" -o $VAR = "--mcversion" -o $VAR = "--set-max-memory" -o $VAR = "--set-min-memory" -o $VAR = "--directory" -o $VAR = "--server-name" ]; then
+        if [ $VAR = "--type" -o $VAR = "--mcversion" -o $VAR = "--set-max-memory" -o $VAR = "--set-min-memory" -o $VAR = "--directory" -o $VAR = "--server-name" -o $VAR = "--default" ]; then
             echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) [ ${cache_option} ] オプションには引数が必要です"
             echo "原因: オプションにオプションが指定されています"
             exit 1
@@ -214,7 +214,6 @@ for OPT in "$@"; do
                 break
             fi
         done
-        echo "aaawwww"
         cache_option="--server-name"
         spell_check_option
         input_server_name="${VAR}"
