@@ -78,7 +78,7 @@ EOF
 }
 spell_check_option() {
     if [[ -n "$VAR" ]]; then
-        if [ $VAR = "--type" -o $VAR = "--mcversion" -o $VAR = "--set-max-memory" -o $VAR = "--set-min-memory" -o $VAR = "--directory" -o $VAR = "--server-name" -o $VAR = "--default" ]; then
+        if [ $VAR = "--type" -o $VAR = "--mcversion" -o $VAR = "--set-max-memory" -o $VAR = "--set-min-memory" -o $VAR = "--directory" -o $VAR = "--server-name" -o $VAR = "--default" -o $VAR = "--start" ]; then
             echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) [ ${cache_option} ] オプションには引数が必要です"
             echo "原因: オプションにオプションが指定されています"
             exit 1
@@ -111,6 +111,7 @@ for OPT in "$@"; do
         ;;
     --auto_remove)
         auto_remove="true"
+        export auto_remove
         ;;
     -V | --version)
         version
@@ -782,6 +783,11 @@ MC_SERVER_IMPORT() {
         exit 1
     fi
 }
+mc_server_remove() {
+    word="削除するサーバー名"
+    purpose="remove"
+    . ${VAR_LIB_FILE_LOCATIONS}server_list
+}
 #------------------------------------------------------------------------------#
 case $1 in
 #INTSL本体
@@ -972,7 +978,6 @@ mc)
         #サーバー管理オプション
         elif [[ ${2} = manage ]]; then
             word="管理するサーバー名"
-            serverstartlist="${3}"
             purpose="server_list"
             . ${VAR_LIB_FILE_LOCATIONS}server_list
         elif [[ ${2} = output ]]; then
@@ -980,6 +985,9 @@ mc)
         #サーバーインポートオプション
         elif [[ ${2} = import ]]; then
             MC_SERVER_IMPORT
+            exit 0
+        elif [[ ${2} = remove ]]; then
+            mc_server_remove
             exit 0
         fi
         echo "■ make   | サーバーを作成します"
@@ -1014,9 +1022,7 @@ mc)
             serverlistoutput
             ;;
         remove)
-            word="削除するサーバー名"
-            purpose="remove"
-            . ${VAR_LIB_FILE_LOCATIONS}server_list
+            mc_server_remove
             ;;
         esac
     done
