@@ -24,7 +24,6 @@ if [[ ! -e ${INPUT_SERVER_DIRECTORY} ]]; then
 fi
 mc_server_create_file_dir="$INPUT_SERVER_DIRECTORY"
 check_input_server_name="1"
-
 while [[ ${check_input_server_name} -gt "0" ]]; do
     # 変数内に/, #, !,-,',$,",(,),,,;,:があるか確認する
     check_input_server_name=$(echo $input_server_name | egrep '/|\#|\"|\;|\)|\!|\(|\:|\,|\-|'\' | wc -c)
@@ -37,12 +36,13 @@ while [[ ${check_input_server_name} -gt "0" ]]; do
         echo -e "${ECHO_GREEN_BOLD_COLOR}文字のスペルチェックに成功${ECHO_COLOR_EXIT}"
     fi
 done
+backup_input_server_name="${input_server_name}"
 purpose="get"
 . ${VAR_LIB_FILE_LOCATIONS}server_list
 if [[ ${covering_check} = "true" ]]; then
     echo "$(tput bold && tput setaf 3)==> WARNING:$(tput sgr0) 既にサーバーリストに登録されています)"
 fi
-
+input_server_name="${backup_input_server_name}"
 if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
     echo -e "${ECHO_YELLOW_BOLD_COLOR}==> WARNING: 既にディレクトリが存在します${ECHO_COLOR_EXIT}"
     echo "使用可能な代替案:"
@@ -79,7 +79,6 @@ if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
         esac
     done
 fi
-
 echo -e "${ECHO_GREEN_BOLD_COLOR}==> Createfile${ECHO_COLOR_EXIT}"
 
 echo -e "${ECHO_BLUE_BOLD_COLOR}  ->${ECHO_COLOR_EXIT} ${ECHO_WHITE_BOLD_COLOR}Running createfile hook: ${input_server_name}${ECHO_COLOR_EXIT}"
@@ -94,6 +93,10 @@ mc_donwload_version="$INPUT_SERVER_VERSION"
 if [ ${mc_server_edition} = official -o ${mc_server_edition} = spigot -o ${mc_server_edition} = paper ]; then
     srce_edision="server"
     cp ${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar ${mc_server_create_file_dir}/${input_server_name}
+elif [[ $mc_server_edition = forge ]];then
+    cp -r ${mc_server_jar_file}* ${mc_server_create_file_dir}/${input_server_name}
+    get_forge_file_name=$(find ${mc_server_jar_file}* -maxdepth 1 -name "*.jar" | grep "forge-${minecraft_version}" | awk -F/ '{print $NF}')
+    echo $get_forge_file_name
 fi
 
 . ${SETTING_FILE_LOCATIONS}settings
@@ -126,7 +129,7 @@ run_spinner
 if [[ -e $mc_server_create_file_dir/${input_server_name} ]]; then
     echo "サーバーファイルの作成に成功しました。"
     if [ -z "$SET_MAX_MEMORY" ]; then
-        SET_MIN_MEMORY=${SET_MAX_MEMORY:-1G}
+        SET_MAX_MEMORY=${SET_MAX_MEMORY:-1G}
     fi
     if [ -z "$SET_MIN_MEMORY" ]; then
         SET_MIN_MEMORY=${SET_MIN_MEMORY:-1G}

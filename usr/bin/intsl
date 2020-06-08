@@ -754,8 +754,13 @@ mc_server_version_list() {
         . ${LIB_FILE_LOCATIONS}mc_server_download
         ;;
     [4])
+        echo -e "$(tput bold && tput setaf 3)${message_system_warning}:$(tput sgr0) intsl vのForgeListは常に最新とは限りません! 更新があったら報告してください!"
+        echo -e "Github: https://github.com/yupix/intsl-v/issues"
+        echo -e "Gitlab: https://dev.akarinext.org/yupix/intsl-v/-/issues"
         mc_server_edition="forge"
-        echo "ComingSoon..."
+        echo "ForgeServer"
+        . ${LIB_FILE_LOCATIONS}forgeserver.sh
+        . ${LIB_FILE_LOCATIONS}mc_server_download
         ;;
     *)
         echo "数字を入力してください。"

@@ -41,12 +41,56 @@ run_spigot_build() {
     done
 }
 
+run_forge_install() {
+    create_temp=$(mktemp -d)
+    wget -q ${mc_server_jar_url} -P ${create_temp}
+    cd ${create_temp}
+    echo "TEMP: ${create_temp}"
+    echo "SCREENNAME: ${cryptography}"
+    #インストーラーを起動
+    get_forge_installer_name=$(find -maxdepth 1 -name "*.jar" | grep "forge-${minecraft_version}" | awk -F/ '{print $NF}')
+    screen -AdmS ${cryptography} java -jar ${get_forge_installer_name} nougi --installServer
+
+    while :; do
+        if [ "$(screen -ls | grep ${cryptography})" == "" ]; then
+            if [[ ${firstcount} = 1 ]]; then
+                echo -e "${ECHO_GREEN_BOLD_COLOR}==> Install Successful${ECHO_COLOR_EXIT}"
+                break
+            fi
+            spinner_progress_status="Forgeの準備中"
+            run_spinner
+            firstcount="1"
+        else
+            spinner_progress_status="Forgeのインストール中"
+            run_spinner
+        fi
+    done
+
+    if [[ $? = "1" ]]; then
+        echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) サーバーのインストールに失敗しました"
+    fi
+
+    #出力ファイルを拾う
+    get_forge_file_name=$(find -maxdepth 1 -name "*.jar" | grep "forge-${minecraft_version}" | awk -F/ '{print $NF}')
+
+    #ファイルを保存
+    #Forge本体
+    cd -
+    mkdir -p ${CACHE_FILE_LOCATIONS}minecraft_jar/forge/${minecraft_version}/${forge_type}
+    mv ${create_temp}/libraries ${CACHE_FILE_LOCATIONS}minecraft_jar/forge/${minecraft_version}/${forge_type}/libraries
+    find ${create_temp}* -maxdepth 1 -type f -name "*.jar" -exec mv {} ${CACHE_FILE_LOCATIONS}minecraft_jar/forge/${minecraft_version}/${forge_type} \;
+    rm -rf ${CACHE_FILE_LOCATIONS}minecraft_jar/forge/${minecraft_version}/${forge_type}/forge-${minecraft_version}-${mc_forge_version}-installer.jar
+    mc_server_create
+}
+
 cryptography=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 | sort | uniq)
 
-if [ ${mc_server_edition} = official -o ${mc_server_edition} = paper ]; then
+if [ ${mc_server_edition} = "official" -o ${mc_server_edition} = paper ]; then
     mc_server_jar_file="${CACHE_FILE_LOCATIONS}minecraft_jar/$mc_server_edition/"
-elif [[ ${mc_server_edition} = spigot ]]; then
+elif [[ ${mc_server_edition} = "spigot" ]]; then
     mc_server_jar_file="${CACHE_FILE_LOCATIONS}minecraft_jar/$mc_server_edition/"
+elif [[ ${mc_server_edition} = "forge" ]]; then
+    mc_server_jar_file="${CACHE_FILE_LOCATIONS}minecraft_jar/${mc_server_edition}/${minecraft_version}/${forge_type}/"
 fi
 mc_donwload_version="$INPUT_SERVER_VERSION"
 spinner_progress_status="${message_file_check}"
@@ -55,16 +99,16 @@ if [ -e ${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar ]; t
     echo "ファイルの確認に成功しました"
     mc_server_create
 else
-    if [[ ${INPUT_Y_OR_N} != "-y" ]]; then
-        echo "jarファイルが存在しません!ファイルをダウンロードしますか?"
-        echo "${message_use_possible}"
-    fi
     while :; do
         if [[ -e ${mc_server_jar_file}server${mc_donwload_version}.jar ]]; then
             echo "ファイルの確認に成功しました"
             break
             mc_server_create
         else
+            if [[ -e ${CACHE_FILE_LOCATIONS}minecraft_jar/${mc_server_edition}/${minecraft_version}/${forge_type} ]]; then
+                echo "ファイルの確認に成功しました"
+                mc_server_create
+            fi
             if [[ ${INPUT_Y_OR_N} != "-y" ]]; then
                 read -p ">" INPUT_Y_OR_N
                 INPUT_Y_OR_N=${INPUT_Y_OR_N:-y}
@@ -80,6 +124,8 @@ else
                         mc_server_create
                     elif [[ ${mc_server_edition} = spigot ]]; then
                         run_spigot_build
+                    elif [[ ${mc_server_edition} = forge ]]; then
+                        run_forge_install
                     else
                         if [[ ${get_pid_wget} != 0 ]]; then
                             wget -q ${mc_server_jar_url} -O ${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar &
