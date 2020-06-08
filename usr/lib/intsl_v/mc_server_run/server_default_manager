@@ -168,12 +168,13 @@ EOS
             spinner_progress_status="サーバーを起動中"
             run_spinner
             screen -AdmS ${mc_run_server_screen_name} ${mc_run_server_java_home} ${mc_run_server_jvm_argument} -jar ${mc_run_server_file_server_file} nogui
+
+            #PID取得用
+            getpid=$(screen -ls | grep ${mc_run_server_screen_name} | sed -e 's/\..*//')
+            sed -i -e 's/mc_run_server_pid="'"${mc_run_server_pid}"'"/mc_run_server_pid="'"${getpid}"'"/' ./setting.txt
         else
             echo "サーバーは既に起動しています。"
         fi
-
-        #PID取得用
-        getpid=$(screen -ls | grep ${mc_run_server_screen_name} | sed -e 's/[^0-9]//g')
         echo "SCREENNAME: ${mc_run_server_screen_name}"
         ;;
 
@@ -191,6 +192,10 @@ EOS
                 echo "サーバーは起動していません"
                 break
             else
+                if [[ $retrycount = 1 ]]; then
+                    echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) サーバー停止に失敗しました"
+                    break
+                fi
                 . ./setting.txt
                 kill ${mc_run_server_pid} >/dev/null 2>&1
                 retrycount="1"
@@ -218,10 +223,11 @@ EOS
         echo "| STATUS | BACKUP_STATUS |"
         ;;
     [bB][aA][cC][kK])
+        unset input_server_name
         break
         ;;
     #設定変更コマンド
-    [sS][eE][tT][iI][nN][gG][sS])
+    [sS][eE][tT][tT][iI][nN][gG][sS])
         if [[ -z "$server_dir" ]]; then
             server_dir="${mc_server_create_file_dir}/${input_server_name}"
             global_server_dir="$server_dir"
@@ -351,4 +357,5 @@ EOS
     *) ;;
         #変なキー入力受け付けたとき用
     esac
+    unset input_server_behavior
 done
