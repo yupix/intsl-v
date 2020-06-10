@@ -1,3 +1,5 @@
+image: yupix/intsl
+
 stages:
   - run_check
 #  - server_create_test
