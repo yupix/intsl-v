@@ -105,11 +105,13 @@ else
             break
             mc_server_create
         else
-            if [[ -e ${CACHE_FILE_LOCATIONS}minecraft_jar/${mc_server_edition}/${minecraft_version}/${forge_type} ]]; then
-                echo "ファイルの確認に成功しました"
-                mc_server_create
+            if [[ ${mc_server_edition} = "forge" ]]; then
+                if [[ -e ${CACHE_FILE_LOCATIONS}minecraft_jar/${mc_server_edition}/${minecraft_version}/${forge_type} ]]; then
+                    echo "ファイルの確認に成功しました"
+                    mc_server_create
+                fi
             fi
-            if [[ ${INPUT_Y_OR_N} != "-y" ]]; then
+            if [[ -z ${INPUT_Y_OR_N} ]]; then
                 read -p ">" INPUT_Y_OR_N
                 INPUT_Y_OR_N=${INPUT_Y_OR_N:-y}
             fi
