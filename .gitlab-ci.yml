@@ -1,18 +1,29 @@
 image: yupix/intsl
 
 stages:
-  - run_check
-#  - server_create_test
+  - local_check
+  - package_check
+  # - server_create
 
-test:
+local_check:
     tags:
         - linux
         - archlinux
         - docker
-    stage: run_check
+    stage: local_check
     script:
         - export PATH="$(pwd)/usr/bin:$PATH"
         - intsl -V
+
+package_chest:
+    tags:
+        - linux
+        - archlinux
+        - docker
+    stage: package_check
+    script:
+        - intsl -V
+
 
 #server_create_test:
 #    tags:
