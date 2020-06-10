@@ -239,7 +239,7 @@ trap 'echo "安全性の為INTSLをCtrl + C で終了することは推奨され
 get_optision=$(echo $@ | grep -o "\-f")
 #コマンド
 first_start() {
-    if [[ ${get_optision} != "-f" ]]; then
+    if [[ -z "${force_mode}" ]]; then
         #/をつける
         if [[ ${setting_package_mode} = "true" ]]; then
             local max_settings="2"

@@ -31,7 +31,7 @@ package_check:server_create:
         - docker
     stage: package_check
     script:
-        - intsl mc make --type 1 --mcversion 1.8 --server-name aa -y
+        - intsl mc make --type 1 --mcversion 1.8 --server-name aa -y --force
 
 #server_create_test:
 #    tags:
