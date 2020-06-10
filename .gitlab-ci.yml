@@ -15,7 +15,7 @@ local_check:
         - export PATH="$(pwd)/usr/bin:$PATH"
         - intsl -V
 
-package_chest:
+package_check:
     tags:
         - linux
         - archlinux
@@ -24,6 +24,14 @@ package_chest:
     script:
         - intsl -V
 
+package_check:server_create:
+    tags:
+        - linux
+        - archlinux
+        - docker
+    stage: package_check
+    script:
+        - intsl mc make --type 1 --mcversion 1.8 --server-name aa -y
 
 #server_create_test:
 #    tags:
