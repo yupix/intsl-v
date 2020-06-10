@@ -19,7 +19,6 @@ SELF_DIR_PATH=$(
     cd $(dirname $0)
     pwd
 )/
-#TODO: -fオプションでサーバーディレクトリーを削除する様に
 
 #その他使用ファイルの存在確認
 if [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/official" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/spigot" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/paper" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/forge" -o ! -e "${LIB_FILE_LOCATIONS}" -o ! -e "${USR_SHARE_FILE_LOCATIONS}doc/intsl_v/" -o ! -e "${USR_SHARE_FILE_LOCATIONS}intsl_v/locale" -o ! -e "${SETTING_FILE_LOCATIONS}" ]; then
@@ -35,6 +34,7 @@ if [ ! -e "${SETTING_FILE_LOCATIONS}settings" -o ! -e "${VARIABLE_FILE_LOCATIONS
     echo "復元を試みますか?"
     echo "Coming Soon..."
 fi
+
 usage_exit() {
     cat <<EOF
 ##========================================##
@@ -52,6 +52,14 @@ usage_exit() {
 optionには次のものがあります。
     -h (--help)         ヘルプを表示します        
     -v (--version)      INTSLのバージョンを表示します
+    --start             サーバーを起動します
+    --type              サーバーなどのタイプを取得します
+    --mcversion         サーバーのバージョンを選択します
+    --set-max-memory    最大メモリを指定します
+    --set-min-memory    最小メモリを指定します
+    --directory         ディレクトリーを指定します
+    --server-name       サーバー名を指定します
+    --default           デフォルト設定を使用して一部入力を省略します
     --auto_remove       サーバーのファイル削除時などにファイルを削除します
 詳しくは https://dev.akarinext.org/yupix/intsl-v を参照してください。
 EOF
@@ -762,6 +770,9 @@ mc_server_version_list() {
         . ${LIB_FILE_LOCATIONS}forgeserver.sh
         . ${LIB_FILE_LOCATIONS}mc_server_download
         ;;
+    [9])
+        echo "使用するJARを選択してください"
+        ;;
     *)
         echo "数字を入力してください。"
         ;;
@@ -1009,6 +1020,7 @@ mc)
             echo "❘   3. SpigotServer   4. ForgeServer  ❘"
             echo "❘   5. SpongeServer   6. BungeeCord   ❘"
             echo "❘   7. WaterFall      8. Travertine   ❘"
+            echo "❘   9. カスタムJAR                    ❘"
             mc_server_version_list
             ;;
         manage)
