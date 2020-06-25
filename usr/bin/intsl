@@ -1067,34 +1067,30 @@ discord)
     ;;
 *)
 
-    echo -e "\033[1;37m##========================================##\033[0;39m"
-    echo "##██╗███╗   ██╗████████╗███████╗██╗       ##"
-    echo "##██║████╗  ██║╚══██╔══╝██╔════╝██║       ##"
-    echo "##██║██╔██╗ ██║   ██║   ███████╗██║       ##"
-    echo "##██║██║╚██╗██║   ██║   ╚════██║██║       ##"
-    echo "##██║██║ ╚████║   ██║   ███████║███████╗  ##"
-    echo "##╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚══════╝  ##"
-    echo -e "\033[1;37m##========================================##\033[0;39m"
-    echo -e "${ECHO_RED_COLOR}main${ECHO_COLOR_EXIT}: メイン機能を使用可能です"
-    echo -e "   └   ${ECHO_RED_COLOR}extension${ECHO_COLOR_EXIT}: 拡張機能を管理します"
-    echo -e "       └   ${ECHO_RED_COLOR}use${ECHO_COLOR_EXIT}: 拡張機能を使用します"
-    echo -e "       └   ${ECHO_RED_COLOR}list${ECHO_COLOR_EXIT}: 拡張機能の一覧を表示します"
-    echo -e "       └   ${ECHO_RED_COLOR}import${ECHO_COLOR_EXIT}: 拡張機能をインポートします"
-    echo -e "       └   ${ECHO_RED_COLOR}vcheck${ECHO_COLOR_EXIT}: 拡張機能の更新を確認 /更新 します"
-    echo -e "       └   ${ECHO_RED_COLOR}cloud${ECHO_COLOR_EXIT}: クラウドから拡張機能をダウンロードします"
-    echo -e "${ECHO_RED_COLOR}mc${ECHO_COLOR_EXIT}: Minecraftに関する機能を使用可能です"
-    echo -e "   └   ${ECHO_RED_COLOR}make${ECHO_COLOR_EXIT}: サーバーを作成します"
-    echo -e "   └   ${ECHO_RED_COLOR}manage${ECHO_COLOR_EXIT}: サーバーを管理します"
-    echo -e "   └   ${ECHO_RED_COLOR}list${ECHO_COLOR_EXIT}: サーバーリストを表示します"
-    echo -e "   └   ${ECHO_RED_COLOR}export${ECHO_COLOR_EXIT}: サーバーリストを出力します"
-    echo -e "   └   ${ECHO_RED_COLOR}import${ECHO_COLOR_EXIT}: サーバーリストをインポートします"
-    echo -e "   └   ${ECHO_RED_COLOR}remove${ECHO_COLOR_EXIT}: サーバーを削除します"
-    #echo -e "\033[0;31mdiscord\033[1;39m: Discordに関する機能を開始します"
-    #echo -e "   └   \033[0;31meew\033[1;39m: eewBotをスタートします"
-    #echo -e "       └   \033[0;31mstart\033[1;39m: EEWBotを起動します"
-    #echo -e "   └   \033[0;31mjmusic\033[1;39m: JMusiBotをスタートします"
-    #echo -e "       └   \033[0;31mstart\033[1;39m: JMusicBotを起動します"
-    ;;
+cat | sed -e 's/ - /  └  /g' -e 's/- -/       └  /g' <<EOF
+##========================================##
+##██╗███╗   ██╗████████╗███████╗██╗       ##
+##██║████╗  ██║╚══██╔══╝██╔════╝██║       ##"
+##██║██╔██╗ ██║   ██║   ███████╗██║       ##
+##██║██║╚██╗██║   ██║   ╚════██║██║       ##
+##██║██║ ╚████║   ██║   ███████║███████╗  ##
+##╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚══════╝  ##
+##========================================##
+`tput setaf 1`main`tput sgr0 && tput bold`: メイン機能を使うことの宣言`tput sgr0`
+ - `tput setaf 1`extension`tput sgr0 && tput bold`: 拡張機能を管理します`tput sgr0`
+- -`tput setaf 1`use`tput sgr0 && tput bold`: 拡張機能を使用します`tput sgr0`
+- -`tput setaf 1`list`tput sgr0 && tput bold`: 拡張機能の一覧を表示します`tput sgr0`
+- -`tput setaf 1`import`tput sgr0 && tput bold`: 拡張機能をインポートします`tput sgr0`
+- -`tput setaf 1`vcheck`tput sgr0 && tput bold`: 拡張機能の更新を確認 /更新 します`tput sgr0`
+- -`tput setaf 1`cloud`tput sgr0 && tput bold`: クラウドから拡張機能をダウンロードします`tput sgr0`
+`tput setaf 1`mc`tput sgr0 && tput bold`: Minecraftに関する機能を使うことの宣言`tput sgr0`
+ - `tput setaf 1`extension`tput sgr0 && tput bold`: サーバーを作成します`tput sgr0`
+ - `tput setaf 1`manage`tput sgr0 && tput bold`: サーバーを管理します`tput sgr0`
+ - `tput setaf 1`list`tput sgr0 && tput bold`: サーバーリストを表示します`tput sgr0`
+ - `tput setaf 1`export`tput sgr0 && tput bold`: サーバーリストを出力します`tput sgr0`
+ - `tput setaf 1`import`tput sgr0 && tput bold`: サーバーリストをインポートします`tput sgr0`
+ - `tput setaf 1`remove`tput sgr0 && tput bold`: サーバーを削除します`tput sgr0`
+EOF
 esac
 
 exit 0
