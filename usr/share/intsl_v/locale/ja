@@ -13,7 +13,7 @@ readonly message_use_possible="使用可能 (Y)es (N)o default(Y)es"
 readonly message_available_languages="| ja | en | (Default = ja)"
 readonly message_nonexistent_language="存在しない言語または、対応中の言語です。"
 readonly message_system_warning="注意"
-readonly message_system_error="警告"
+readonly message_system_error="エラー"
 readonly message_system_canceled="キャンセルしました"
 
 

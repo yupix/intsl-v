@@ -1,16 +1,37 @@
-stages:
-  - run_check
-#  - server_create_test
+image: yupix/intsl
 
-test:
+stages:
+  - local_check
+  - package_check
+  # - server_create
+
+local_check:
     tags:
         - linux
         - archlinux
         - docker
-    stage: run_check
+    stage: local_check
     script:
         - export PATH="$(pwd)/usr/bin:$PATH"
-        - intsl
+        - intsl -V
+
+package_check:
+    tags:
+        - linux
+        - archlinux
+        - docker
+    stage: package_check
+    script:
+        - intsl -V
+
+package_check:server_create:
+    tags:
+        - linux
+        - archlinux
+        - docker
+    stage: package_check
+    script:
+        - intsl mc make --type 1 --mcversion 1.8 --server-name aa -y --force
 
 #server_create_test:
 #    tags:

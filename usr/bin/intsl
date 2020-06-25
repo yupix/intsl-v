@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-#/をつける
 #--------------------------------<<外部ファイル読み込み>>--------------------------------#
 #ディレクトリー設定
 . etc/intsl_v/directory
@@ -19,7 +18,6 @@ SELF_DIR_PATH=$(
     cd $(dirname $0)
     pwd
 )/
-#TODO: -fオプションでサーバーディレクトリーを削除する様に
 
 #その他使用ファイルの存在確認
 if [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/official" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/spigot" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/paper" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/forge" -o ! -e "${LIB_FILE_LOCATIONS}" -o ! -e "${USR_SHARE_FILE_LOCATIONS}doc/intsl_v/" -o ! -e "${USR_SHARE_FILE_LOCATIONS}intsl_v/locale" -o ! -e "${SETTING_FILE_LOCATIONS}" ]; then
@@ -35,6 +33,7 @@ if [ ! -e "${SETTING_FILE_LOCATIONS}settings" -o ! -e "${VARIABLE_FILE_LOCATIONS
     echo "復元を試みますか?"
     echo "Coming Soon..."
 fi
+
 usage_exit() {
     cat <<EOF
 ##========================================##
@@ -52,25 +51,194 @@ usage_exit() {
 optionには次のものがあります。
     -h (--help)         ヘルプを表示します        
     -v (--version)      INTSLのバージョンを表示します
+    --start             サーバーを起動します
+    --type              サーバーなどのタイプを取得します
+    --mcversion         サーバーのバージョンを選択します
+    --set-max-memory    最大メモリを指定します
+    --set-min-memory    最小メモリを指定します
+    --directory         ディレクトリーを指定します
+    --server-name       サーバー名を指定します
+    --default           デフォルト設定を使用して一部入力を省略します
     --auto_remove       サーバーのファイル削除時などにファイルを削除します
 詳しくは https://dev.akarinext.org/yupix/intsl-v を参照してください。
 EOF
-    exit 1
+    exit 0
 }
 
 version() {
     regular_version=$(echo "${INTSL_V_VERSION}" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
-    echo "VERSION:          ${regular_version}"
-    echo "BUILD VERSION:    ${INTSL_V_BUILDVERSION}"
-    echo "CODENAME:         ${INTSL_V_CODENAME}"
-    echo "${regular_version}-${INTSL_V_BUILDVERSION}-${INTSL_V_CODENAME}"
+    cat <<EOF
+MMMMMMMMMMMMNMMMMMMMMMMMM
+MMMMMMMMMMMs:hMMMMMMMMMMM       
+MMNsooyNMNo:::yMMmsooyMMM       
+MMMm/::+m+-:::-sd/::oNMMM
+MMMMN+-:/:::-:::/::yMMMMM       INTEGRATION SHELL V v${regular_version}
+MMMNNmo////://////yNMNMMM       Copyright (C) 2020 Pimc Intsl Development Team
+MMMNMMNy///////:/mMMMNMMM
+MMMNo++oh/::/::+ho++yMMMM
+MMm/-:/hmh::::/dmy:::oNMM       This program may be freely redistributed under
+Md::::-:/:----://:-:::/NM       the terms of the Mozilla Public License Version 2.0
+NhyyyyyyyyyyyyyyyyyyyyyhM
+MMMMMMMMMMMMMMMMMMMMMMMMM
+EOF
+    exit 0
 }
+spell_check_option() {
+    if [[ -n "$VAR" ]]; then
+        if [ $VAR = "--type" -o $VAR = "--mcversion" -o $VAR = "--set-max-memory" -o $VAR = "--set-min-memory" -o $VAR = "--directory" -o $VAR = "--server-name" -o $VAR = "--default" -o $VAR = "--start" ]; then
+            echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) [ ${cache_option} ] オプションには引数が必要です"
+            echo "原因: オプションにオプションが指定されています"
+            exit 1
+        fi
+    else
+        if [ ${cache_option} = "--type" -o ${cache_option} = "--mcversion" ]; then
+            echo "$(tput bold && tput setaf 3)${message_system_warning}:$(tput sgr0) [ ${cache_option} ] オプションには引数が必要です。"
+            echo "不要なオプションは予期せぬ不具合の原因になります"
+        fi
+    fi
+}
+spell_check_memory_option() {
+    UNIT_CHECK=$(echo ${VAR} | grep -o -e "G" -e "M")
+    SED_UNIT=$(echo ${VAR} | sed -e 's/[^0-9]//g')
+    if [[ ${UNIT_CHECK,,} = "g" ]]; then
+        echo "dummy text" >/dev/null
+    elif [[ ${UNIT_CHECK,,} = "m" ]]; then
+        if [[ ${SED_UNIT} -lt "512" ]]; then
+            echo "$(tput bold && tput setaf 3)${message_system_warning}:$(tput sgr0) メモリが512MBを下回っています (指定されたメモリ: ${VAR,,})"
+            echo "あまりにも低すぎるメモリはサーバーのパフォーマンスを低下させます"
+        fi
+    else
+        echo "メモリの指定には(G)Bまたは(M)Bが使用可能です"
+    fi
+}
+for OPT in "$@"; do
+    case ${OPT} in
+    -y)
+        INPUT_Y_OR_N="y"
+        ;;
+    --auto_remove)
+        auto_remove="true"
+        export auto_remove
+        ;;
+    -V | --version)
+        version
+        ;;
+    -h | --help)
+        usage_exit
+        ;;
+    -f | --force)
+        force_mode="TRUE"
+        ;;
+    --start)
+        input_server_behavior="start"
+        ;;
+    --type)
+        for i in $(seq $#); do
+            VAR=$(eval echo '$'$i)
+            if [[ $VAR = "--type" ]]; then
+                count=$(($i + 1))
+                VAR=$(eval echo '$''{'$count'}')
+                break
+            fi
+        done
+        cache_option="--type"
+        spell_check_option
+        input_server_type="${VAR}"
+        ;;
+    --mcversion)
+        for a in $(seq $#); do
+            VAR=$(eval echo '$''{'$a'}')
+            if [[ $VAR = "--mcversion" ]]; then
+                count=$(($a + 1))
+                VAR=$(eval echo '$''{'$count'}')
+                break
+            fi
+        done
+        cache_option="--mcversion"
+        spell_check_option
+        INPUT_SERVER_VERSION="${VAR}"
+        ;;
+    --set-max-memory)
+        for a in $(seq $#); do
+            VAR=$(eval echo '$''{'$a'}')
+            if [[ $VAR = "--set-max-memory" ]]; then
+                count=$(($a + 1))
+                VAR=$(eval echo '$''{'$count'}')
+                break
+            fi
+        done
+        cache_option="--set-max-memory"
+        spell_check_option
+        spell_check_memory_option
+        SET_MAX_MEMORY="${VAR,,}"
+        ;;
+    --set-min-memory)
+        for a in $(seq $#); do
+            VAR=$(eval echo '$''{'$a'}')
+            if [[ $VAR = "--set-min-memory" ]]; then
+                count=$(($a + 1))
+                VAR=$(eval echo '$''{'$count'}')
+                break
+            fi
+        done
+        if [[ -z "${SET_MAX_MEMORY}" ]]; then
+            echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) 最大メモリが指定されていません [ --set-max-memory ] を使って指定してください"
+            echo "原因: [ --set-max-memory ] が指定されていない、または [ --set-min-memory ] よりあとにあります"
+            exit 1
+        else
+            SED_MEMORY_MAX_UNIT=$(echo ${SET_MAX_MEMORY} | sed -e 's/[^0-9]//g')
+            SED_MEMORY_MIN_UNIT=$(echo ${VAR} | sed -e 's/[^0-9]//g')
+            if [[ ${SED_MEMORY_MAX_UNIT} -lt ${SED_MEMORY_MIN_UNIT} ]]; then
+                echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) 最小メモリが最大メモリを上回っています"
+                echo "解決方法: 最小メモリを最大メモリと同じ、または以下にしてください"
+                exit 1
+            fi
+        fi
+        cache_option="--set-min-memory"
+        spell_check_option
+        spell_check_memory_option
+        SET_MIN_MEMORY="${VAR,,}"
+        ;;
+    --directory)
+        for a in $(seq $#); do
+            VAR=$(eval echo '$''{'$a'}')
+            if [[ $VAR = "--directory" ]]; then
+                count=$(($a + 1))
+                VAR=$(eval echo '$''{'$count'}')
+                echo "$VAR"
+                break
+            fi
+        done
+        cache_option="--directory"
+        spell_check_option
+        INPUT_SERVER_DIRECTORY="$VAR"
+        ;;
+    --server-name)
+        for a in $(seq $#); do
+            VAR=$(eval echo '$''{'$a'}')
+            if [[ $VAR = "--server-name" ]]; then
+                count=$(($a + 1))
+                VAR=$(eval echo '$''{'$count'}')
+                break
+            fi
+        done
+        cache_option="--server-name"
+        spell_check_option
+        input_server_name="${VAR}"
+        ;;
+    --default)
+        default_mode="true"
+        ;;
+    esac
 
+done
+
+trap 'echo "安全性の為INTSLをCtrl + C で終了することは推奨されません";exit 1' 2
 #オプション取得
 get_optision=$(echo $@ | grep -o "\-f")
 #コマンド
 first_start() {
-    if [[ ${get_optision} != "-f" ]]; then
+    if [[ -z "${force_mode}" ]]; then
         #/をつける
         if [[ ${setting_package_mode} = "true" ]]; then
             local max_settings="2"
@@ -219,7 +387,7 @@ vcheck() {
                 regular_version=$(echo "$NEWVERSION" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
                 if [[ $NEWVERSION -gt ${INTSL_V_VERSION} ]]; then
                     echo "$message_update_exists"
-                    echo -e "${ECHO_RED_COLOR}Current: INTSL-V-${INTSL_V_VERSION}${ECHO_COLOR_EXIT} ->  ${ECHO_GREEN_COLOR}New: INTSL-V-${regular_version}${ECHO_COLOR_EXIT}"
+                    echo -e "${ECHO_RED_BOLD_COLOR}Current: INTSL-V-${INTSL_V_VERSION}${ECHO_COLOR_EXIT} ->  ${ECHO_GREEN_BOLD_COLOR}New: INTSL-V-${regular_version}${ECHO_COLOR_EXIT}"
                     cat <<EOS
 ${message_downalod_file}
 ${message_use_possible}
@@ -241,7 +409,7 @@ EOS
                             echo "ファイルの解凍に成功"
                             sudo cp -r ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}/. .
                         else
-                            echo -e "${ECHO_RED_COLOR}${message_system_error}:${ECHO_COLOR_EXIT} ファイルの解凍に失敗しました"
+                            echo -e "${ECHO_RED_BOLD_COLOR}${message_system_error}:${ECHO_COLOR_EXIT} ファイルの解凍に失敗しました"
                             echo "Systemを保護するためにサービスを終了します。"
                             break
                         fi
@@ -521,7 +689,7 @@ DEVELOPER_LOGIN() {
                 echo "認証に成功"
                 break
             else
-                echo -e "${ECHO_RED_COLOR}認証に失敗${ECHO_COLOR_EXIT}"
+                echo -e "${ECHO_RED_BOLD_COLOR}認証に失敗${ECHO_COLOR_EXIT}"
                 exit 1
             fi
         else
@@ -568,7 +736,7 @@ mc_server_version_list() {
         read -p ">" input_server_type
     fi
     case ${input_server_type} in
-    [1])
+    [1] | [oO][fF][fF][iI][cC][iI][aA][lL])
         echo -e "VersionList:|1.2.5|1.3.1|1.3.2|1.4.2|1.4.4|1.4.5|1.4.6|1.4.7|1.5.2|1.5.2|1.6.1|1.6.2|1.6.4|" &&
             echo -e "|1.7.2|1.7.5|1.7.6|1.7.7|1.7.8|1.7.9|1.7.10|1.8|1.8.1|1.8.2|1.8.3|1.8.4|1.8.5|1.8.6|1.8.7|1.8.8|1.8.9|" &&
             echo -e "|1.9|1.9.1|1.9.2|1.9.3|1.9.4|1.10|1.10.1|1.10.2|1.11|1.11.1|1.11.2|1.12|1.12.1|1.12.2|1.13|1.13.1|1.13.2|" &&
@@ -579,22 +747,30 @@ mc_server_version_list() {
         . ${LIB_FILE_LOCATIONS}mc_server_download
         exit 0
         ;;
-    [2])
+    [2] | [pP][aA][pP][eE][rR])
         mc_server_edition="paper"
         echo "PaperServer"
         echo -e "VersionList: | \033[1;37m1.7.10\033[0;39m | \033[1;37m1.8.8\033[0;39m | \033[1;37m1.9.4\033[0;39m | \033[1;37m1.10.2\033[0;39m | \033[1;37m1.11.2\033[0;39m | \033[1;37m1.12.2\033[0;39m | \033[1;37m1.13.2\033[0;39m | \033[1;37m1.14.4\033[0;39m | \033[1;37m1.15.2\033[0;39m |"
         . ${LIB_FILE_LOCATIONS}paperserver.sh
         . ${LIB_FILE_LOCATIONS}mc_server_download
         ;;
-    [3])
+    [3] | [sS][pP][iI][gG][oO][tT])
         mc_server_edition="spigot"
         echo "SpigotServer"
         . ${LIB_FILE_LOCATIONS}spigotserver.sh
         . ${LIB_FILE_LOCATIONS}mc_server_download
         ;;
     [4])
+        echo -e "$(tput bold && tput setaf 3)${message_system_warning}:$(tput sgr0) intsl vのForgeListは常に最新とは限りません! 更新があったら報告してください!"
+        echo -e "Github: https://github.com/yupix/intsl-v/issues"
+        echo -e "Gitlab: https://dev.akarinext.org/yupix/intsl-v/-/issues"
         mc_server_edition="forge"
-        echo "ComingSoon..."
+        echo "ForgeServer"
+        . ${LIB_FILE_LOCATIONS}forgeserver.sh
+        . ${LIB_FILE_LOCATIONS}mc_server_download
+        ;;
+    [9])
+        echo "使用するJARを選択してください"
         ;;
     *)
         echo "数字を入力してください。"
@@ -621,6 +797,11 @@ MC_SERVER_IMPORT() {
         echo "データをOUTPUTしてから再度実行してください。"
         exit 1
     fi
+}
+mc_server_remove() {
+    word="削除するサーバー名"
+    purpose="remove"
+    . ${VAR_LIB_FILE_LOCATIONS}server_list
 }
 #------------------------------------------------------------------------------#
 case $1 in
@@ -808,17 +989,10 @@ mc)
     while :; do
         #サーバー作成オプション
         if [[ ${2} = "make" ]]; then
-            input_server_type="${3}"
-            if [[ -n ${4} ]]; then
-                INPUT_SERVER_VERSION="${4}"
-            fi
-            input_server_name="${5}"
-            INPUT_Y_OR_N="${6}"
             mc_server_version_list
         #サーバー管理オプション
         elif [[ ${2} = manage ]]; then
             word="管理するサーバー名"
-            serverstartlist="${3}"
             purpose="server_list"
             . ${VAR_LIB_FILE_LOCATIONS}server_list
         elif [[ ${2} = output ]]; then
@@ -826,6 +1000,9 @@ mc)
         #サーバーインポートオプション
         elif [[ ${2} = import ]]; then
             MC_SERVER_IMPORT
+            exit 0
+        elif [[ ${2} = remove ]]; then
+            mc_server_remove
             exit 0
         fi
         echo "■ make   | サーバーを作成します"
@@ -842,6 +1019,7 @@ mc)
             echo "❘   3. SpigotServer   4. ForgeServer  ❘"
             echo "❘   5. SpongeServer   6. BungeeCord   ❘"
             echo "❘   7. WaterFall      8. Travertine   ❘"
+            echo "❘   9. カスタムJAR                    ❘"
             mc_server_version_list
             ;;
         manage)
@@ -860,9 +1038,7 @@ mc)
             serverlistoutput
             ;;
         remove)
-            word="削除するサーバー名"
-            purpose="remove"
-            . ${VAR_LIB_FILE_LOCATIONS}server_list
+            mc_server_remove
             ;;
         esac
     done

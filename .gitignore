@@ -1,16 +1,19 @@
-#テスト用Shell
+#==========<>> < INTSL > <<>==============#
+
+# Developer files #
 test.sh
-#パッケージ用Shell
-create_package
-#ダミーファイル
-dummy
-#JAR系
-*.jar
-#一時フォルダ
-tmp
-#開発者用のパスワードファイル
-dev_pass
-#新バージョンのデータ記載ファイル
+auto_push
+
+# Dependency directories #
 new-version.txt
-#node_modules
+dev_pass
+
+#==========<>> < JAVA  > <<>==============#
+
+# Package Files #
+*.jar
+
+#==========<>> < YARN  > <<>==============#
+
+# Dependency directories #
 node_modules
