@@ -89,6 +89,8 @@ INTSLの際なかった機能一覧です
 - curl
 - wget
 - screen
+- [gron](https://github.com/tomnomnom/gron)
+  - [archlinux](https://aur.archlinux.org/packages/gron/)
 
 ### テスト済みOS
 
