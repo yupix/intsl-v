@@ -120,7 +120,7 @@ INTSLの際なかった機能一覧です
 ### 推奨JAVA
 
 - [Amazon Corretto 8](https://docs.aws.amazon.com/ja_jp/corretto/latest/corretto-8-ug/downloads-list.html)
-- [AdoptOpenJDK](https://adoptopenjdk.net/)
+- [AdoptOpenJDK](https://adoptopenjdk.net/)  
     ┗ArchLinuxの場合は[こちら](https://github.com/TeamOrangeServer/jdk8-adoptopenjdk-openj9)を使用できます
 
 ### 推奨Shell
