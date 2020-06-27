@@ -3,6 +3,7 @@
 # Developer files #
 test.sh
 auto_push
+dummy
 
 # Dependency directories #
 new-version.txt

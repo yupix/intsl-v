@@ -24,7 +24,7 @@ if [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/official" -o ! -e "${CACHE_FILE_
     echo "intslを使用する上で必要なファイルが不足しています。"
     echo "不足しているファイルを作成する為、sudoのパスワードを入力してください。"
     sudo mkdir -p ${CACHE_FILE_LOCATIONS}minecraft_jar/official ${CACHE_FILE_LOCATIONS}minecraft_jar/spigot ${CACHE_FILE_LOCATIONS}minecraft_jar/paper ${CACHE_FILE_LOCATIONS}minecraft_jar/forge \
-        ${LIB_FILE_LOCATIONS} ${USR_SHARE_FILE_LOCATIONS}doc/intsl_v/ ${USR_SHARE_FILE_LOCATIONS}intsl_v/locale ${SETTING_FILE_LOCATIONS}
+    ${LIB_FILE_LOCATIONS} ${USR_SHARE_FILE_LOCATIONS}doc/intsl_v/ ${USR_SHARE_FILE_LOCATIONS}intsl_v/locale ${SETTING_FILE_LOCATIONS}
 fi
 
 #基本システムファイルの存在確認
@@ -49,7 +49,7 @@ usage_exit() {
     または intsl main [-options] [args...]
             (標準機能を使う場合)
 optionには次のものがあります。
-    -h (--help)         ヘルプを表示します        
+    -h (--help)         ヘルプを表示します
     -v (--version)      INTSLのバージョンを表示します
     --start             サーバーを起動します
     --type              サーバーなどのタイプを取得します
@@ -69,8 +69,8 @@ version() {
     regular_version=$(echo "${INTSL_V_VERSION}" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
     cat <<EOF
 MMMMMMMMMMMMNMMMMMMMMMMMM
-MMMMMMMMMMMs:hMMMMMMMMMMM       
-MMNsooyNMNo:::yMMmsooyMMM       
+MMMMMMMMMMMs:hMMMMMMMMMMM
+MMNsooyNMNo:::yMMmsooyMMM
 MMMm/::+m+-:::-sd/::oNMMM
 MMMMN+-:/:::-:::/::yMMMMM       INTEGRATION SHELL V v${regular_version}
 MMMNNmo////://////yNMNMMM       Copyright (C) 2020 Pimc Intsl Development Team
@@ -102,7 +102,7 @@ spell_check_memory_option() {
     SED_UNIT=$(echo ${VAR} | sed -e 's/[^0-9]//g')
     if [[ ${UNIT_CHECK,,} = "g" ]]; then
         echo "dummy text" >/dev/null
-    elif [[ ${UNIT_CHECK,,} = "m" ]]; then
+        elif [[ ${UNIT_CHECK,,} = "m" ]]; then
         if [[ ${SED_UNIT} -lt "512" ]]; then
             echo "$(tput bold && tput setaf 3)${message_system_warning}:$(tput sgr0) メモリが512MBを下回っています (指定されたメモリ: ${VAR,,})"
             echo "あまりにも低すぎるメモリはサーバーのパフォーマンスを低下させます"
@@ -113,124 +113,124 @@ spell_check_memory_option() {
 }
 for OPT in "$@"; do
     case ${OPT} in
-    -y)
-        INPUT_Y_OR_N="y"
+        -y)
+            INPUT_Y_OR_N="y"
         ;;
-    --auto_remove)
-        auto_remove="true"
-        export auto_remove
+        --auto_remove)
+            auto_remove="true"
+            export auto_remove
         ;;
-    -V | --version)
-        version
+        -V | --version)
+            version
         ;;
-    -h | --help)
-        usage_exit
+        -h | --help)
+            usage_exit
         ;;
-    -f | --force)
-        force_mode="TRUE"
+        -f | --force)
+            force_mode="TRUE"
         ;;
-    --start)
-        input_server_behavior="start"
+        --start)
+            input_server_behavior="start"
         ;;
-    --type)
-        for i in $(seq $#); do
-            VAR=$(eval echo '$'$i)
-            if [[ $VAR = "--type" ]]; then
-                count=$(($i + 1))
-                VAR=$(eval echo '$''{'$count'}')
-                break
-            fi
-        done
-        cache_option="--type"
-        spell_check_option
-        input_server_type="${VAR}"
+        --type)
+            for i in $(seq $#); do
+                VAR=$(eval echo '$'$i)
+                if [[ $VAR = "--type" ]]; then
+                    count=$(($i + 1))
+                    VAR=$(eval echo '$''{'$count'}')
+                    break
+                fi
+            done
+            cache_option="--type"
+            spell_check_option
+            input_server_type="${VAR}"
         ;;
-    --mcversion)
-        for a in $(seq $#); do
-            VAR=$(eval echo '$''{'$a'}')
-            if [[ $VAR = "--mcversion" ]]; then
-                count=$(($a + 1))
-                VAR=$(eval echo '$''{'$count'}')
-                break
-            fi
-        done
-        cache_option="--mcversion"
-        spell_check_option
-        INPUT_SERVER_VERSION="${VAR}"
+        --mcversion)
+            for a in $(seq $#); do
+                VAR=$(eval echo '$''{'$a'}')
+                if [[ $VAR = "--mcversion" ]]; then
+                    count=$(($a + 1))
+                    VAR=$(eval echo '$''{'$count'}')
+                    break
+                fi
+            done
+            cache_option="--mcversion"
+            spell_check_option
+            INPUT_SERVER_VERSION="${VAR}"
         ;;
-    --set-max-memory)
-        for a in $(seq $#); do
-            VAR=$(eval echo '$''{'$a'}')
-            if [[ $VAR = "--set-max-memory" ]]; then
-                count=$(($a + 1))
-                VAR=$(eval echo '$''{'$count'}')
-                break
-            fi
-        done
-        cache_option="--set-max-memory"
-        spell_check_option
-        spell_check_memory_option
-        SET_MAX_MEMORY="${VAR,,}"
+        --set-max-memory)
+            for a in $(seq $#); do
+                VAR=$(eval echo '$''{'$a'}')
+                if [[ $VAR = "--set-max-memory" ]]; then
+                    count=$(($a + 1))
+                    VAR=$(eval echo '$''{'$count'}')
+                    break
+                fi
+            done
+            cache_option="--set-max-memory"
+            spell_check_option
+            spell_check_memory_option
+            SET_MAX_MEMORY="${VAR,,}"
         ;;
-    --set-min-memory)
-        for a in $(seq $#); do
-            VAR=$(eval echo '$''{'$a'}')
-            if [[ $VAR = "--set-min-memory" ]]; then
-                count=$(($a + 1))
-                VAR=$(eval echo '$''{'$count'}')
-                break
-            fi
-        done
-        if [[ -z "${SET_MAX_MEMORY}" ]]; then
-            echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) 最大メモリが指定されていません [ --set-max-memory ] を使って指定してください"
-            echo "原因: [ --set-max-memory ] が指定されていない、または [ --set-min-memory ] よりあとにあります"
-            exit 1
-        else
-            SED_MEMORY_MAX_UNIT=$(echo ${SET_MAX_MEMORY} | sed -e 's/[^0-9]//g')
-            SED_MEMORY_MIN_UNIT=$(echo ${VAR} | sed -e 's/[^0-9]//g')
-            if [[ ${SED_MEMORY_MAX_UNIT} -lt ${SED_MEMORY_MIN_UNIT} ]]; then
-                echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) 最小メモリが最大メモリを上回っています"
-                echo "解決方法: 最小メモリを最大メモリと同じ、または以下にしてください"
+        --set-min-memory)
+            for a in $(seq $#); do
+                VAR=$(eval echo '$''{'$a'}')
+                if [[ $VAR = "--set-min-memory" ]]; then
+                    count=$(($a + 1))
+                    VAR=$(eval echo '$''{'$count'}')
+                    break
+                fi
+            done
+            if [[ -z "${SET_MAX_MEMORY}" ]]; then
+                echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) 最大メモリが指定されていません [ --set-max-memory ] を使って指定してください"
+                echo "原因: [ --set-max-memory ] が指定されていない、または [ --set-min-memory ] よりあとにあります"
                 exit 1
+            else
+                SED_MEMORY_MAX_UNIT=$(echo ${SET_MAX_MEMORY} | sed -e 's/[^0-9]//g')
+                SED_MEMORY_MIN_UNIT=$(echo ${VAR} | sed -e 's/[^0-9]//g')
+                if [[ ${SED_MEMORY_MAX_UNIT} -lt ${SED_MEMORY_MIN_UNIT} ]]; then
+                    echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) 最小メモリが最大メモリを上回っています"
+                    echo "解決方法: 最小メモリを最大メモリと同じ、または以下にしてください"
+                    exit 1
+                fi
             fi
-        fi
-        cache_option="--set-min-memory"
-        spell_check_option
-        spell_check_memory_option
-        SET_MIN_MEMORY="${VAR,,}"
+            cache_option="--set-min-memory"
+            spell_check_option
+            spell_check_memory_option
+            SET_MIN_MEMORY="${VAR,,}"
         ;;
-    --directory)
-        for a in $(seq $#); do
-            VAR=$(eval echo '$''{'$a'}')
-            if [[ $VAR = "--directory" ]]; then
-                count=$(($a + 1))
-                VAR=$(eval echo '$''{'$count'}')
-                echo "$VAR"
-                break
-            fi
-        done
-        cache_option="--directory"
-        spell_check_option
-        INPUT_SERVER_DIRECTORY="$VAR"
+        --directory)
+            for a in $(seq $#); do
+                VAR=$(eval echo '$''{'$a'}')
+                if [[ $VAR = "--directory" ]]; then
+                    count=$(($a + 1))
+                    VAR=$(eval echo '$''{'$count'}')
+                    echo "$VAR"
+                    break
+                fi
+            done
+            cache_option="--directory"
+            spell_check_option
+            INPUT_SERVER_DIRECTORY="$VAR"
         ;;
-    --server-name)
-        for a in $(seq $#); do
-            VAR=$(eval echo '$''{'$a'}')
-            if [[ $VAR = "--server-name" ]]; then
-                count=$(($a + 1))
-                VAR=$(eval echo '$''{'$count'}')
-                break
-            fi
-        done
-        cache_option="--server-name"
-        spell_check_option
-        input_server_name="${VAR}"
+        --server-name)
+            for a in $(seq $#); do
+                VAR=$(eval echo '$''{'$a'}')
+                if [[ $VAR = "--server-name" ]]; then
+                    count=$(($a + 1))
+                    VAR=$(eval echo '$''{'$count'}')
+                    break
+                fi
+            done
+            cache_option="--server-name"
+            spell_check_option
+            input_server_name="${VAR}"
         ;;
-    --default)
-        default_mode="true"
+        --default)
+            default_mode="true"
         ;;
     esac
-
+    
 done
 
 trap 'echo "安全性の為INTSLをCtrl + C で終了することは推奨されません";exit 1' 2
@@ -246,87 +246,91 @@ first_start() {
             local max_settings="3"
         fi
         if [ ! -e ${CACHE_FILE_LOCATIONS}dummy ]; then
-            echo "INTSLをインストールして頂きありがとうございます。"
-            echo "本Projectのご利用をスムーズにスタートする為に初期設定をする事を推奨します！"
+            
+            cat <<EOF
+INTSLをインストールして頂きありがとうございます。
+本Projectのご利用をスムーズにスタートする為に初期設定をする事を推奨します！
+`tput bold && tput setaf 2`(Y)`tput sgr0`esまたは`tput bold && tput setaf 1`(N)`tput sgr0`oを入力してください。
+EOF
             while :; do
                 read -p ">" set_preferences
                 case $set_preferences in
-                [yY] | [yY][eE][sS])
-                    local count="1"
-                    while [[ ${count} -le ${max_settings} ]]; do
-                        local setting_text1="使用する言語を選択してください (${count} / ${max_settings})"
-                        if [[ ${setting_package_mode} = "false" ]]; then
-                            local setting_text2="使用するたびにバージョンアップを確認するか (${count} / ${max_settings})"
-                            local setting_text3="(SpigotのBuild時,前回の環境をリセットするかどうか (${count} / ${max_settings})"
-                        else
-                            local setting_text2="(SpigotのBuild時,前回の環境をリセットするかどうか (${count} / ${max_settings})"
-                        fi
-                        local change_setting="${count}"
-                        local overwrite="setting_text"
-                        eval $overwrite="\$setting_text$count"
-                        if [[ ${change_setting} = 1 ]]; then
-                            echo "${setting_text}"
-                            echo "${message_available_languages}"
-                            while :; do
+                    [yY] | [yY][eE][sS])
+                        local count="1"
+                        while [[ ${count} -le ${max_settings} ]]; do
+                            local setting_text1="`tput setab 4 && tput bold`  質問①  `tput sgr0`\n`tput bold && tput setaf 4`│`tput sgr0`使用する言語を選択してください (${count} / ${max_settings})"
+                            if [[ ${setting_package_mode} = "false" ]]; then
+                                local setting_text2="`tput setab 4 && tput bold`  質問②   `tput sgr0`\n`tput bold && tput setaf 4`│`tput sgr0`使用するたびにバージョンアップを確認するか (${count} / ${max_settings})"
+                                local setting_text3="`tput setab 4 && tput bold`  質問③   `tput sgr0`\n`tput bold && tput setaf 4`│`tput sgr0`SpigotのBuild時,前回の環境をリセットするかどうか (${count} / ${max_settings})"
+                            else
+                                local setting_text2="`tput setab 4 && tput bold`  質問③  `tput sgr0`\n`tput bold && tput setaf 4`│`tput sgr0`SpigotのBuild時,前回の環境をリセットするかどうか (${count} / ${max_settings})"
+                            fi
+                            local change_setting="${count}"
+                            local overwrite="setting_text"
+                            eval $overwrite="\$setting_text$count"
+                            if [[ ${change_setting} = 1 ]]; then
+                                echo -e "${setting_text}"
+                                echo -e "`tput setaf 4`│`tput sgr0`${message_available_languages}"
+                                while :; do
+                                    read -p ">" input_data
+                                    input_data=${input_data:-ja}
+                                    case ${input_data} in
+                                        ja)
+                                            local run_sed_command="$(sed -i -e 's/setting_use_lang="'${setting_use_lang}'"/setting_use_lang="'${input_data}'"/' etc/intsl_v/settings)"
+                                            break
+                                        ;;
+                                        en)
+                                            echo "ComingSoon..."
+                                            local input_data="ja"
+                                            local run_sed_command="$(sed -i -e 's/setting_use_lang="'${setting_use_lang}'"/setting_use_lang="'${input_data}'"/' etc/intsl_v/settings)"
+                                            break
+                                        ;;
+                                        *)
+                                            echo "${message_nonexistent_language}"
+                                        ;;
+                                    esac
+                                done
+                            else
+                                echo -e "${setting_text}"
+                                echo -e "`tput setaf 4`│`tput sgr0`${message_use_possible}"
                                 read -p ">" input_data
-                                input_data=${input_data:-ja}
-                                case ${input_data} in
-                                ja)
-                                    local run_sed_command="$(sed -i -e 's/setting_use_lang="'${setting_use_lang}'"/setting_use_lang="'${input_data}'"/' etc/intsl_v/settings)"
-                                    break
-                                    ;;
-                                en)
-                                    echo "ComingSoon..."
-                                    local input_data="ja"
-                                    local run_sed_command="$(sed -i -e 's/setting_use_lang="'${setting_use_lang}'"/setting_use_lang="'${input_data}'"/' etc/intsl_v/settings)"
-                                    break
-                                    ;;
-                                *)
-                                    echo "${message_nonexistent_language}"
-                                    ;;
-                                esac
-                            done
-                        else
-                            echo "${setting_text}"
-                            echo "${message_use_possible}"
-                            read -p ">" input_data
-                            input_data=${input_data:-true}
-                            while :; do
-                                if [ ${input_data,,} = true -o ${input_data,,} = yes -o ${input_data,,} = y ]; then
-                                    local input_data="true"
-                                    break
-                                elif [ ${input_data,,} = false -o ${input_data,,} = no -o ${input_data,,} = n ]; then
-                                    local input_data="false"
-                                    break
-                                else
-                                    echo "(Y)es または (N)o を入力してください。"
-                                fi
-                            done
-                            run_sed_command2="sed -i -e 's/setting_version_check=\"${setting_version_check}\"/setting_version_check=\"${input_data}\"/' etc/intsl_v/settings"
-                            run_sed_command3="sed -i -e 's/setting_resetspigot=\"${setting_resetspigot}\"/setting_resetspigot=\"${input_data}\"/' etc/intsl_v/settings"
-                            local overwrite="run_sed_command"
-                            eval $overwrite="\$run_sed_command${count}"
-                            eval ${run_sed_command}
-                        fi
-                        local count=$((${count} + 1))
-                    done
-                    touch ${CACHE_FILE_LOCATIONS}dummy
-                    echo "これで初回設定は終了です！"
-                    echo "それでは良いINTSL V ライフを！"
-                    echo "3秒後に元の動作に自動で戻ります..."
-                    sleep 3
-                    break
+                                input_data=${input_data:-true}
+                                while :; do
+                                    if [ ${input_data,,} = true -o ${input_data,,} = yes -o ${input_data,,} = y ]; then
+                                        local input_data="true"
+                                        break
+                                        elif [ ${input_data,,} = false -o ${input_data,,} = no -o ${input_data,,} = n ]; then
+                                        local input_data="false"
+                                        break
+                                    else
+                                        echo "`tput bold && tput setaf 2`(Y)`tput sgr0`esまたは`tput bold && tput setaf 1`(N)`tput sgr0`oを入力してください。"
+                                    fi
+                                done
+                                run_sed_command2="sed -i -e 's/setting_version_check=\"${setting_version_check}\"/setting_version_check=\"${input_data}\"/' etc/intsl_v/settings"
+                                run_sed_command3="sed -i -e 's/setting_resetspigot=\"${setting_resetspigot}\"/setting_resetspigot=\"${input_data}\"/' etc/intsl_v/settings"
+                                local overwrite="run_sed_command"
+                                eval $overwrite="\$run_sed_command${count}"
+                                eval ${run_sed_command}
+                            fi
+                            local count=$((${count} + 1))
+                        done
+                        touch ${CACHE_FILE_LOCATIONS}dummy
+                        echo "これで初回設定は終了です！"
+                        echo "それでは良いINTSL V ライフを！"
+                        echo "3秒後に元の動作に自動で戻ります..."
+                        sleep 3
+                        break
                     ;;
-                [nN] | [nN][oO])
-                    touch ${CACHE_FILE_LOCATIONS}dummy
-                    echo "初回設定をキャンセルしました。"
-                    echo "設定はいつでも mainコマンドで変更可能です!"
-                    echo "3秒後に元の動作に自動で戻ります..."
-                    sleep 3
-                    break
+                    [nN] | [nN][oO])
+                        touch ${CACHE_FILE_LOCATIONS}dummy
+                        echo "初回設定をキャンセルしました。"
+                        echo "設定はいつでも mainコマンドで変更可能です!"
+                        echo "3秒後に元の動作に自動で戻ります..."
+                        sleep 3
+                        break
                     ;;
-                *)
-                    echo "(Y)es または (N)oを入力してください"
+                    *)
+                        echo "`tput bold && tput setaf 2`(Y)`tput sgr0`esまたは`tput bold && tput setaf 1`(N)`tput sgr0`oを入力してください。"
                     ;;
                 esac
             done
@@ -395,45 +399,45 @@ EOS
                     read -p ">" input_data
                     input_data=${input_data:-y}
                     case ${input_data} in
-                    [yY] | [yY][eE][sS])
-                        echo "$message_updata_start"
-                        while [[ ! -e ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip ]]; do
-                            spinner_progress_status="$DATA_DOWNLOAD_NOW_ME"
-                            run_spinner
-                            wget -q https://repo.akarinext.org/pub/intsl_v/${regular_version}/INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip -P ${TMP_FILE_LOCATIONS}
-                        done
-                        echo "${message_download_success}"
-                        serverlistoutput
-                        unzip -qqo ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip -d ${TMP_FILE_LOCATIONS}
-                        if [[ -e ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION} ]]; then
-                            echo "ファイルの解凍に成功"
-                            sudo cp -r ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}/. .
-                        else
-                            echo -e "${ECHO_RED_BOLD_COLOR}${message_system_error}:${ECHO_COLOR_EXIT} ファイルの解凍に失敗しました"
-                            echo "Systemを保護するためにサービスを終了します。"
-                            break
-                        fi
-                        . ${VARIABLE_FILE_LOCATIONS}variable
-                        if [[ ${NEWVERSION} -gt ${INTSL_V_VERSION} ]]; then
-                            echo "バージョンアップに失敗"
-                        else
-                            rm -rf news.txt
-                            wget -q ${INTREPOURL}pub/intsl/news.txt
-                            MAXLINE=$(cat news.txt | wc -l)
-                            while [[ $COUNT != $MAXLINE ]]; do
-                                . ${SETTING_FILE_LOCATIONS}settings
-                                spinner_progress_status="最新情報の取得中 $COUNT / $MAXLINE"
+                        [yY] | [yY][eE][sS])
+                            echo "$message_updata_start"
+                            while [[ ! -e ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip ]]; do
+                                spinner_progress_status="$DATA_DOWNLOAD_NOW_ME"
                                 run_spinner
-                                COUNT=$(($COUNT + 1))
-                                GETLINE=$(sed -n ${COUNT}P news.txt)
-                                echo "$GETLINE"
+                                wget -q https://repo.akarinext.org/pub/intsl_v/${regular_version}/INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip -P ${TMP_FILE_LOCATIONS}
                             done
-                            echo "$message_updata_success"
-
-                        fi
+                            echo "${message_download_success}"
+                            serverlistoutput
+                            unzip -qqo ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip -d ${TMP_FILE_LOCATIONS}
+                            if [[ -e ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION} ]]; then
+                                echo "ファイルの解凍に成功"
+                                sudo cp -r ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}/. .
+                            else
+                                echo -e "${ECHO_RED_BOLD_COLOR}${message_system_error}:${ECHO_COLOR_EXIT} ファイルの解凍に失敗しました"
+                                echo "Systemを保護するためにサービスを終了します。"
+                                break
+                            fi
+                            . ${VARIABLE_FILE_LOCATIONS}variable
+                            if [[ ${NEWVERSION} -gt ${INTSL_V_VERSION} ]]; then
+                                echo "バージョンアップに失敗"
+                            else
+                                rm -rf news.txt
+                                wget -q ${INTREPOURL}pub/intsl/news.txt
+                                MAXLINE=$(cat news.txt | wc -l)
+                                while [[ $COUNT != $MAXLINE ]]; do
+                                    . ${SETTING_FILE_LOCATIONS}settings
+                                    spinner_progress_status="最新情報の取得中 $COUNT / $MAXLINE"
+                                    run_spinner
+                                    COUNT=$(($COUNT + 1))
+                                    GETLINE=$(sed -n ${COUNT}P news.txt)
+                                    echo "$GETLINE"
+                                done
+                                echo "$message_updata_success"
+                                
+                            fi
                         ;;
-                    [nN] | [nN][oO])
-                        echo "${message_system_canceled}"
+                        [nN] | [nN][oO])
+                            echo "${message_system_canceled}"
                         ;;
                     esac
                     echo $name
@@ -461,66 +465,66 @@ mc_server_create() {
 }
 extension_import() {
     if [[ -e ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh ]]; then
-
+        
         rm -rf ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME}
-
+        
         GETIEXT=$(cat ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh | grep -e IEXT -e INT -e VURL >>${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME})
         MAXLINE=$(cat ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME} | wc -l)
-
+        
         sed -i ''$INTSL_EXTENSION_LIST_ADD_LINE'i'\#${INPUT_EXTENSION_NAME}START'' ${VAR_LIB_FILE_LOCATIONS}extensions
-
+        
         NEW_INTSL_EXTENSION_LIST_ADD_LINE=$((INTSL_EXTENSION_LIST_ADD_LINE + 1))
         sed -i -e 's/INTSL_EXTENSION_LIST_ADD_LINE="'$INTSL_EXTENSION_LIST_ADD_LINE'"/INTSL_EXTENSION_LIST_ADD_LINE="'$NEW_INTSL_EXTENSION_LIST_ADD_LINE'"/' ${SETTING_FILE_LOCATIONS}settings
-
+        
         #拡張機能リストの生成
         for i in $(seq $MAXLINE); do
             #Config再読込
             . ${SETTING_FILE_LOCATIONS}settings
-
+            
             spinner_progress_status="進捗 ${i} / $MAXLINE"
             run_spinner
-
+            
             GETLINE=$(sed -n ${i}P ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME})
             sed -i ''$INTSL_EXTENSION_LIST_ADD_LINE'i '"$GETLINE"'' ${VAR_LIB_FILE_LOCATIONS}extensions
-
+            
             NEW_INTSL_EXTENSION_LIST_ADD_LINE=$((INTSL_EXTENSION_LIST_ADD_LINE + 1))
             sed -i -e 's/INTSL_EXTENSION_LIST_ADD_LINE="'$INTSL_EXTENSION_LIST_ADD_LINE'"/INTSL_EXTENSION_LIST_ADD_LINE="'$NEW_INTSL_EXTENSION_LIST_ADD_LINE'"/' ${SETTING_FILE_LOCATIONS}settings
         done
-
+        
         #行の取得
         MAXLINE=$(cat ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh | wc -l)
         for a in $(seq 7); do
             #Config再読込
             . ${SETTING_FILE_LOCATIONS}settings
-
+            
             if [[ ${a} = 1 ]]; then
                 #拡張機能スタート
                 sed -i ''$INTSL_EXTENSION_MANAGER_ADD_LINE'i'\#${INPUT_EXTENSION_NAME}START'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
                 NEW_INTSL_EXTENSION_MANAGER_ADD_LINE=$((INTSL_EXTENSION_MANAGER_ADD_LINE + 1))
                 sed -i -e 's/INTSL_EXTENSION_MANAGER_ADD_LINE="'$INTSL_EXTENSION_MANAGER_ADD_LINE'"/INTSL_EXTENSION_MANAGER_ADD_LINE="'$NEW_INTSL_EXTENSION_MANAGER_ADD_LINE'"/' ${SETTING_FILE_LOCATIONS}settings
-            elif [[ ${a} = 2 ]]; then
+                elif [[ ${a} = 2 ]]; then
                 #マネージャーに起動スクリプトを生成
                 sed -i ''$INTSL_EXTENSION_MANAGER_ADD_LINE'i'${INPUT_EXTENSION_NAME}\)'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
                 sed -i ''$INTSL_EXTENSION_MANAGER_ADD_LINE'a ;;' ${VAR_LIB_FILE_LOCATIONS}extension_manager
                 sed -i ''$INTSL_EXTENSION_MANAGER_ADD_LINE'a . ${HOME_FILE_LOCATIONS}intsl_v/extensions'${INPUT_EXTENSION_NAME}.sh'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
                 NEW_INTSL_EXTENSION_MANAGER_ADD_LINE=$((INTSL_EXTENSION_MANAGER_ADD_LINE + 3))
                 sed -i -e 's/INTSL_EXTENSION_MANAGER_ADD_LINE="'$INTSL_EXTENSION_MANAGER_ADD_LINE'"/INTSL_EXTENSION_MANAGER_ADD_LINE="'$NEW_INTSL_EXTENSION_MANAGER_ADD_LINE'"/' ${SETTING_FILE_LOCATIONS}settings
-            elif [[ ${a} = 3 ]]; then
+                elif [[ ${a} = 3 ]]; then
                 #STOPの追加
                 sed -i ''$INTSL_EXTENSION_MANAGER_ADD_LINE'i'\#${INPUT_EXTENSION_NAME}STOP'' ${VAR_LIB_FILE_LOCATIONS}extension_manager
                 NEW_INTSL_EXTENSION_MANAGER_ADD_LINE=$((INTSL_EXTENSION_MANAGER_ADD_LINE + 1))
                 sed -i -e 's/INTSL_EXTENSION_MANAGER_ADD_LINE="'$INTSL_EXTENSION_MANAGER_ADD_LINE'"/INTSL_EXTENSION_MANAGER_ADD_LINE="'$NEW_INTSL_EXTENSION_MANAGER_ADD_LINE'"/' ${SETTING_FILE_LOCATIONS}settings
-            elif [[ ${a} = 4 ]]; then
+                elif [[ ${a} = 4 ]]; then
                 . ${VAR_LIB_FILE_LOCATIONS}extensions
                 #拡張機能数の増加
                 NEWEXTENSIONS=$((EXTENSIONS + 1))
                 sed -i -e 's/EXTENSIONS="'$EXTENSIONS'"/EXTENSIONS="'$NEWEXTENSIONS'"/' ${VAR_LIB_FILE_LOCATIONS}extensions
-            elif [[ ${a} = 5 ]]; then
+                elif [[ ${a} = 5 ]]; then
                 sed -i -e "s/IEXT/IE_XT$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
                 sed -i -e "s/INTEXT/INT_EXT$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
                 sed -i -e "s/VURL/V_URL$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
                 sed -i -e "s/EXDOWNLOAD/EX_DOWNLOAD$EXTENSIONS/g" ${VAR_LIB_FILE_LOCATIONS}extensions
-            elif [[ ${a} = 6 ]]; then
+                elif [[ ${a} = 6 ]]; then
                 #MD5値取得
                 EXT_MD5=$(echo "$INPUT_EXTENSION_NAME" | md5sum | sed -e "s/-//g")
                 sed -i ''$INTSL_EXTENSION_LIST_ADD_LINE'i '"EXTMD5=\"$EXT_MD5\""'' ${VAR_LIB_FILE_LOCATIONS}extensions
@@ -529,17 +533,17 @@ extension_import() {
                 sed -i -e 's/INTSL_EXTENSION_LIST_ADD_LINE="'$INTSL_EXTENSION_LIST_ADD_LINE'"/INTSL_EXTENSION_LIST_ADD_LINE="'$NEW_INTSL_EXTENSION_LIST_ADD_LINE'"/' ${SETTING_FILE_LOCATIONS}settings
             fi
         done
-
+        
         #拡張機能終了
         sed -i ''$INTSL_EXTENSION_LIST_ADD_LINE'i'\#${INPUT_EXTENSION_NAME}EXIT'' ${VAR_LIB_FILE_LOCATIONS}extensions
         #追加行変更1
         NEW_INTSL_EXTENSION_LIST_ADD_LINE=$((INTSL_EXTENSION_LIST_ADD_LINE + 1))
         sed -i -e 's/INTSL_EXTENSION_LIST_ADD_LINE="'$INTSL_EXTENSION_LIST_ADD_LINE'"/INTSL_EXTENSION_LIST_ADD_LINE="'$NEW_INTSL_EXTENSION_LIST_ADD_LINE'"/' ${SETTING_FILE_LOCATIONS}settings
-
+        
     else
         echo "shが存在しません"
     fi
-
+    
 }
 
 extension_cloud_install() {
@@ -562,7 +566,7 @@ extension_cloud_install() {
         #拡張機能URL
         overwrite_ext_url="main_ext_url"
         eval ${overwrite_ext_url}="\$CLOUD_EXT_URL${i}"
-
+        
         echo "=================================" >>${TMP_FILE_LOCATIONS}extensions_list
         echo "${main_ext_name} ${main_ext_version}" >>${TMP_FILE_LOCATIONS}extensions_list
     done
@@ -587,26 +591,26 @@ extension_cloud_install() {
             echo "${message_use_possible}"
             read -p ">" INPUT_Y_OR_N
             case $INPUT_Y_OR_N in
-            [yY] | [yY][eE][sS])
-                echo "インストールを開始します..."
-                spinner_progress_status="インストールを開始しています..."
-                run_spinner
-                wget -q ${main_ext_url} -P ${TMP_FILE_LOCATIONS}
-                if [[ ! -e ${TMP_FILE_LOCATIONS}${main_ext_name,,}.sh ]]; then
-                    spinner_progress_status="拡張機能をダウンロード中"
-                else
-                    echo "ダウンロードに成功"
-                    mv ${TMP_FILE_LOCATIONS}${main_ext_name,,}.sh ${HOME_FILE_LOCATIONS}intsl_v/extensions
-                    INPUT_EXTENSION_NAME="${main_ext_name,,}"
-                    extension_import
-                fi
+                [yY] | [yY][eE][sS])
+                    echo "インストールを開始します..."
+                    spinner_progress_status="インストールを開始しています..."
+                    run_spinner
+                    wget -q ${main_ext_url} -P ${TMP_FILE_LOCATIONS}
+                    if [[ ! -e ${TMP_FILE_LOCATIONS}${main_ext_name,,}.sh ]]; then
+                        spinner_progress_status="拡張機能をダウンロード中"
+                    else
+                        echo "ダウンロードに成功"
+                        mv ${TMP_FILE_LOCATIONS}${main_ext_name,,}.sh ${HOME_FILE_LOCATIONS}intsl_v/extensions
+                        INPUT_EXTENSION_NAME="${main_ext_name,,}"
+                        extension_import
+                    fi
                 ;;
-            [nN] | [nN][oO])
-                echo "${message_system_canceled}"
+                [nN] | [nN][oO])
+                    echo "${message_system_canceled}"
                 ;;
             esac
             break
-        elif [[ ${e} = ${number_of_extensions} ]]; then
+            elif [[ ${e} = ${number_of_extensions} ]]; then
             echo "拡張機能が見つかりませんでした..."
         fi
     done
@@ -620,59 +624,59 @@ DEV_HELP_MESSAGE() {
 DEV_CONTENT() {
     if [ -z "$dev" ]; then
         read -p ">" dev
-    elif [[ $dev = "-f" ]]; then
+        elif [[ $dev = "-f" ]]; then
         read -p ">" dev
     fi
     case "$dev" in
-    "--help")
-        DEV_HELP_MESSAGE
+        "--help")
+            DEV_HELP_MESSAGE
         ;;
-    [1])
-        echo "呼んでほしい名前を入力してください。"
-        read -p ">" INPUT_YOURNAME
-        sed -i -e 's/YOURNAME="'$YOURNAME'"/YOURNAME="'$INPUT_YOURNAME'"/' ./assets/userdata/allsettings.txt
-        echo "名前を覚えましたよ! $INPUT_YOURNAMEさん!"
-        ;;
-    [2])
-        echo "1. カスタム"
-        echo "呼んでほしい敬称を入力してください。"
-        read -p ">" dev2
-        case "$dev2" in
         [1])
-            read -p ">" ORIGINAL_KEISHOU
-            sed -i -e 's/KEISHOU="'$KEISHOU'"/KEISHOU="'$ORIGINAL_KEISHOU'"/' ./assets/userdata/allsettings.txt
-            ;;
-        esac
+            echo "呼んでほしい名前を入力してください。"
+            read -p ">" INPUT_YOURNAME
+            sed -i -e 's/YOURNAME="'$YOURNAME'"/YOURNAME="'$INPUT_YOURNAME'"/' ./assets/userdata/allsettings.txt
+            echo "名前を覚えましたよ! $INPUT_YOURNAMEさん!"
         ;;
-    [4])
-        echo "開発者ログインをする際のパスワードを変更します。"
-        echo "現在のパスワードを入力してください。"
-        . etc/intsl_v/passwd/dev_pass
-        read -s -p ">" input_password_data
-        local input_password_check=$(echo ${input_password_data} | sha512sum | sed -e "s/-//g")
-        if [[ ${input_password_check} = ${password} ]]; then
-            echo "パスワードを変更しますか?"
-            echo "(Y)es / (N)o"
-            read -p ">" input_choise_data
-            case ${input_choise_data} in
-            [yY])
-                echo "新しいパスワードを入力してください"
-                read -s -p ">" input_new_password_data
-                local input_new_password_check=$(echo ${input_new_password_data} | sha512sum | sed -e "s/-//g")
-                sudo rm -rf etc/intsl_v/passwd/dev_pass
+        [2])
+            echo "1. カスタム"
+            echo "呼んでほしい敬称を入力してください。"
+            read -p ">" dev2
+            case "$dev2" in
+                [1])
+                    read -p ">" ORIGINAL_KEISHOU
+                    sed -i -e 's/KEISHOU="'$KEISHOU'"/KEISHOU="'$ORIGINAL_KEISHOU'"/' ./assets/userdata/allsettings.txt
+                ;;
+            esac
+        ;;
+        [4])
+            echo "開発者ログインをする際のパスワードを変更します。"
+            echo "現在のパスワードを入力してください。"
+            . etc/intsl_v/passwd/dev_pass
+            read -s -p ">" input_password_data
+            local input_password_check=$(echo ${input_password_data} | sha512sum | sed -e "s/-//g")
+            if [[ ${input_password_check} = ${password} ]]; then
+                echo "パスワードを変更しますか?"
+                echo "(Y)es / (N)o"
+                read -p ">" input_choise_data
+                case ${input_choise_data} in
+                    [yY])
+                        echo "新しいパスワードを入力してください"
+                        read -s -p ">" input_new_password_data
+                        local input_new_password_check=$(echo ${input_new_password_data} | sha512sum | sed -e "s/-//g")
+                        sudo rm -rf etc/intsl_v/passwd/dev_pass
                 cat <<EOF >etc/intsl_v/passwd/dev_pass
 password="${input_new_password_check}"
 EOF
-                ;;
-            [nN])
-                echo "${message_system_canceled}"
-                exit 0
-                ;;
-            esac
-        fi
+                    ;;
+                    [nN])
+                        echo "${message_system_canceled}"
+                        exit 0
+                    ;;
+                esac
+            fi
         ;;
-    [5])
-        . ./lib/main/java.sh
+        [5])
+            . ./lib/main/java.sh
         ;;
     esac
 }
@@ -732,48 +736,56 @@ WELCOME_DEV_MESSAGE() {
 }
 mc_server_version_list() {
     if [[ -z "${input_server_type}" ]]; then
+        echo "`tput setaf 2 && tput bold`■`tput sgr0`は使用できる物です。`tput setaf 1 && tput bold`■`tput sgr0`は作成中の使用できない物です。"        
+        echo -e "┌──────────────────────┐\n│   Server Type List   │\n├───┬────────────────┬─┴──────────────────┐"
+        echo "│ `tput setaf 2 && tput bold`1`tput sgr0` │ OfficialServer │ `tput setaf 1 && tput bold`6`tput sgr0` │ BungeeCord     │"
+        echo "│ `tput setaf 2 && tput bold`2`tput sgr0` │ SpigotServer   │ `tput setaf 1 && tput bold`7`tput sgr0` │ WaterFall      │"
+        echo "│ `tput setaf 2 && tput bold`3`tput sgr0` │ ForgeServer    │ `tput setaf 1 && tput bold`8`tput sgr0` │ Travertine     │"
+        echo "│ `tput setaf 2 && tput bold`4`tput sgr0` │ PaperServer    │ `tput setaf 1 && tput bold`9`tput sgr0` │ CustomJarFile  │"
+        echo "│ `tput setaf 1 && tput bold`5`tput sgr0` │ SpongeServer   │`tput setaf 1 && tput bold`10`tput sgr0` │ Coming Soon... │"
+        echo "└─────────────────────────────────────────┘"
         echo "$INPUT_MC_SERVER_TYPE_ME"
         read -p ">" input_server_type
     fi
     case ${input_server_type} in
-    [1] | [oO][fF][fF][iI][cC][iI][aA][lL])
-        echo -e "VersionList:|1.2.5|1.3.1|1.3.2|1.4.2|1.4.4|1.4.5|1.4.6|1.4.7|1.5.2|1.5.2|1.6.1|1.6.2|1.6.4|" &&
+        [1] | [oO][fF][fF][iI][cC][iI][aA][lL])
+            echo -e "VersionList:|1.2.5|1.3.1|1.3.2|1.4.2|1.4.4|1.4.5|1.4.6|1.4.7|1.5.2|1.5.2|1.6.1|1.6.2|1.6.4|" &&
             echo -e "|1.7.2|1.7.5|1.7.6|1.7.7|1.7.8|1.7.9|1.7.10|1.8|1.8.1|1.8.2|1.8.3|1.8.4|1.8.5|1.8.6|1.8.7|1.8.8|1.8.9|" &&
             echo -e "|1.9|1.9.1|1.9.2|1.9.3|1.9.4|1.10|1.10.1|1.10.2|1.11|1.11.1|1.11.2|1.12|1.12.1|1.12.2|1.13|1.13.1|1.13.2|" &&
             echo -e "|1.14|1.14.1|1.14.2|1.14.3|1.14.4|1.15|1.15.1|1.15.2|" | column
-        mc_server_edition="official"
-        echo "OfficialServer"
-        . ${LIB_FILE_LOCATIONS}officialserver.sh
-        . ${LIB_FILE_LOCATIONS}mc_server_download
-        exit 0
+            mc_server_edition="official"
+            echo "OfficialServer"
+            . ${LIB_FILE_LOCATIONS}officialserver.sh
+            . ${LIB_FILE_LOCATIONS}mc_server_download
+            exit 0
         ;;
-    [2] | [pP][aA][pP][eE][rR])
-        mc_server_edition="paper"
-        echo "PaperServer"
-        echo -e "VersionList: | \033[1;37m1.7.10\033[0;39m | \033[1;37m1.8.8\033[0;39m | \033[1;37m1.9.4\033[0;39m | \033[1;37m1.10.2\033[0;39m | \033[1;37m1.11.2\033[0;39m | \033[1;37m1.12.2\033[0;39m | \033[1;37m1.13.2\033[0;39m | \033[1;37m1.14.4\033[0;39m | \033[1;37m1.15.2\033[0;39m |"
-        . ${LIB_FILE_LOCATIONS}paperserver.sh
-        . ${LIB_FILE_LOCATIONS}mc_server_download
+        [2] | [pP][aA][pP][eE][rR])
+            mc_server_edition="paper"
+            echo "PaperServer"
+            echo -e "VersionList: | \033[1;37m1.7.10\033[0;39m | \033[1;37m1.8.8\033[0;39m | \033[1;37m1.9.4\033[0;39m | \033[1;37m1.10.2\033[0;39m | \033[1;37m1.11.2\033[0;39m | \033[1;37m1.12.2\033[0;39m | \033[1;37m1.13.2\033[0;39m | \033[1;37m1.14.4\033[0;39m | \033[1;37m1.15.2\033[0;39m |"
+            . ${LIB_FILE_LOCATIONS}paperserver.sh
+            . ${LIB_FILE_LOCATIONS}mc_server_download
         ;;
-    [3] | [sS][pP][iI][gG][oO][tT])
-        mc_server_edition="spigot"
-        echo "SpigotServer"
-        . ${LIB_FILE_LOCATIONS}spigotserver.sh
-        . ${LIB_FILE_LOCATIONS}mc_server_download
+        [3] | [sS][pP][iI][gG][oO][tT])
+            mc_server_edition="spigot"
+            echo "SpigotServer"
+            . ${LIB_FILE_LOCATIONS}spigotserver.sh
+            . ${LIB_FILE_LOCATIONS}mc_server_download
         ;;
-    [4])
-        echo -e "$(tput bold && tput setaf 3)${message_system_warning}:$(tput sgr0) intsl vのForgeListは常に最新とは限りません! 更新があったら報告してください!"
-        echo -e "Github: https://github.com/yupix/intsl-v/issues"
-        echo -e "Gitlab: https://dev.akarinext.org/yupix/intsl-v/-/issues"
-        mc_server_edition="forge"
-        echo "ForgeServer"
-        . ${LIB_FILE_LOCATIONS}forgeserver.sh
-        . ${LIB_FILE_LOCATIONS}mc_server_download
+        [4])
+            echo -e "$(tput bold && tput setaf 3)${message_system_warning}:$(tput sgr0) intsl vのForgeListは常に最新とは限りません! 更新があったら報告してください!"
+            echo -e "Github: https://github.com/yupix/intsl-v/issues"
+            echo -e "Gitlab: https://dev.akarinext.org/yupix/intsl-v/-/issues"
+            mc_server_edition="forge"
+            echo "ForgeServer"
+            . ${LIB_FILE_LOCATIONS}forgeserver.sh
+            . ${LIB_FILE_LOCATIONS}mc_server_download
         ;;
-    [9])
-        echo "使用するJARを選択してください"
+        [9])
+            echo "使用するJARを選択してください"
         ;;
-    *)
-        echo "数字を入力してください。"
+        *)
+            echo "数字を入力してください。"
         ;;
     esac
 }
@@ -805,268 +817,264 @@ mc_server_remove() {
 }
 #------------------------------------------------------------------------------#
 case $1 in
-#INTSL本体
-main)
-    if [[ $2 = dev ]]; then
-        dev="$3"
-        DEVELOPER_LOGIN
-        exit 0
-    fi
-    echo "MAIN SYSTEM"
-    echo "■ extension | 拡張機能を管理できます"
-    echo "■ dev       | 開発者向け機能を使用できます"
-    echo "■ report   | INTSLに欲しい機能や不具合を報告できます。"
-    read -p ">" input_data
-    case ${input_data} in
-    #開発者向け機能
-    [vV][eE][rR][sS][iI][oO][nN])
-        regular_intsl_v_version=$(echo "${INTSL_V_VERSION}" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
-        echo "バージョン:  ${regular_intsl_v_version}"
-        echo "エディション:${INTSL_V_EDITION}"
-        echo "Build:       ${INTSL_V_BUILD_VERSION} "
-        ;;
-    report)
-        echo "INTSLに欲しい機能、又は不具合を報告できます。"
-        echo "要望(request) | 不具合(bug)"
-        read -p ">" input_data
-        case ${input_data} in
-        request)
-            echo "要望を簡潔にまとめて入力してください。"
-            read -p ">" INPUT_REQUEST_DATA
-            curl -X POST --data 'request='$INPUT_REQUEST_DATA'' http://api.akarinext.org:3000/request
-            echo
-            ;;
-        bug)
-            echo "バグの概要などを簡潔にまとめ、入力してください。"
-            read -p ">" INPUT_BUG_DATA
-            #curl -X POST --data 'bug='$INPUT_BUG_DATA'' http://api.akarinext.org:3000/request
-            echo
-            ;;
-        esac
-        ;;
-    dev)
-        first_start
-        DEVELOPER_LOGIN
-        ;;
-    #拡張機能系
-    extension)
-        echo "■ use | 拡張機能を使用します。"
-        echo "■ import | 拡張機能をインポートします。"
-        echo "■ list | 拡張機能の一覧を表示します。"
-        read -p ">" INPUT_EXTENSION_DATA
-        case $INPUT_EXTENSION_DATA in
-        use)
-            . ${VAR_LIB_FILE_LOCATIONS}extension_manager
-            ;;
-        import)
-            echo "インポートするshの名前を入力してください。"
-            read -p ">" INPUT_EXTENSION_NAME
-            . ${VAR_LIB_FILE_LOCATIONS}extensions
-            while [[ $PLAYCOUNT != $EXTENSIONS ]]; do
-                PLAYCOUNT=$(($PLAYCOUNT + 1))
-                if [[ $EXTENSIONS = 0 ]]; then
-                    break
-                fi
-                GET_MD5=$(echo "$INPUT_EXTENSION_NAME" | md5sum | sed -e "s/-//g")
-                SPGET_MD5="EXT_MD5"
-                eval $SPGET_MD5="\$EXT_MD5$PLAYCOUNT"
-                if [[ $EXT_MD5 = $GET_MD5 ]]; then
-                    echo "既にインストールされている為、サービスを終了します。"
-                    exit
-                fi
-            done
-            extension_import
-            ;;
-        list)
-            . ${VAR_LIB_FILE_LOCATIONS}extensions
-            #拡張機能が入ってない際、不具合が発生する為予め宣言
-            COUNT="0"
-            echo "拡張機能の数: ${EXTENSIONS}個"
-            echo "========================================"
-            while [[ $COUNT != $EXTENSIONS ]]; do
-                COUNT=$(($COUNT + 1))
-                EXT_NAME="IE_XT"
-                eval $EXT_NAME="\$IE_XT$COUNT"
-                EXT_VERSION="INT_EXT"
-                eval $EXT_VERSION="\$INT_EXT$COUNT"
-                Formal_V=$(echo "$INT_EXT" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
-                echo "拡張機能名: $IE_XT"
-                echo "バージョン: $Formal_V"
-                echo "========================================"
-            done
-            ;;
-        vcheck)
-            . ${VAR_LIB_FILE_LOCATIONS}extensions
-            rm -rf ./newversion.txt
-            while [[ $PLAYCOUNT != $EXTENSIONS ]]; do
-                . ${VAR_LIB_FILE_LOCATIONS}extensions
-                spinner_progress_status="アップデートの確認中 $3 / $EXTENSIONS"
-                run_spinner
-                COUNT=$(($COUNT + 1))
-                PLAYCOUNT=$(($PLAYCOUNT + 1))
-                EXT_NAME="V_URL"
-                eval $EXT_NAME="\$V_URL$COUNT"
-                wget -q $V_URL
-                . ./newversion.txt
-                regular_version=$(echo "$BO_DY" | sed -e 's/\(.\{1\}\)/.\1/g')
-                EXT_NAME="IE_XT"
-                eval $EXT_NAME="\$IE_XT$COUNT"
-                EXT_VERSION="INT_EXT"
-                eval $EXT_VERSION="\$INT_EXT$COUNT"
-                #点付ける
-                Formal_V=$(echo "$INT_EXT" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
-                Formal_NEW_V=$(echo "$NEWVERSION" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
-                if [[ $NEWVERSION -gt $INT_EXT ]]; then
-                    echo "$IE_XT に更新があります"
-                    echo -e '\e[1;37mExtension     Current     Latest\e[m'
-                    echo "================================="
-                    echo -e "$IE_XT     $Formal_V\e[32m         $Formal_NEW_V\e[m"
-                    echo "更新を行いますか?"
-                    echo "(Y)es / (N)o"
-                    read -p ">" input_data
-                    case ${input_data} in
-                    [yY])
-                        EXT_NAME="IE_XT"
-                        eval $EXT_NAME="\$IE_XT$COUNT"
-                        while [[ ! -e ${VAR_LIB_FILE_LOCATIONS}extensionsold/old_${IE_XT}.sh ]]; do
-                            spinner_progress_status="旧バージョンをバックアップ中"
-                            run_spinner
-                            mv ${VAR_LIB_FILE_LOCATIONS}extensions${IE_XT}.sh ${VAR_LIB_FILE_LOCATIONS}extensionsold/old_${IE_XT}.sh
-                        done
-                        echo "ダウンロードを開始します。"
-                        wget -q $EXDOWNLOAD -O ${VAR_LIB_FILE_LOCATIONS}extensions${IE_XT}.sh
-                        #バージョン情報を更新
-                        sed -i -e 's/INT_EXT'$COUNT'="'$INT_EXT'"/INT_EXT'$COUNT'="'$NEWVERSION'"/' ${VAR_LIB_FILE_LOCATIONS}extensions
-                        ;;
-                    [nN])
-                        echo "${message_system_canceled}"
-                        ;;
-                    esac
-                else
-                    echo "更新は存在しません。"
-                fi
-                rm -rf ./newversion.txt
-            done
-            ;;
-        uninstall)
-            echo "拡張機能をアンインストールします。"
-            read -p ">" input_data
-            #拡張機能リストから削除
-            get_ext_list_start_line=$(grep -nw ${input_data,,}START ${VAR_LIB_FILE_LOCATIONS}extensions | grep -o '[0-9]*')
-            get_ext_list_exit_line=$(grep -nw ${input_data,,}EXIT ${VAR_LIB_FILE_LOCATIONS}extensions | grep -o '[0-9]*')
-            sed -i -e ''${get_ext_list_start_line}','${get_ext_list_exit_line}'d' ${VAR_LIB_FILE_LOCATIONS}extensions
-
-            #拡張機能マネージャー
-            get_ext_manager_start_line=$(grep -nw ${input_data,,}START ${VAR_LIB_FILE_LOCATIONS}extension_manager | grep -o '[0-9]*')
-            get_ext_manager_exit_line=$(grep -nw ${input_data,,}STOP ${VAR_LIB_FILE_LOCATIONS}extension_manager | grep -o '[0-9]*')
-            sed -i -e ''${get_ext_manager_start_line}','${get_ext_manager_exit_line}'d' ${VAR_LIB_FILE_LOCATIONS}extension_manager
-
-            . ${VAR_LIB_FILE_LOCATIONS}extensions
-            #拡張機能数の増加
-            NEWEXTENSIONS=$((EXTENSIONS - 1))
-            sed -i -e 's/EXTENSIONS="'${EXTENSIONS}'"/EXTENSIONS="'${NEWEXTENSIONS}'"/' ${VAR_LIB_FILE_LOCATIONS}extensions
-            #設定の行追加のやつを修正
-            NEW_INTSL_EXTENSION_LIST_ADD_LINE=$((INTSL_EXTENSION_LIST_ADD_LINE - 6))
-            sed -i -e 's/INTSL_EXTENSION_LIST_ADD_LINE="'${INTSL_EXTENSION_LIST_ADD_LINE}'"/INTSL_EXTENSION_LIST_ADD_LINE="'${NEW_INTSL_EXTENSION_LIST_ADD_LINE}'"/' ${SETTING_FILE_LOCATIONS}settings
-            NEW_INTSL_EXTENSION_MANAGER_ADD_LINE=$((INTSL_EXTENSION_MANAGER_ADD_LINE - 5))
-            sed -i -e 's/INTSL_EXTENSION_MANAGER_ADD_LINE="'${INTSL_EXTENSION_MANAGER_ADD_LINE}'"/INTSL_EXTENSION_MANAGER_ADD_LINE="'${NEW_INTSL_EXTENSION_MANAGER_ADD_LINE}'"/' ${SETTING_FILE_LOCATIONS}settings
-            ;;
-        cloud)
-            echo "クラウドから拡張機能をダウンロードします"
-            extension_cloud_install
-            ;;
-        esac
-        ;;
-    esac
-    ;;
-
-#Minecraft系
-vcheck)
-    vcheck
-    ;;
-mc)
-    first_start
-    while :; do
-        #サーバー作成オプション
-        if [[ ${2} = "make" ]]; then
-            mc_server_version_list
-        #サーバー管理オプション
-        elif [[ ${2} = manage ]]; then
-            word="管理するサーバー名"
-            purpose="server_list"
-            . ${VAR_LIB_FILE_LOCATIONS}server_list
-        elif [[ ${2} = output ]]; then
-            serverlistoutput
-        #サーバーインポートオプション
-        elif [[ ${2} = import ]]; then
-            MC_SERVER_IMPORT
-            exit 0
-        elif [[ ${2} = remove ]]; then
-            mc_server_remove
+    #INTSL本体
+    main)
+        if [[ $2 = dev ]]; then
+            dev="$3"
+            DEVELOPER_LOGIN
             exit 0
         fi
-        echo "■ make   | サーバーを作成します"
-        echo "■ manage | サーバーを管理します"
-        echo "■ list   | サーバーリストを表示します"
-        echo "■ import | サーバーリストをインポートします"
-        echo "■ export | サーバーリストを出力します"
-        echo "■ remove | サーバーを削除します"
+        echo "MAIN SYSTEM"
+        echo "■ extension | 拡張機能を管理できます"
+        echo "■ dev       | 開発者向け機能を使用できます"
+        echo "■ report   | INTSLに欲しい機能や不具合を報告できます。"
         read -p ">" input_data
-        case "${input_data}" in
-        make)
-            echo -e "  \033[1;37m_<----^¯¯¯¯<Server List>¯¯¯¯^---->_\033[0;39m"
-            echo "❘   1. OfficialServer 2. PaperServer  ❘"
-            echo "❘   3. SpigotServer   4. ForgeServer  ❘"
-            echo "❘   5. SpongeServer   6. BungeeCord   ❘"
-            echo "❘   7. WaterFall      8. Travertine   ❘"
-            echo "❘   9. カスタムJAR                    ❘"
-            mc_server_version_list
+        case ${input_data} in
+            #開発者向け機能
+            [vV][eE][rR][sS][iI][oO][nN])
+                regular_intsl_v_version=$(echo "${INTSL_V_VERSION}" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
+                echo "バージョン:  ${regular_intsl_v_version}"
+                echo "エディション:${INTSL_V_EDITION}"
+                echo "Build:       ${INTSL_V_BUILD_VERSION} "
             ;;
-        manage)
-            word="管理するサーバー名"
-            . ${VAR_LIB_FILE_LOCATIONS}server_list
+            report)
+                echo "INTSLに欲しい機能、又は不具合を報告できます。"
+                echo "要望(request) | 不具合(bug)"
+                read -p ">" input_data
+                case ${input_data} in
+                    request)
+                        echo "要望を簡潔にまとめて入力してください。"
+                        read -p ">" INPUT_REQUEST_DATA
+                        curl -X POST --data 'request='$INPUT_REQUEST_DATA'' http://api.akarinext.org:3000/request
+                        echo
+                    ;;
+                    bug)
+                        echo "バグの概要などを簡潔にまとめ、入力してください。"
+                        read -p ">" INPUT_BUG_DATA
+                        #curl -X POST --data 'bug='$INPUT_BUG_DATA'' http://api.akarinext.org:3000/request
+                        echo
+                    ;;
+                esac
             ;;
-        list)
-            echo "サーバー数: ${number_of_server}"
-            purpose="list"
-            . ${VAR_LIB_FILE_LOCATIONS}server_list
+            dev)
+                first_start
+                DEVELOPER_LOGIN
             ;;
-        import)
-            MC_SERVER_IMPORT
-            ;;
-        export)
-            serverlistoutput
-            ;;
-        remove)
-            mc_server_remove
+            #拡張機能系
+            extension)
+                echo "■ use | 拡張機能を使用します。"
+                echo "■ import | 拡張機能をインポートします。"
+                echo "■ list | 拡張機能の一覧を表示します。"
+                read -p ">" INPUT_EXTENSION_DATA
+                case $INPUT_EXTENSION_DATA in
+                    use)
+                        . ${VAR_LIB_FILE_LOCATIONS}extension_manager
+                    ;;
+                    import)
+                        echo "インポートするshの名前を入力してください。"
+                        read -p ">" INPUT_EXTENSION_NAME
+                        . ${VAR_LIB_FILE_LOCATIONS}extensions
+                        while [[ $PLAYCOUNT != $EXTENSIONS ]]; do
+                            PLAYCOUNT=$(($PLAYCOUNT + 1))
+                            if [[ $EXTENSIONS = 0 ]]; then
+                                break
+                            fi
+                            GET_MD5=$(echo "$INPUT_EXTENSION_NAME" | md5sum | sed -e "s/-//g")
+                            SPGET_MD5="EXT_MD5"
+                            eval $SPGET_MD5="\$EXT_MD5$PLAYCOUNT"
+                            if [[ $EXT_MD5 = $GET_MD5 ]]; then
+                                echo "既にインストールされている為、サービスを終了します。"
+                                exit
+                            fi
+                        done
+                        extension_import
+                    ;;
+                    list)
+                        . ${VAR_LIB_FILE_LOCATIONS}extensions
+                        #拡張機能が入ってない際、不具合が発生する為予め宣言
+                        COUNT="0"
+                        echo "拡張機能の数: ${EXTENSIONS}個"
+                        echo "========================================"
+                        while [[ $COUNT != $EXTENSIONS ]]; do
+                            COUNT=$(($COUNT + 1))
+                            EXT_NAME="IE_XT"
+                            eval $EXT_NAME="\$IE_XT$COUNT"
+                            EXT_VERSION="INT_EXT"
+                            eval $EXT_VERSION="\$INT_EXT$COUNT"
+                            Formal_V=$(echo "$INT_EXT" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
+                            echo "拡張機能名: $IE_XT"
+                            echo "バージョン: $Formal_V"
+                            echo "========================================"
+                        done
+                    ;;
+                    vcheck)
+                        . ${VAR_LIB_FILE_LOCATIONS}extensions
+                        rm -rf ./newversion.txt
+                        while [[ $PLAYCOUNT != $EXTENSIONS ]]; do
+                            . ${VAR_LIB_FILE_LOCATIONS}extensions
+                            spinner_progress_status="アップデートの確認中 $3 / $EXTENSIONS"
+                            run_spinner
+                            COUNT=$(($COUNT + 1))
+                            PLAYCOUNT=$(($PLAYCOUNT + 1))
+                            EXT_NAME="V_URL"
+                            eval $EXT_NAME="\$V_URL$COUNT"
+                            wget -q $V_URL
+                            . ./newversion.txt
+                            regular_version=$(echo "$BO_DY" | sed -e 's/\(.\{1\}\)/.\1/g')
+                            EXT_NAME="IE_XT"
+                            eval $EXT_NAME="\$IE_XT$COUNT"
+                            EXT_VERSION="INT_EXT"
+                            eval $EXT_VERSION="\$INT_EXT$COUNT"
+                            #点付ける
+                            Formal_V=$(echo "$INT_EXT" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
+                            Formal_NEW_V=$(echo "$NEWVERSION" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
+                            if [[ $NEWVERSION -gt $INT_EXT ]]; then
+                                echo "$IE_XT に更新があります"
+                                echo -e '\e[1;37mExtension     Current     Latest\e[m'
+                                echo "================================="
+                                echo -e "$IE_XT     $Formal_V\e[32m         $Formal_NEW_V\e[m"
+                                echo "更新を行いますか?"
+                                echo "(Y)es / (N)o"
+                                read -p ">" input_data
+                                case ${input_data} in
+                                    [yY])
+                                        EXT_NAME="IE_XT"
+                                        eval $EXT_NAME="\$IE_XT$COUNT"
+                                        while [[ ! -e ${VAR_LIB_FILE_LOCATIONS}extensionsold/old_${IE_XT}.sh ]]; do
+                                            spinner_progress_status="旧バージョンをバックアップ中"
+                                            run_spinner
+                                            mv ${VAR_LIB_FILE_LOCATIONS}extensions${IE_XT}.sh ${VAR_LIB_FILE_LOCATIONS}extensionsold/old_${IE_XT}.sh
+                                        done
+                                        echo "ダウンロードを開始します。"
+                                        wget -q $EXDOWNLOAD -O ${VAR_LIB_FILE_LOCATIONS}extensions${IE_XT}.sh
+                                        #バージョン情報を更新
+                                        sed -i -e 's/INT_EXT'$COUNT'="'$INT_EXT'"/INT_EXT'$COUNT'="'$NEWVERSION'"/' ${VAR_LIB_FILE_LOCATIONS}extensions
+                                    ;;
+                                    [nN])
+                                        echo "${message_system_canceled}"
+                                    ;;
+                                esac
+                            else
+                                echo "更新は存在しません。"
+                            fi
+                            rm -rf ./newversion.txt
+                        done
+                    ;;
+                    uninstall)
+                        echo "拡張機能をアンインストールします。"
+                        read -p ">" input_data
+                        #拡張機能リストから削除
+                        get_ext_list_start_line=$(grep -nw ${input_data,,}START ${VAR_LIB_FILE_LOCATIONS}extensions | grep -o '[0-9]*')
+                        get_ext_list_exit_line=$(grep -nw ${input_data,,}EXIT ${VAR_LIB_FILE_LOCATIONS}extensions | grep -o '[0-9]*')
+                        sed -i -e ''${get_ext_list_start_line}','${get_ext_list_exit_line}'d' ${VAR_LIB_FILE_LOCATIONS}extensions
+                        
+                        #拡張機能マネージャー
+                        get_ext_manager_start_line=$(grep -nw ${input_data,,}START ${VAR_LIB_FILE_LOCATIONS}extension_manager | grep -o '[0-9]*')
+                        get_ext_manager_exit_line=$(grep -nw ${input_data,,}STOP ${VAR_LIB_FILE_LOCATIONS}extension_manager | grep -o '[0-9]*')
+                        sed -i -e ''${get_ext_manager_start_line}','${get_ext_manager_exit_line}'d' ${VAR_LIB_FILE_LOCATIONS}extension_manager
+                        
+                        . ${VAR_LIB_FILE_LOCATIONS}extensions
+                        #拡張機能数の増加
+                        NEWEXTENSIONS=$((EXTENSIONS - 1))
+                        sed -i -e 's/EXTENSIONS="'${EXTENSIONS}'"/EXTENSIONS="'${NEWEXTENSIONS}'"/' ${VAR_LIB_FILE_LOCATIONS}extensions
+                        #設定の行追加のやつを修正
+                        NEW_INTSL_EXTENSION_LIST_ADD_LINE=$((INTSL_EXTENSION_LIST_ADD_LINE - 6))
+                        sed -i -e 's/INTSL_EXTENSION_LIST_ADD_LINE="'${INTSL_EXTENSION_LIST_ADD_LINE}'"/INTSL_EXTENSION_LIST_ADD_LINE="'${NEW_INTSL_EXTENSION_LIST_ADD_LINE}'"/' ${SETTING_FILE_LOCATIONS}settings
+                        NEW_INTSL_EXTENSION_MANAGER_ADD_LINE=$((INTSL_EXTENSION_MANAGER_ADD_LINE - 5))
+                        sed -i -e 's/INTSL_EXTENSION_MANAGER_ADD_LINE="'${INTSL_EXTENSION_MANAGER_ADD_LINE}'"/INTSL_EXTENSION_MANAGER_ADD_LINE="'${NEW_INTSL_EXTENSION_MANAGER_ADD_LINE}'"/' ${SETTING_FILE_LOCATIONS}settings
+                    ;;
+                    cloud)
+                        echo "クラウドから拡張機能をダウンロードします"
+                        extension_cloud_install
+                    ;;
+                esac
             ;;
         esac
-    done
     ;;
-
-#DiscordBot系
-discord)
-    first_start
-    while :; do
-        echo "Discord"
-        echo "■ eew   | eewBotに関するコマンドを使用できます"
-        echo "■ jmusic | JmusicBotに関するコマンドを使用できます"
-        echo "■ status  | 各種Botのステータスを確認します。"
-        read -p ">" input_data
-        case "${input_data}" in
-        eew)
-            echo "Coming Soon..."
-            #. ./lib/main/discord/eew.sh
-            ;;
-        jmusic)
-            echo "Coming Soon..."
-            #. ./lib/main/discord/jmusic.sh
-            ;;
-        esac
-    done
+    
+    #Minecraft系
+    vcheck)
+        vcheck
     ;;
-*)
-
+    mc)
+        first_start
+        while :; do
+            #サーバー作成オプション
+            if [[ ${2} = "make" ]]; then
+                mc_server_version_list
+                #サーバー管理オプション
+                elif [[ ${2} = manage ]]; then
+                word="管理するサーバー名"
+                purpose="server_list"
+                . ${VAR_LIB_FILE_LOCATIONS}server_list
+                elif [[ ${2} = output ]]; then
+                serverlistoutput
+                #サーバーインポートオプション
+                elif [[ ${2} = import ]]; then
+                MC_SERVER_IMPORT
+                exit 0
+                elif [[ ${2} = remove ]]; then
+                mc_server_remove
+                exit 0
+            fi
+            echo -e "┌──────────────────────┐\n│     コマンド一覧     │\n│ ┌────────┬───────────┴────────────────────────┐"
+            echo "│■│ `tput setaf 1`make`tput sgr0`   │ サーバーを作成します               │"
+            echo "│`tput setaf 2 && tput bold`■`tput sgr0`│ `tput setaf 1`manage`tput sgr0` │ サーバーを管理します               │"
+            echo "│■│ `tput setaf 1`list`tput sgr0`   │ サーバーリストを表示します         │"
+            echo "│`tput setaf 2 && tput bold`■`tput sgr0`│ `tput setaf 1`import`tput sgr0` │ サーバーリストをインポートします   │"
+            echo "│■│ `tput setaf 1`export`tput sgr0` │ サーバーリストを出力します         │"
+            echo "│`tput setaf 2 && tput bold`■`tput sgr0`│ `tput setaf 1`remove`tput sgr0` │ サーバーを削除します               │"
+            echo -e "└─┴────────┴────────────────────────────────────┘"
+            read -p ">" input_data
+            case "${input_data}" in
+                make)
+                    mc_server_version_list
+                ;;
+                manage)
+                    word="管理するサーバー名"
+                    . ${VAR_LIB_FILE_LOCATIONS}server_list
+                ;;
+                list)
+                    echo "サーバー数: ${number_of_server}"
+                    purpose="list"
+                    . ${VAR_LIB_FILE_LOCATIONS}server_list
+                ;;
+                import)
+                    MC_SERVER_IMPORT
+                ;;
+                export)
+                    serverlistoutput
+                ;;
+                remove)
+                    mc_server_remove
+                ;;
+            esac
+        done
+    ;;
+    
+    #DiscordBot系
+    discord)
+        first_start
+        while :; do
+            echo "Discord"
+            echo "■ eew   | eewBotに関するコマンドを使用できます"
+            echo "■ jmusic | JmusicBotに関するコマンドを使用できます"
+            echo "■ status  | 各種Botのステータスを確認します。"
+            read -p ">" input_data
+            case "${input_data}" in
+                eew)
+                    echo "Coming Soon..."
+                    #. ./lib/main/discord/eew.sh
+                ;;
+                jmusic)
+                    echo "Coming Soon..."
+                    #. ./lib/main/discord/jmusic.sh
+                ;;
+            esac
+        done
+    ;;
+    *)
+        
 cat | sed -e 's/ - /  └  /g' -e 's/- -/       └  /g' <<EOF
 ##========================================##
 ##██╗███╗   ██╗████████╗███████╗██╗       ##
