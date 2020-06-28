@@ -15,6 +15,7 @@ IntegrationShell（統合シェル）
 - コードの短縮
 - 細かなバグの修正
 - 機能の追加
+- jsonによるサーバーリスト管理
 
 ### 新たな機能
 
@@ -32,6 +33,7 @@ INTSLの際なかった機能一覧です
 - サーバーの起動時に使用するShellを1つで済ませられるように
 - サーバーが存在するかのチェックでファイルのみではなく、サーバーリストも確認するように
 - 全体的な大幅な改善
+- jsonでのサーバーリスト管理
 
 ## 既知の不具合
 
@@ -89,8 +91,8 @@ INTSLの際なかった機能一覧です
 - curl
 - wget
 - screen
-- [gron](https://github.com/tomnomnom/gron)
-  - [archlinux](https://aur.archlinux.org/packages/gron/)
+- [jq](https://github.com/tomnomnom/gron)
+  - [archlinux](https://www.archlinux.org/packages/community/x86_64/jq/)
 
 ### テスト済みOS
 
