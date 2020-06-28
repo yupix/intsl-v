@@ -4,7 +4,7 @@ if [[ ! -e ${VAR_LIB_FILE_LOCATIONS}server_list.json ]];then
     echo "再度にサーバーを作成してから再度実行してください。"
     exit
 fi
-if [[ -z "input_server_name" ]];then
+if [[ -z "$input_server_name" ]];then
     echo "管理したいサーバー名を入力してください。"
     read -p ">" input_server_name
 fi
@@ -115,6 +115,23 @@ while :; do
             run_spinner
             if [ -e $get_server_depends_jar ]; then
                 echo "JARファイルのチェックに成功"
+                get_jar_md5sum=$(md5sum ${get_server_depends_jar} | gawk '{print $1}')
+                if [[ $get_jar_md5sum = ${get_server_file_hash_md5sum} ]];then 
+                    echo "md5sumのチェックに成功"
+                else
+                    echo "md5sumのチェックに失敗"
+                    echo "ファイルが改変された可能性があります。システム保護のためサービスを終了します。"
+                    exit 1
+                fi 
+                get_jar_sha512sum=$(sha512sum ${get_server_depends_jar} | gawk '{print $1}')
+
+                if [[ $get_jar_sha512sum = ${get_server_file_hash_sha512sum} ]];then 
+                    echo "sha512sumのチェックに成功"
+                else
+                    echo "sha512sumのチェックに失敗"
+                    echo "ファイルが改変された可能性があります。システム保護のためサービスを終了します。"
+                    exit 1
+                fi 
                 spinner_progress_status="ファイルの確認中"
                 run_spinner
                 if [[ -e eula.txt ]]; then
