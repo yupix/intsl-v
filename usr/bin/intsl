@@ -376,13 +376,14 @@ serverlistoutput() {
 #INTSLGETV() {
 #    VERSIONGET=$(echo "$INTSL_V_VERSIONBODY" | sed -e 's/\(.\{1\}\)/.\1/g')
 #}
-
 vcheck() {
     while :; do
         spinner_progress_status="アップデートを確認中"
         run_spinner
-        check_new_version=$(git remote show origin | grep -c "(local out of date)")
-        if [[ ${check_new_version} -ge 1 ]];then
+        get_host_branch=$(git checkout | grep "Your branch" | gawk '{print $8}' | sed 's/\.//' | sed "s/'//g")
+        check_new_version=$(git remote show origin |grep "${get_host_branch}"|gawk '{print $5$6$7$8}')
+        reformat_check_new_version=$(echo ${check_new_version} | gawk '{print $2}')
+        if [[ ${reformat_check_new_version} -ge "(uptodate)" ]];then
             echo "更新があります！更新しますか?(Y)es or (N)o"
             read -p ">" INPUT_Y_OR_N
             case "$INPUT_Y_OR_N" in
@@ -393,6 +394,7 @@ vcheck() {
                 ;;
                 [nN][oO]|[nN])
                     echo "キャンセルしました"
+                    break
                 ;;
             esac
         else
