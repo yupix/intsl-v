@@ -379,77 +379,24 @@ serverlistoutput() {
 
 vcheck() {
     while :; do
-        if [[ -e ${TMP_FILE_LOCATIONS}new-version.txt ]]; then
-            spinner_progress_status="キャッシュの削除中"
-            run_spinner
-            rm -rf ${TMP_FILE_LOCATIONS}new-version.txt
+        spinner_progress_status="アップデートを確認中"
+        run_spinner
+        check_new_version=$(git remote show origin | grep -c "(local out of date)")
+        if [[ ${check_new_version} -ge 1 ]];then
+            echo "更新があります！更新しますか?(Y)es or (N)o"
+            read -p ">" INPUT_Y_OR_N
+            case "$INPUT_Y_OR_N" in
+                [yY][eE][sS]|[yY])
+                    spinner_progress_status="アップデート中"
+                    run_spinner
+                    git pull
+                ;;
+                [nN][oO]|[nN])
+                    echo "キャンセルしました"
+                ;;
+            esac
         else
-            spinner_progress_status="最新バージョンの確認中"
-            wget -q ${INTREPOURL}pub/intsl_v/new-version.txt -P ${TMP_FILE_LOCATIONS}
-            if [[ -e ${TMP_FILE_LOCATIONS}new-version.txt ]]; then
-                . ${TMP_FILE_LOCATIONS}new-version.txt
-                regular_version=$(echo "$NEWVERSION" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
-                if [[ $NEWVERSION -gt ${INTSL_V_VERSION} ]]; then
-                    echo "$message_update_exists"
-                    echo -e "${ECHO_RED_BOLD_COLOR}Current: INTSL-V-${INTSL_V_VERSION}${ECHO_COLOR_EXIT} ->  ${ECHO_GREEN_BOLD_COLOR}New: INTSL-V-${regular_version}${ECHO_COLOR_EXIT}"
-                    cat <<EOS
-${message_downalod_file}
-${message_use_possible}
-EOS
-                    read -p ">" input_data
-                    input_data=${input_data:-y}
-                    case ${input_data} in
-                        [yY] | [yY][eE][sS])
-                            echo "$message_updata_start"
-                            while [[ ! -e ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip ]]; do
-                                spinner_progress_status="$DATA_DOWNLOAD_NOW_ME"
-                                run_spinner
-                                wget -q https://repo.akarinext.org/pub/intsl_v/${regular_version}/INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip -P ${TMP_FILE_LOCATIONS}
-                            done
-                            echo "${message_download_success}"
-                            serverlistoutput
-                            unzip -qqo ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip -d ${TMP_FILE_LOCATIONS}
-                            if [[ -e ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION} ]]; then
-                                echo "ファイルの解凍に成功"
-                                sudo cp -r ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}/. .
-                            else
-                                echo -e "${ECHO_RED_BOLD_COLOR}${message_system_error}:${ECHO_COLOR_EXIT} ファイルの解凍に失敗しました"
-                                echo "Systemを保護するためにサービスを終了します。"
-                                break
-                            fi
-                            . ${VARIABLE_FILE_LOCATIONS}variable
-                            if [[ ${NEWVERSION} -gt ${INTSL_V_VERSION} ]]; then
-                                echo "バージョンアップに失敗"
-                            else
-                                rm -rf news.txt
-                                wget -q ${INTREPOURL}pub/intsl/news.txt
-                                MAXLINE=$(cat news.txt | wc -l)
-                                while [[ $COUNT != $MAXLINE ]]; do
-                                    . ${SETTING_FILE_LOCATIONS}settings
-                                    spinner_progress_status="最新情報の取得中 $COUNT / $MAXLINE"
-                                    run_spinner
-                                    COUNT=$(($COUNT + 1))
-                                    GETLINE=$(sed -n ${COUNT}P news.txt)
-                                    echo "$GETLINE"
-                                done
-                                echo "$message_updata_success"
-                                
-                            fi
-                        ;;
-                        [nN] | [nN][oO])
-                            echo "${message_system_canceled}"
-                        ;;
-                    esac
-                    echo $name
-                    break
-                else
-                    echo -e '現在のINTSL Vは\e[1;37;32m最新バージョン\e[0mで実行中です '
-                    break
-                fi
-            else
-                echo "$message_download_failed"
-                break
-            fi
+            echo -e '現在のINTSL Vは\e[1;37;32m最新バージョン\e[0mで実行中です '
         fi
     done
 }

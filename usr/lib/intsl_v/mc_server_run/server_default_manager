@@ -1,51 +1,81 @@
 #!/usr/bin/env bash
+
+get_server_list(){
+    get_servers=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[0].servers)
+    for i in $(seq ${get_servers});do
+        check_server_name=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].name)
+        if [[ $listmode = "true" ]];then
+            echo "$check_server_name"
+        else
+            if [[ ${input_server_name} = ${check_server_name} ]];then
+                break
+            else
+                if [[ $i = $get_servers ]];then
+                    echo "存在しないサーバーです"
+                    exit 1
+                fi
+            fi
+        fi
+    done
+    unset listmode
+}
+
 if [[ ! -e ${VAR_LIB_FILE_LOCATIONS}server_list.json ]];then
     echo "サーバーリストが存在しません。"
     echo "再度にサーバーを作成してから再度実行してください。"
     exit
 fi
 if [[ -z "$input_server_name" ]];then
-    echo "管理したいサーバー名を入力してください。"
-    read -p ">" input_server_name
+    echo "管理したいサーバー名を入力してください。 (listで一覧を表示)"
+    while :; do
+        read -p ">" input_server_name
+        
+        if [[ $input_server_name = list ]];then
+            listmode="true"
+            get_server_list
+        else
+            break
+        fi
+    done
 fi
 #fkwofkow
-get_servers=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[0].servers)
 
-for i in $(seq ${get_servers});do
-    check_server_name=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].name)
-    echo "$check_server_name"
-    if [[ ${input_server_name} = ${check_server_name} ]];then
-        break
-    else
-        if [[ $i = $get_servers ]];then
-            echo "存在しないサーバーです"
-            exit 1
-        fi
-    fi
-done
-
+listmode="false"
+get_server_list
 #必要情報の大量取得
 
-get_server_name="${check_server_name}"
-get_server_description=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].description)
-get_server_depends_jar=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].depends.jar)
-get_server_depends_lib=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].depends.lib)
-get_server_file_serverpath=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].file.serverpath)
-get_server_file_hash_md5sum=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].file.hash.md5)
-get_server_file_hash_sha512sum=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].file.hash.sha512sum)
+get_all_server_info(){
+    if [[ $start_mode = true ]];then
+        cd -
+    fi
+    get_server_name="${check_server_name}"
+    get_server_description=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].description)
+    get_server_depends_jar=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].depends.jar)
+    get_server_depends_lib=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].depends.lib)
+    get_server_file_serverpath=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].file.serverpath)
+    get_server_file_hash_md5sum=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].file.hash.md5)
+    get_server_file_hash_sha512sum=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].file.hash.sha512sum)
+    
+    ##設定情報取得
+    
+    ###基本設定取得
+    get_server_settings_main_maxmemory=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.maxmemory)
+    get_server_settings_main_minmemory=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.minmemory)
+    get_server_settings_main_javahome=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.javahome)
+    ####起動分
+    get_server_settings_main_jvmargument=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.jvmargument)
+    ####起動分をメモリ含めて再度構成
+    get_server_settings_main_jvmargument=$(eval echo $get_server_settings_main_jvmargument)
+    get_server_settings_main_screenname=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.screenname)
+    get_server_settings_main_pid=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.pid)
+    get_server_settings_main_status=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.status)
+    if [[ $start_mode = true ]];then
+        cd -
+    fi
+}
+get_all_server_info
+start_mode="true"
 
-##設定情報取得
-
-###基本設定取得
-get_server_settings_main_maxmemory=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.maxmemory)
-get_server_settings_main_minmemory=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.minmemory)
-get_server_settings_main_javahome=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.javahome)
-####起動分
-get_server_settings_main_jvmargument=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.jvmargument)
-####起動分をメモリ含めて再度構成
-get_server_settings_main_jvmargument=$(eval echo $get_server_settings_main_jvmargument)
-get_server_settings_main_screenname=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.screenname)
-get_server_settings_main_pid=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.pid)
 
 . ${SETTING_FILE_LOCATIONS}variable
 
@@ -116,22 +146,22 @@ while :; do
             if [ -e $get_server_depends_jar ]; then
                 echo "JARファイルのチェックに成功"
                 get_jar_md5sum=$(md5sum ${get_server_depends_jar} | gawk '{print $1}')
-                if [[ $get_jar_md5sum = ${get_server_file_hash_md5sum} ]];then 
+                if [[ $get_jar_md5sum = ${get_server_file_hash_md5sum} ]];then
                     echo "md5sumのチェックに成功"
                 else
                     echo "md5sumのチェックに失敗"
                     echo "ファイルが改変された可能性があります。システム保護のためサービスを終了します。"
                     exit 1
-                fi 
+                fi
                 get_jar_sha512sum=$(sha512sum ${get_server_depends_jar} | gawk '{print $1}')
-
-                if [[ $get_jar_sha512sum = ${get_server_file_hash_sha512sum} ]];then 
+                
+                if [[ $get_jar_sha512sum = ${get_server_file_hash_sha512sum} ]];then
                     echo "sha512sumのチェックに成功"
                 else
                     echo "sha512sumのチェックに失敗"
                     echo "ファイルが改変された可能性があります。システム保護のためサービスを終了します。"
                     exit 1
-                fi 
+                fi
                 spinner_progress_status="ファイルの確認中"
                 run_spinner
                 if [[ -e eula.txt ]]; then
@@ -234,15 +264,19 @@ EOS
             fi
         ;;
         [sS][tT][aA][tT][uU][sS])
-            . ./setting.txt
-            if ! kill -0 ${mc_run_server_BACKUP_PID} >/dev/null 2>&1; then
-                echo_color_exit="\033[0;39m"
-                break
+            get_all_server_info
+            if ! kill -0 ${get_server_settings_main_pid} >/dev/null 2>&1; then
+                messeage_color="`tput setaf 0 && tput bold`"
+                status_messeage=" OFFLINE "
             else
-                BACKUP_STATUS="online"
-                STATUS_MESSAGE=$(echo -e "| ${mc_run_server_status} | ${echo_color}${BACKUP_STATUS}${echo_color_exit}")
+                messeage_color="`tput setaf 2 && tput bold`"
+                status_messeage=" ONLINE  "
             fi
-            echo "| STATUS | BACKUP_STATUS |"
+                cat <<EOF
+┌────────┬─┬──────────┐
+│ SERVER │${messeage_color}■`tput sgr0`│`tput setaf 0`${messeage_color}${status_messeage}`tput sgr0` │
+└────────┴─┴──────────┘
+EOF
         ;;
         [bB][aA][cC][kK])
             unset input_server_name
