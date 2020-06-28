@@ -1,6 +1,7 @@
 #==========<>> < INTSL > <<>==============#
 
 # Developer files #
+server_list.json
 test.sh
 auto_push
 dummy

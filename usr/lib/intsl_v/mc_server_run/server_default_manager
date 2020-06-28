@@ -1,11 +1,55 @@
 #!/usr/bin/env bash
-. ${mc_settings_file_locations}/setting.txt
+if [[ ! -e ${VAR_LIB_FILE_LOCATIONS}server_list.json ]];then
+    echo "サーバーリストが存在しません。"
+    echo "再度にサーバーを作成してから再度実行してください。"
+    exit
+fi
+if [[ -z "input_server_name" ]];then
+    echo "管理したいサーバー名を入力してください。"
+    read -p ">" input_server_name
+fi
+#fkwofkow
+get_servers=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[0].servers)
+
+for i in $(seq ${get_servers});do
+    check_server_name=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].name)
+    echo "$check_server_name"
+    if [[ ${input_server_name} = ${check_server_name} ]];then
+        break
+    else
+        if [[ $i = $get_servers ]];then
+            echo "存在しないサーバーです"
+            exit 1
+        fi
+    fi
+done
+
+#必要情報の大量取得
+
+get_server_name="${check_server_name}"
+get_server_description=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].description)
+get_server_depends_jar=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].depends.jar)
+get_server_depends_lib=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].depends.lib)
+get_server_file_serverpath=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].file.serverpath)
+get_server_file_hash_md5sum=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].file.hash.md5)
+get_server_file_hash_sha512sum=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].file.hash.sha512sum)
+
+##設定情報取得
+
+###基本設定取得
+get_server_settings_main_maxmemory=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.maxmemory)
+get_server_settings_main_minmemory=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.minmemory)
+get_server_settings_main_javahome=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.javahome)
+####起動分
+get_server_settings_main_jvmargument=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.jvmargument)
+####起動分をメモリ含めて再度構成
+get_server_settings_main_jvmargument=$(eval echo $get_server_settings_main_jvmargument)
+get_server_settings_main_screenname=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.screenname)
+get_server_settings_main_pid=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.pid)
 
 . ${SETTING_FILE_LOCATIONS}variable
 
-. ${LANGUAGE_FILE_LOCATIONS}${setting_use_lang}
-
-cd $server_dir
+cd $get_server_file_serverpath
 
 run_spinner() {
     for ((n = 0; n < ${#chars}; n++)); do
@@ -14,37 +58,18 @@ run_spinner() {
     done
 }
 
-WORLD_BACKUP() {
-    if [[ ${mc_run_server_backup} = yes ]]; then
-        . ./setting.txt
-        if [[ ! -e ./backups ]]; then
-            mkdir ./backups
-        fi
-        while [[ -e ${mc_run_server_backup_world_name} ]]; do
-            BACKUP_NAME=$(date "+%Y%m%d-%H%M%S")
-            tar -zcf ${BACKUP_NAME}.tar.gz ./${mc_run_server_backup_world_name}
-            mv ./${BACKUP_NAME}.tar.gz ./${mc_run_server_backup_dir}
-            sleep ${mc_run_server_backup_time}
-        done
-    else
-        if [[ \$first_dev_login = 0 ]]; then
-            echo "バックアップ機能が無効です。"
-        fi
-    fi
-}
-
 DISCORD_WEBHOOK_ON_OFF() {
     echo "WebHookを有効にしますか?"
     read -p ">" INPUT_WEBHOOK_TRUE
     case $INPUT_WEBHOOK_TRUE in
-    [yY] | [yY][eE][sS] | [tT][rR][uU][eE])
-        TRUE_OR_FALSE="true"
+        [yY] | [yY][eE][sS] | [tT][rR][uU][eE])
+            TRUE_OR_FALSE="true"
         ;;
-    [nN] | [nN][oO] | [fF][aA][lL][sS][eE])
-        TRUE_OR_FALSE="false"
+        [nN] | [nN][oO] | [fF][aA][lL][sS][eE])
+            TRUE_OR_FALSE="false"
         ;;
-    *)
-        echo "$MISSING_INPUT_DATA_ME"
+        *)
+            echo "$MISSING_INPUT_DATA_ME"
         ;;
     esac
     sed -i -e 's/'mc_run_server_discord_webhook'="'${mc_run_server_discord_webhook}'"/'mc_run_server_discord_webhook'="'$TRUE_OR_FALSE'"/' ./setting.txt
@@ -61,300 +86,280 @@ while :; do
     echo "cd | サーバーにコマンドを送信します"
     echo "settings | サーバー起動時の設定を変更できます"
     echo "back | 元いた画面に戻ります"
-
+    
     if [[ -z "${input_server_behavior}" ]]; then
         read -p ">" input_server_behavior
     fi
     case $input_server_behavior in
-    cd)
-        while :; do
-            . ./setting.txt
-            if [[ ${mc_run_server_status} = online ]]; then
-                read INPUT_COMMAND
-                case $INPUT_COMMAND in
-                exit)
-                    echo "サービスを終了します"
-                    break
-                    ;;
-                *)
-                    screen -S $screen_name -p 0 -X stuff "say 残り10 秒$(echo -ne '\r')"
-                    ;;
-                esac
-            else
-                echo "サーバーが起動していません"
-                echo ""start"コマンドでサーバーを起動します"
-            fi
-        done
-        ;;
-    start)
-        spinner_progress_status="ファイルの確認中"
-        run_spinner
-        #ファイルのチェック
-        if [[ ! -e setting.txt ]]; then
-            #ループs
+        cd)
             while :; do
-                spinner_progress_status="ファイルの作成中"
-                run_spinner
-                if [[ $RETRYCOUNT -le $RETRYMAX ]]; then
-                    if [[ ! -e setting.txt ]]; then
-                        RETRYCOUNT=$((RETRYCOUNT + 1))
-                    else
-                        echo "ファイルの作成に成功しました"
-                        break
-                    fi
+                if [[ ${mc_run_server_status} = online ]]; then
+                    read INPUT_COMMAND
+                    case $INPUT_COMMAND in
+                        exit)
+                            echo "サービスを終了します"
+                            break
+                        ;;
+                        *)
+                            screen -S $screen_name -p 0 -X stuff "say 残り10 秒$(echo -ne '\r')"
+                        ;;
+                    esac
                 else
-                    echo "ファイルの作成に失敗しました。"
-                    echo "再度実行し、問題がある場合は作者に報告してください。"
-                    exit 1
+                    echo "サーバーが起動していません"
+                    echo ""start"コマンドでサーバーを起動します"
                 fi
             done
-        fi
-
-        spinner_progress_status="ファイルの確認中"
-        run_spinner
-        if [ -e ${mc_run_server_file_server_file} ]; then
-            echo "JARファイルのチェックに成功"
+        ;;
+        start)
             spinner_progress_status="ファイルの確認中"
             run_spinner
-            if [[ -e eula.txt ]]; then
-                EULACONSENT=$(cat ./eula.txt | grep eula=false | sed 's/eula=//g')
-                if [[ \false = $EULACONSENT ]]; then
-                    echo "EULA(MINECRAFT エンド ユーザー ライセンス条項)に同意していません。"
-                    echo "こちらを読み、同意する場合は(Y)esキャンセルする場合は(N)oと入力してください"
-                    echo "https://account.mojang.com/documents/minecraft_eula"
-                    while :; do
-                        read -p ">" INPUT_EULA_DATA
-                        INPUT_EULA_DATA=${INPUT_EULA_DATA:-y}
-                        case $INPUT_EULA_DATA in
-                        [yY] | [yY][eE][sS])
-                            echo "同意しました。"
-                            sed -i -e 's/eula=false/eula=true/' ./eula.txt
-                            break
-                            ;;
-                        [nN] | [oO])
-                            echo "${message_system_canceled}"
-                            break
-                            ;;
-                        *)
-                            echo "${message_use_possible}"
-                            ;;
-                        esac
-                    done
+            if [ -e $get_server_depends_jar ]; then
+                echo "JARファイルのチェックに成功"
+                spinner_progress_status="ファイルの確認中"
+                run_spinner
+                if [[ -e eula.txt ]]; then
+                    EULACONSENT=$(cat ./eula.txt | grep eula=false | sed 's/eula=//g')
+                    if [[ \false = $EULACONSENT ]]; then
+                        echo "EULA(MINECRAFT エンド ユーザー ライセンス条項)に同意していません。"
+                        echo "こちらを読み、同意する場合は(Y)esキャンセルする場合は(N)oと入力してください"
+                        echo "https://account.mojang.com/documents/minecraft_eula"
+                        while :; do
+                            read -p ">" INPUT_EULA_DATA
+                            INPUT_EULA_DATA=${INPUT_EULA_DATA:-y}
+                            case $INPUT_EULA_DATA in
+                                [yY] | [yY][eE][sS])
+                                    echo "同意しました。"
+                                    sed -i -e 's/eula=false/eula=true/' ./eula.txt
+                                    break
+                                ;;
+                                [nN] | [oO])
+                                    echo "${message_system_canceled}"
+                                    break
+                                ;;
+                                *)
+                                    echo "${message_use_possible}"
+                                ;;
+                            esac
+                        done
+                    fi
+                else
+                    echo "eulaファイルが存在しません。JARファイルを一度実行します。"
+                    screen -AdmS ${get_server_settings_main_screenname} ${get_server_settings_main_javahome} ${get_server_settings_main_jvmargument} -jar ${get_server_depends_jar} nogui
                 fi
             else
-                echo "eulaファイルが存在しません。JARファイルを一度実行します。"
-                . ./setting.txt
-                screen -AdmS ${mc_run_server_screen_name} ${mc_run_server_java_home} ${mc_run_server_jvm_argument} -jar ${mc_run_server_file_server_file} nogui
+                echo "JARファイルのチェックに失敗"
             fi
-        else
-            echo "JARファイルのチェックに失敗"
-        fi
-
-        #サーバー起動
-        . ./setting.txt
-        if [[ ${mc_run_server_backup} = yes ]]; then
-            kill ${mc_run_server_BACKUP_PID} >/dev/null 2>&1
-            WORLD_BACKUP &
-            sed -i -e 's/'${mc_run_server_BACKUP_PID}'="'${mc_run_server_BACKUP_PID}'"/'${mc_run_server_BACKUP_PID}'="'$!'"/' ./setting.txt
-        fi
-        if [[ ${mc_run_server_slack_webhook} = true ]]; then
-            echo "└ ${mc_run_server_discord_webhook}"
-        elif [[ ${mc_run_server_discord_webhook} = true ]]; then
+            
+            #サーバー起動
+            if [[ ${mc_run_server_backup} = yes ]]; then
+                kill ${mc_run_server_BACKUP_PID} >/dev/null 2>&1
+                WORLD_BACKUP &
+                sed -i -e 's/'${mc_run_server_BACKUP_PID}'="'${mc_run_server_BACKUP_PID}'"/'${mc_run_server_BACKUP_PID}'="'$!'"/' ./setting.txt
+            fi
+            if [[ ${mc_run_server_slack_webhook} = true ]]; then
+                echo "└ ${mc_run_server_discord_webhook}"
+                elif [[ ${mc_run_server_discord_webhook} = true ]]; then
             curl -X POST -H "Content-Type: application/json" -d @- ${mc_run_server_discord_webhook_URL} <<EOS
 {"avatar_url":"${mc_run_server_webhook_avator}","username":"${mc_run_server_discord_webhook_name}","content":"✅ **Server has started**"}
 EOS
-        fi
-        if [ "$(screen -ls | grep ${mc_run_server_screen_name})" == "" ]; then
-            spinner_progress_status="サーバーを起動中"
-            run_spinner
-            screen -AdmS ${mc_run_server_screen_name} ${mc_run_server_java_home} ${mc_run_server_jvm_argument} -jar ${mc_run_server_file_server_file} nogui
-
-            #PID取得用
-            getpid=$(screen -ls | grep ${mc_run_server_screen_name} | sed -e 's/\..*//')
-            sed -i -e 's/mc_run_server_pid="'"${mc_run_server_pid}"'"/mc_run_server_pid="'"${getpid}"'"/' ./setting.txt
-        else
-            echo "サーバーは既に起動しています。"
-        fi
-        echo "SCREENNAME: ${mc_run_server_screen_name}"
+            fi
+            if [ "$(screen -ls | grep ${get_server_settings_main_screenname})" == "" ]; then
+                spinner_progress_status="サーバーを起動中"
+                run_spinner
+                
+                screen -AdmS ${get_server_settings_main_screenname} ${get_server_settings_main_javahome} ${get_server_settings_main_jvmargument} -jar ${get_server_depends_jar} nogui
+                mktemp=$(mktemp --suffix=.json)
+                cd - && cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq '.['$i'].settings.main.status|="online"' | sed 's/\\t//' > ${mktemp} && cat ${mktemp} > ${VAR_LIB_FILE_LOCATIONS}server_list.json &&cd -
+                
+                #PID取得用
+                getpid=$(screen -ls | grep ${get_server_settings_main_screenname} | sed -e 's/\..*//')
+                cd - && cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq '.['$i'].settings.main.pid|="'"${getpid}"'"' | sed 's/\\t//' > ${mktemp} && cat ${mktemp} > ${VAR_LIB_FILE_LOCATIONS}server_list.json &&cd -
+            else
+                echo "サーバーは既に起動しています。"
+            fi
+            echo "SCREENNAME: ${get_server_settings_main_screenname}"
         ;;
-
-    #サーバー停止
-    stop)
-        spinner_progress_status="プロセスの有無を確認中"
-        run_spinner
-        retrycount="10"
-        while :; do
-            if [ "$(screen -ls | grep ${mc_run_server_screen_name})" == "" ]; then
-                if [[ $retrycount = 1 ]]; then
-                    echo "サーバーの停止に成功しました。"
+        
+        #サーバー停止
+        stop)
+            get_server_settings_main_pid=$(cd - && cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.pid && cd -)
+            echo $get_server_settings_main_pid
+            spinner_progress_status="プロセスの有無を確認中"
+            run_spinner
+            retrycount="10"
+            while :; do
+                if [ "$(screen -ls | grep ${get_server_settings_main_screenname})" == "" ]; then
+                    if [[ $retrycount = 1 ]]; then
+                        mktemp=$(mktemp --suffix=.json)
+                        cd - && cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq '.['$i'].settings.main.status|="offline"' | sed 's/\\t//' > ${mktemp} && cat ${mktemp} > ${VAR_LIB_FILE_LOCATIONS}server_list.json &&cd -
+                        echo "サーバーの停止に成功しました。"
+                        break
+                    fi
+                    echo "サーバーは起動していません"
                     break
+                else
+                    if [[ $retrycount = 1 ]]; then
+                        echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) サーバー停止に失敗しました"
+                        break
+                    fi
+                    kill ${get_server_settings_main_pid} >/dev/null 2>&1
+                    retrycount="1"
                 fi
-                echo "サーバーは起動していません"
+            done
+        ;;
+        
+        #サーバーのログ
+        log)
+            if [ "$(screen -ls | grep ${get_server_settings_main_screenname})" == "" ]; then
+                echo -e "${ECHO_YELLOW_BOLD_COLOR}${message_system_warning}:${ECHO_COLOR_EXIT} サーバーが起動していません"
+            else
+                screen -r ${get_server_settings_main_screenname}
+            fi
+        ;;
+        [sS][tT][aA][tT][uU][sS])
+            . ./setting.txt
+            if ! kill -0 ${mc_run_server_BACKUP_PID} >/dev/null 2>&1; then
+                echo_color_exit="\033[0;39m"
                 break
             else
-                if [[ $retrycount = 1 ]]; then
-                    echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) サーバー停止に失敗しました"
-                    break
-                fi
-                . ./setting.txt
-                kill ${mc_run_server_pid} >/dev/null 2>&1
-                retrycount="1"
+                BACKUP_STATUS="online"
+                STATUS_MESSAGE=$(echo -e "| ${mc_run_server_status} | ${echo_color}${BACKUP_STATUS}${echo_color_exit}")
             fi
-        done
+            echo "| STATUS | BACKUP_STATUS |"
         ;;
-
-    #サーバーのログ
-    log)
-        if [ "$(screen -ls | grep ${mc_run_server_screen_name})" == "" ]; then
-            echo -e "${ECHO_YELLOW_BOLD_COLOR}${message_system_warning}:${ECHO_COLOR_EXIT} サーバーが起動していません"
-        else
-            screen -r ${mc_run_server_screen_name}
-        fi
-        ;;
-    [sS][tT][aA][tT][uU][sS])
-        . ./setting.txt
-        if ! kill -0 ${mc_run_server_BACKUP_PID} >/dev/null 2>&1; then
-            echo_color_exit="\033[0;39m"
+        [bB][aA][cC][kK])
+            unset input_server_name
             break
-        else
-            BACKUP_STATUS="online"
-            STATUS_MESSAGE=$(echo -e "| ${mc_run_server_status} | ${echo_color}${BACKUP_STATUS}${echo_color_exit}")
-        fi
-        echo "| STATUS | BACKUP_STATUS |"
         ;;
-    [bB][aA][cC][kK])
-        unset input_server_name
-        break
-        ;;
-    #設定変更コマンド
-    [sS][eE][tT][tT][iI][nN][gG][sS])
-        if [[ -z "$server_dir" ]]; then
-            server_dir="${mc_server_create_file_dir}/${input_server_name}"
-            global_server_dir="$server_dir"
-        fi
-        export server_dir
-        export server_name
-        spinner_progress_status="ファイルの確認中"
-        run_spinner
-        if [[ -e "./setting.txt" ]]; then
-            echo "閲覧したい設定を選んでください。"
-            echo " 1.サーバー関連 | 2.バックアップ関連"
-            echo " 3.WebHook関連  |"
-            read -p ">" INPUT_DATA
-            case $INPUT_DATA in
-            [1])
-                echo "~サーバー設定~"
-                echo "1.サーバーのプロセス名"
-                echo "└ ${mc_run_server_screen_name}"
-                echo "2.サーバーJAR名"
-                echo "└ ${mc_run_server_java_home}"
-                echo "3.サーバーメモリ最小"
-                echo "└ ${mc_run_server_mem_min}"
-                echo "4.サーバーメモリ最大"
-                echo "└ ${mc_run_server_mem_max}"
-                read INPUT_SERVER_SETTING
-                case $INPUT_SERVER_SETTING in
-                1)
-                    change_setting_number="1"
-                    export change_setting_number
-                    . ${LIB_FILE_LOCATIONS}setting_function
+        #設定変更コマンド
+        [sS][eE][tT][tT][iI][nN][gG][sS])
+            if [[ -z "$server_dir" ]]; then
+                server_dir="${mc_server_create_file_dir}/${input_server_name}"
+                global_server_dir="$server_dir"
+            fi
+            export server_dir
+            export server_name
+            spinner_progress_status="ファイルの確認中"
+            run_spinner
+            if [[ -e "./setting.txt" ]]; then
+                echo "閲覧したい設定を選んでください。"
+                echo " 1.サーバー関連 | 2.バックアップ関連"
+                echo " 3.WebHook関連  |"
+                read -p ">" INPUT_DATA
+                case $INPUT_DATA in
+                    [1])
+                        echo "~サーバー設定~"
+                        echo "1.サーバーのプロセス名"
+                        echo "└ ${get_server_settings_main_screenname}"
+                        echo "2.サーバーJAR名"
+                        echo "└ ${mc_run_server_java_home}"
+                        echo "3.サーバーメモリ最小"
+                        echo "└ ${mc_run_server_mem_min}"
+                        echo "4.サーバーメモリ最大"
+                        echo "└ ${mc_run_server_mem_max}"
+                        read INPUT_SERVER_SETTING
+                        case $INPUT_SERVER_SETTING in
+                            1)
+                                change_setting_number="1"
+                                export change_setting_number
+                                . ${LIB_FILE_LOCATIONS}setting_function
+                            ;;
+                            2)
+                                change_setting_number="2"
+                                export change_setting_number
+                                . ${LIB_FILE_LOCATIONS}setting_function
+                            ;;
+                            3)
+                                change_setting_number="3"
+                                export change_setting_number
+                                . ${LIB_FILE_LOCATIONS}setting_function
+                            ;;
+                            4)
+                                change_setting_number="4"
+                                export change_setting_number
+                                . ${LIB_FILE_LOCATIONS}setting_function
+                            ;;
+                            *)
+                                echo "使用できないキー入力です"
+                            ;;
+                        esac
                     ;;
-                2)
-                    change_setting_number="2"
-                    export change_setting_number
-                    . ${LIB_FILE_LOCATIONS}setting_function
+                    [2])
+                        echo "~バックアップ設定~"
+                        echo "1.バックアップ対象"
+                        echo "└ ${mc_run_server_backup_world_name}"
+                        echo "2.バックアップ先"
+                        echo "└ ${mc_run_server_backup_dir}"
                     ;;
-                3)
-                    change_setting_number="3"
-                    export change_setting_number
-                    . ${LIB_FILE_LOCATIONS}setting_function
-                    ;;
-                4)
-                    change_setting_number="4"
-                    export change_setting_number
-                    . ${LIB_FILE_LOCATIONS}setting_function
-                    ;;
-                *)
-                    echo "使用できないキー入力です"
+                    [3])
+                        . ./setting.txt
+                        echo "Slack WebHook"
+                        echo "└ ${mc_run_server_slack_webhook}"
+                        if [[ ${mc_run_server_slack_webhook} = true ]]; then
+                            echo "└ ${mc_run_server_slack_webhook_URL}"
+                        fi
+                        echo "Discord WebHook"
+                        echo "└ 1.WebHookのステータス: ${mc_run_server_discord_webhook}"
+                        if [[ ${mc_run_server_discord_webhook} = true ]]; then
+                            echo "└ 2.WebHookの名前: ${mc_run_server_discord_webhook_name}"
+                            echo "└ 3.WebHookのアイコン画像: ${mc_run_server_discord_webhook_avator}"
+                            echo "└ 4.WebHookURL: ${mc_run_server_discord_webhook_URL}"
+                            read -p ">" INPUT_SELECT_DATA
+                            case $INPUT_SELECT_DATA in
+                                [1])
+                                    DISCORD_WEBHOOK_ON_OFF
+                                ;;
+                                [2])
+                                    echo "WebHookで使用する名前を入力してください。"
+                                    read -p ">" INPUT_WEBHOOK_NAME
+                                    sed -i -e 's/'${mc_run_server_discord_webhook_name}'="'${mc_run_server_discord_webhook_name}'"/'${mc_run_server_discord_webhook_name}'="'$INPUT_WEBHOOK_NAME'"/' ./setting.txt
+                                    . ./setting.txt
+                                    if [[ $INPUT_WEBHOOK_NAME = ${mc_run_server_discord_webhook_name} ]]; then
+                                        echo "変更に成功しました。"
+                                    else
+                                        echo "変更に失敗しました。"
+                                    fi
+                                ;;
+                                [3])
+                                    echo "WebHookで使用するアイコンのURLを入力してください。"
+                                    read -p ">" INPUT_WEBHOOK_AVATOR
+                                    sed -i -e 's/'${mc_run_server_discord_webhook_avator}'="'${mc_run_server_discord_webhook_avator}'"/'${mc_run_server_discord_webhook_avator}'="'$INPUT_WEBHOOK_AVATOR'"/' ./setting.txt
+                                    . ./setting.txt
+                                    if [[ $INPUT_WEBHOOK_AVATOR = ${mc_run_server_discord_webhook_avator} ]]; then
+                                        echo "変更に成功しました。"
+                                    else
+                                        echo "変更に失敗しました。"
+                                    fi
+                                ;;
+                                [4])
+                                    echo "WebHook URLを入力してください。"
+                                    read -p ">" INPUT_WEBHOOK_URL
+                                    sed -i -e 's,'mc_run_server_discord_webhook_URL'="'${mc_run_server_discord_webhook_URL}'",'mc_run_server_discord_webhook_URL'="'$INPUT_WEBHOOK_URL'",' ./setting.txt
+                                    . ./setting.txt
+                                    if [[ $INPUT_WEBHOOK_URL = ${mc_run_server_discord_webhook_URL} ]]; then
+                                        echo "変更に成功しました。"
+                                    else
+                                        echo "変更に失敗しました。"
+                                    fi
+                                ;;
+                            esac
+                            elif [[ ${mc_run_server_discord_webhook} = false ]]; then
+                            read -p ">" INPUT_SELECT_DATA
+                            case $INPUT_SELECT_DATA in
+                                [1])
+                                    DISCORD_WEBHOOK_ON_OFF
+                                ;;
+                            esac
+                        else
+                            echo "設定ファイルが破損しています。"
+                        fi
                     ;;
                 esac
-                ;;
-            [2])
-                echo "~バックアップ設定~"
-                echo "1.バックアップ対象"
-                echo "└ ${mc_run_server_backup_world_name}"
-                echo "2.バックアップ先"
-                echo "└ ${mc_run_server_backup_dir}"
-                ;;
-            [3])
-                . ./setting.txt
-                echo "Slack WebHook"
-                echo "└ ${mc_run_server_slack_webhook}"
-                if [[ ${mc_run_server_slack_webhook} = true ]]; then
-                    echo "└ ${mc_run_server_slack_webhook_URL}"
-                fi
-                echo "Discord WebHook"
-                echo "└ 1.WebHookのステータス: ${mc_run_server_discord_webhook}"
-                if [[ ${mc_run_server_discord_webhook} = true ]]; then
-                    echo "└ 2.WebHookの名前: ${mc_run_server_discord_webhook_name}"
-                    echo "└ 3.WebHookのアイコン画像: ${mc_run_server_discord_webhook_avator}"
-                    echo "└ 4.WebHookURL: ${mc_run_server_discord_webhook_URL}"
-                    read -p ">" INPUT_SELECT_DATA
-                    case $INPUT_SELECT_DATA in
-                    [1])
-                        DISCORD_WEBHOOK_ON_OFF
-                        ;;
-                    [2])
-                        echo "WebHookで使用する名前を入力してください。"
-                        read -p ">" INPUT_WEBHOOK_NAME
-                        sed -i -e 's/'${mc_run_server_discord_webhook_name}'="'${mc_run_server_discord_webhook_name}'"/'${mc_run_server_discord_webhook_name}'="'$INPUT_WEBHOOK_NAME'"/' ./setting.txt
-                        . ./setting.txt
-                        if [[ $INPUT_WEBHOOK_NAME = ${mc_run_server_discord_webhook_name} ]]; then
-                            echo "変更に成功しました。"
-                        else
-                            echo "変更に失敗しました。"
-                        fi
-                        ;;
-                    [3])
-                        echo "WebHookで使用するアイコンのURLを入力してください。"
-                        read -p ">" INPUT_WEBHOOK_AVATOR
-                        sed -i -e 's/'${mc_run_server_discord_webhook_avator}'="'${mc_run_server_discord_webhook_avator}'"/'${mc_run_server_discord_webhook_avator}'="'$INPUT_WEBHOOK_AVATOR'"/' ./setting.txt
-                        . ./setting.txt
-                        if [[ $INPUT_WEBHOOK_AVATOR = ${mc_run_server_discord_webhook_avator} ]]; then
-                            echo "変更に成功しました。"
-                        else
-                            echo "変更に失敗しました。"
-                        fi
-                        ;;
-                    [4])
-                        echo "WebHook URLを入力してください。"
-                        read -p ">" INPUT_WEBHOOK_URL
-                        sed -i -e 's,'mc_run_server_discord_webhook_URL'="'${mc_run_server_discord_webhook_URL}'",'mc_run_server_discord_webhook_URL'="'$INPUT_WEBHOOK_URL'",' ./setting.txt
-                        . ./setting.txt
-                        if [[ $INPUT_WEBHOOK_URL = ${mc_run_server_discord_webhook_URL} ]]; then
-                            echo "変更に成功しました。"
-                        else
-                            echo "変更に失敗しました。"
-                        fi
-                        ;;
-                    esac
-                elif [[ ${mc_run_server_discord_webhook} = false ]]; then
-                    read -p ">" INPUT_SELECT_DATA
-                    case $INPUT_SELECT_DATA in
-                    [1])
-                        DISCORD_WEBHOOK_ON_OFF
-                        ;;
-                    esac
-                else
-                    echo "設定ファイルが破損しています。"
-                fi
-                ;;
-            esac
-        else
-            echo "設定ファイルが存在しません。"
-        fi
+            else
+                echo "設定ファイルが存在しません。"
+            fi
         ;;
-    *) ;;
+        *) ;;
         #変なキー入力受け付けたとき用
     esac
     unset input_server_behavior

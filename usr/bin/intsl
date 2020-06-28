@@ -736,7 +736,7 @@ WELCOME_DEV_MESSAGE() {
 }
 mc_server_version_list() {
     if [[ -z "${input_server_type}" ]]; then
-        echo "`tput setaf 2 && tput bold`■`tput sgr0`は使用できる物です。`tput setaf 1 && tput bold`■`tput sgr0`は作成中の使用できない物です。"        
+        echo "`tput setaf 2 && tput bold`■`tput sgr0`は使用できる物です。`tput setaf 1 && tput bold`■`tput sgr0`は作成中の使用できない物です。"
         echo -e "┌──────────────────────┐\n│   Server Type List   │\n├───┬────────────────┬─┴──────────────────┐"
         echo "│ `tput setaf 2 && tput bold`1`tput sgr0` │ OfficialServer │ `tput setaf 1 && tput bold`6`tput sgr0` │ BungeeCord     │"
         echo "│ `tput setaf 2 && tput bold`2`tput sgr0` │ SpigotServer   │ `tput setaf 1 && tput bold`7`tput sgr0` │ WaterFall      │"
@@ -1004,9 +1004,7 @@ case $1 in
                 mc_server_version_list
                 #サーバー管理オプション
                 elif [[ ${2} = manage ]]; then
-                word="管理するサーバー名"
-                purpose="server_list"
-                . ${VAR_LIB_FILE_LOCATIONS}server_list
+                . ${LIB_FILE_LOCATIONS}mc_server_run/server_default_manager
                 elif [[ ${2} = output ]]; then
                 serverlistoutput
                 #サーバーインポートオプション
@@ -1032,7 +1030,7 @@ case $1 in
                 ;;
                 manage)
                     word="管理するサーバー名"
-                    . ${VAR_LIB_FILE_LOCATIONS}server_list
+                    . ${LIB_FILE_LOCATIONS}mc_server_run/server_default_manager
                 ;;
                 list)
                     echo "サーバー数: ${number_of_server}"

@@ -1,45 +1,4 @@
 #!/usr/bin/env bash
-
-create_default_json(){
-    cat <<EOF > ${mktemp}
-  [
-    {
-    "type": "${mc_server_edition}",
-    "name": "${input_server_name}",
-    "description": "説明",
-    "depends": {
-      "jar": "${server_jar}",
-      "lib": "ライブラリー"
-    },
-    "file": {
-      "serverpath": "${mc_server_create_file_dir}/${input_server_name}",
-      "hash": {
-        "md5": "${get_jar_md5sum}",
-        "sha512sum": "${get_jar_sha512sum}"
-      }
-    },
-    "settings": {
-      "main": {
-        "maxmemory": "${SET_MAX_MEMORY}",
-        "minmemory": "${SET_MIN_MEMORY}",
-        "javahome": "java",
-        "jvmargument": "-Xmx\${get_server_settings_main_maxmemory} -Xms\${get_server_settings_main_minmemory} -XX:+UseG1GC -XX:+UnlockExperimentalVMOptions -XX:MaxGCPauseMillis=100 -XX:+DisableExplicitGC -XX:TargetSurvivorRatio=90 -XX:G1NewSizePercent=50 -XX:G1MaxNewSizePercent=80 -XX:G1MixedGCLiveThresholdPercent=35 -XX:+AlwaysPreTouch -XX:+ParallelRefProcEnabled -Dusing.aikars.flags=mcflags.emc.gs",
-        "screenname": "${cryptography}",
-        "pid": "none",
-        "status": "offline"
-      },
-      "buckup": {
-        "mode": "true",
-        "sleeptime": "1",
-        "dir": "./backups",
-        "target": "world"
-      }
-    }
-  }
-]
-EOF
-}
-
 if [[ -z "${input_server_name}" ]]; then
     echo "サーバー名を入力してください。"
     read -p ">" input_server_name
@@ -68,7 +27,7 @@ check_input_server_name="1"
 while [[ ${check_input_server_name} -gt "0" ]]; do
     # 変数内に/, #, !,-,',$,",(,),,,;,:があるか確認する
     check_input_server_name=$(echo $input_server_name | egrep '/|\#|\"|\;|\)|\!|\(|\:|\,|\-|'\' | wc -c)
-    
+
     if [ $check_input_server_name -gt 0 ]; then
         echo "$check_input_server_name に「/  #  \! - \' $ \" ( )  ; :」が含まれいます"
         echo "再度入力してください"
@@ -102,20 +61,20 @@ if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
     while :; do
         read -p ">" input_alternate_name
         case $input_alternate_name in
-            [1] | [2] | [3] | [4] | [5] | [6] | [7])
-                if [[ ! -e "${mc_server_create_file_dir}/${input_server_name}${input_alternate_name}" ]]; then
-                    input_server_name="${input_server_name}${input_alternate_name}"
-                    break
-                else
-                    echo "使用不可能なサーバー名です"
-                fi
+        [1] | [2] | [3] | [4] | [5] | [6] | [7])
+            if [[ ! -e "${mc_server_create_file_dir}/${input_server_name}${input_alternate_name}" ]]; then
+                input_server_name="${input_server_name}${input_alternate_name}"
+                break
+            else
+                echo "使用不可能なサーバー名です"
+            fi
             ;;
-            [nN] | [nN][oO])
-                echo "${message_system_canceled}"
-                exit 0
+        [nN] | [nN][oO])
+            echo "${message_system_canceled}"
+            exit 0
             ;;
-            *)
-                echo "代替案の数字、またはnを入力してください"
+        *)
+            echo "代替案の数字、またはnを入力してください"
             ;;
         esac
     done
@@ -134,52 +93,53 @@ mc_donwload_version="$INPUT_SERVER_VERSION"
 if [ ${mc_server_edition} = official -o ${mc_server_edition} = spigot -o ${mc_server_edition} = paper ]; then
     srce_edision="server"
     cp ${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar ${mc_server_create_file_dir}/${input_server_name}
-    server_jar="${mc_server_edition}${mc_donwload_version}.jar"
-    elif [[ $mc_server_edition = forge ]];then
+elif [[ $mc_server_edition = forge ]];then
     cp -r ${mc_server_jar_file}* ${mc_server_create_file_dir}/${input_server_name}
     get_forge_file_name=$(find ${mc_server_jar_file}* -maxdepth 1 -name "*.jar" | grep "forge-${minecraft_version}" | awk -F/ '{print $NF}')
-    server_jar="${get_forge_file_name}"
+    echo $get_forge_file_name
 fi
 
-get_jar_md5sum=$(md5sum ${mc_server_create_file_dir}/${input_server_name}/${mc_server_edition}${mc_donwload_version}.jar | gawk '{print $1}')
-get_jar_sha512sum=$(sha512sum ${mc_server_create_file_dir}/${input_server_name}/${mc_server_edition}${mc_donwload_version}.jar | gawk '{print $1}')
+. ${SETTING_FILE_LOCATIONS}settings
+sed -i ''${server_add_line}'i'"\#${input_server_name}START"'' ${VAR_LIB_FILE_LOCATIONS}server_list
+NEWSERVERLANE=$((server_add_line + 1))
+sed -i -e 's/server_add_line="'$server_add_line'/server_add_line="'$NEWSERVERLANE'/' ${SETTING_FILE_LOCATIONS}settings
 
+. ${SETTING_FILE_LOCATIONS}settings
+# サーバー数を増やす
+new_number_of_server=$((number_of_server + 1))
+sed -i -e 's/number_of_server="'$number_of_server'/number_of_server="'$new_number_of_server'/' ${SETTING_FILE_LOCATIONS}settings
+. ${SETTING_FILE_LOCATIONS}settings
 
+sed -i ''${server_add_line}'i'${input_server_name}\|${number_of_server}\)'' ${VAR_LIB_FILE_LOCATIONS}server_list
+sed -i ''${server_add_line}'a ;;' ${VAR_LIB_FILE_LOCATIONS}server_list
+sed -i ''${server_add_line}'a mc_settings_file_locations="'${mc_server_create_file_dir}/${input_server_name}'"''' ${VAR_LIB_FILE_LOCATIONS}server_list
+sed -i ''${server_add_line}'a mc_server_id="'${number_of_server}'"''' ${VAR_LIB_FILE_LOCATIONS}server_list
 
-if [ -z "$SET_MAX_MEMORY" ]; then
-    SET_MAX_MEMORY=${SET_MAX_MEMORY:-1G}
-fi
-if [ -z "$SET_MIN_MEMORY" ]; then
-    SET_MIN_MEMORY=${SET_MIN_MEMORY:-1G}
-fi
+NEWSERVERLANE=$((server_add_line + 4))
+sed -i -e 's/server_add_line="'$server_add_line'/server_add_line="'$NEWSERVERLANE'/' ${SETTING_FILE_LOCATIONS}settings
 
+. ${SETTING_FILE_LOCATIONS}settings
 
-if [[ ! -e ${VAR_LIB_FILE_LOCATIONS}server_list.json ]];then
-    cat <<EOF > ${VAR_LIB_FILE_LOCATIONS}server_list.json
-[
-  {
-    "servers": "0"
-  }
-]
-EOF
-fi
-mktemp_back=$(mktemp --suffix=.json)
-cp ${VAR_LIB_FILE_LOCATIONS}server_list.json ${mktemp_back}
-get_servers=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[0].servers)
-new_get_servers=$(echo $(($get_servers +1)))
-echo "sa-ba- $new_get_servers"
-cat ${VAR_LIB_FILE_LOCATIONS}server_list.json| jq '.[0].servers|="'${new_get_servers}'"' > ${mktemp_back}
-mktemp=$(mktemp --suffix=.json)
-#管理用のjson
-create_default_json
-echo "処理ナウ"
-echo "${mktemp}"
-jq add -s ${mktemp_back} ${mktemp} > ${VAR_LIB_FILE_LOCATIONS}server_list.json
+sed -i ''$server_add_line'i'"\#${input_server_name}EXIT"'' ${VAR_LIB_FILE_LOCATIONS}server_list
+NEWSERVERLANE=$((server_add_line + 1))
+sed -i -e 's/server_add_line="'$server_add_line'/server_add_line="'$NEWSERVERLANE'/' ${SETTING_FILE_LOCATIONS}settings
 
-spinner_progress_status="ファイルの確認中"
+spinner_progress_status="ファイルの確認中 1/2"
 run_spinner
 if [[ -e $mc_server_create_file_dir/${input_server_name} ]]; then
     echo "サーバーファイルの作成に成功しました。"
+    if [ -z "$SET_MAX_MEMORY" ]; then
+        SET_MAX_MEMORY=${SET_MAX_MEMORY:-1G}
+    fi
+    if [ -z "$SET_MIN_MEMORY" ]; then
+        SET_MIN_MEMORY=${SET_MIN_MEMORY:-1G}
+    fi
+    . ${LIB_FILE_LOCATIONS}server_default_settings.sh
+    spinner_progress_status="ファイルの確認中 2/2"
+    run_spinner
+    if [[ ! -e $mc_server_create_file_dir/${input_server_name}/setting.txt ]]; then
+        echo "設定ファイルの生成に失敗しました"
+    fi
 else
     echo "サーバーファイルの作成に失敗しました"
     exit 1
