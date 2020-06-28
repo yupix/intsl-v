@@ -23,21 +23,3 @@ package_check:
     stage: package_check
     script:
         - intsl -V
-
-package_check:server_create:
-    tags:
-        - linux
-        - archlinux
-        - docker
-    stage: package_check
-    script:
-        - intsl mc make --type 1 --mcversion 1.8 --server-name aa -y --force --default
-
-#server_create_test:
-#    tags:
-#        - linux
-#        - archlinux
-#    stage: server_create_test
-#    script:
-#        - export PATH="$(pwd)/usr/bin:$PATH"
-#        - intsl mc make 1 1.15 test -y f
