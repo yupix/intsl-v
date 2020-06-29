@@ -250,7 +250,7 @@ first_start() {
             cat <<EOF
 INTSLをインストールして頂きありがとうございます。
 本Projectのご利用をスムーズにスタートする為に初期設定をする事を推奨します！
-`tput bold && tput setaf 2`(Y)`tput sgr0`esまたは`tput bold && tput setaf 1`(N)`tput sgr0`oを入力してください。
+$(tput bold && tput setaf 2)(Y)$(tput sgr0)esまたは$(tput bold && tput setaf 1)(N)$(tput sgr0)oを入力してください。
 EOF
             while :; do
                 read -p ">" set_preferences
@@ -258,19 +258,19 @@ EOF
                     [yY] | [yY][eE][sS])
                         local count="1"
                         while [[ ${count} -le ${max_settings} ]]; do
-                            local setting_text1="`tput setab 4 && tput bold`  質問①  `tput sgr0`\n`tput bold && tput setaf 4`│`tput sgr0`使用する言語を選択してください (${count} / ${max_settings})"
+                            local setting_text1="$(tput setab 4 && tput bold)  質問①  $(tput sgr0)\n$(tput bold && tput setaf 4)│$(tput sgr0)使用する言語を選択してください (${count} / ${max_settings})"
                             if [[ ${setting_package_mode} = "false" ]]; then
-                                local setting_text2="`tput setab 4 && tput bold`  質問②   `tput sgr0`\n`tput bold && tput setaf 4`│`tput sgr0`使用するたびにバージョンアップを確認するか (${count} / ${max_settings})"
-                                local setting_text3="`tput setab 4 && tput bold`  質問③   `tput sgr0`\n`tput bold && tput setaf 4`│`tput sgr0`SpigotのBuild時,前回の環境をリセットするかどうか (${count} / ${max_settings})"
+                                local setting_text2="$(tput setab 4 && tput bold)  質問②   $(tput sgr0)\n$(tput bold && tput setaf 4)│$(tput sgr0)使用するたびにバージョンアップを確認するか (${count} / ${max_settings})"
+                                local setting_text3="$(tput setab 4 && tput bold)  質問③   $(tput sgr0)\n$(tput bold && tput setaf 4)│$(tput sgr0)SpigotのBuild時,前回の環境をリセットするかどうか (${count} / ${max_settings})"
                             else
-                                local setting_text2="`tput setab 4 && tput bold`  質問③  `tput sgr0`\n`tput bold && tput setaf 4`│`tput sgr0`SpigotのBuild時,前回の環境をリセットするかどうか (${count} / ${max_settings})"
+                                local setting_text2="$(tput setab 4 && tput bold)  質問③  $(tput sgr0)\n$(tput bold && tput setaf 4)│$(tput sgr0)SpigotのBuild時,前回の環境をリセットするかどうか (${count} / ${max_settings})"
                             fi
                             local change_setting="${count}"
                             local overwrite="setting_text"
                             eval $overwrite="\$setting_text$count"
                             if [[ ${change_setting} = 1 ]]; then
                                 echo -e "${setting_text}"
-                                echo -e "`tput setaf 4`│`tput sgr0`${message_available_languages}"
+                                echo -e "$(tput setaf 4)│$(tput sgr0)${message_available_languages}"
                                 while :; do
                                     read -p ">" input_data
                                     input_data=${input_data:-ja}
@@ -292,7 +292,7 @@ EOF
                                 done
                             else
                                 echo -e "${setting_text}"
-                                echo -e "`tput setaf 4`│`tput sgr0`${message_use_possible}"
+                                echo -e "$(tput setaf 4)│$(tput sgr0)${message_use_possible}"
                                 read -p ">" input_data
                                 input_data=${input_data:-true}
                                 while :; do
@@ -303,7 +303,7 @@ EOF
                                         local input_data="false"
                                         break
                                     else
-                                        echo "`tput bold && tput setaf 2`(Y)`tput sgr0`esまたは`tput bold && tput setaf 1`(N)`tput sgr0`oを入力してください。"
+                                        echo "$(tput bold && tput setaf 2)(Y)$(tput sgr0)esまたは$(tput bold && tput setaf 1)(N)$(tput sgr0)oを入力してください。"
                                     fi
                                 done
                                 run_sed_command2="sed -i -e 's/setting_version_check=\"${setting_version_check}\"/setting_version_check=\"${input_data}\"/' etc/intsl_v/settings"
@@ -330,7 +330,7 @@ EOF
                         break
                     ;;
                     *)
-                        echo "`tput bold && tput setaf 2`(Y)`tput sgr0`esまたは`tput bold && tput setaf 1`(N)`tput sgr0`oを入力してください。"
+                        echo "$(tput bold && tput setaf 2)(Y)$(tput sgr0)esまたは$(tput bold && tput setaf 1)(N)$(tput sgr0)oを入力してください。"
                     ;;
                 esac
             done
@@ -685,13 +685,13 @@ WELCOME_DEV_MESSAGE() {
 }
 mc_server_version_list() {
     if [[ -z "${input_server_type}" ]]; then
-        echo "`tput setaf 2 && tput bold`■`tput sgr0`は使用できる物です。`tput setaf 1 && tput bold`■`tput sgr0`は作成中の使用できない物です。"
+        echo "$(tput setaf 2 && tput bold)■$(tput sgr0)は使用できる物です。$(tput setaf 1 && tput bold)■$(tput sgr0)は作成中の使用できない物です。"
         echo -e "┌──────────────────────┐\n│   Server Type List   │\n├───┬────────────────┬─┴──────────────────┐"
-        echo "│ `tput setaf 2 && tput bold`1`tput sgr0` │ OfficialServer │ `tput setaf 1 && tput bold`6`tput sgr0` │ BungeeCord     │"
-        echo "│ `tput setaf 2 && tput bold`2`tput sgr0` │ SpigotServer   │ `tput setaf 1 && tput bold`7`tput sgr0` │ WaterFall      │"
-        echo "│ `tput setaf 2 && tput bold`3`tput sgr0` │ ForgeServer    │ `tput setaf 1 && tput bold`8`tput sgr0` │ Travertine     │"
-        echo "│ `tput setaf 2 && tput bold`4`tput sgr0` │ PaperServer    │ `tput setaf 1 && tput bold`9`tput sgr0` │ CustomJarFile  │"
-        echo "│ `tput setaf 1 && tput bold`5`tput sgr0` │ SpongeServer   │`tput setaf 1 && tput bold`10`tput sgr0` │ Coming Soon... │"
+        echo "│ $(tput setaf 2 && tput bold)1$(tput sgr0) │ OfficialServer │ $(tput setaf 1 && tput bold)6$(tput sgr0) │ BungeeCord     │"
+        echo "│ $(tput setaf 2 && tput bold)2$(tput sgr0) │ SpigotServer   │ $(tput setaf 1 && tput bold)7$(tput sgr0) │ WaterFall      │"
+        echo "│ $(tput setaf 2 && tput bold)3$(tput sgr0) │ ForgeServer    │ $(tput setaf 1 && tput bold)8$(tput sgr0) │ Travertine     │"
+        echo "│ $(tput setaf 2 && tput bold)4$(tput sgr0) │ PaperServer    │ $(tput setaf 1 && tput bold)9$(tput sgr0) │ CustomJarFile  │"
+        echo "│ $(tput setaf 1 && tput bold)5$(tput sgr0) │ SpongeServer   │$(tput setaf 1 && tput bold)10$(tput sgr0) │ Coming Soon... │"
         echo "└─────────────────────────────────────────┘"
         echo "$INPUT_MC_SERVER_TYPE_ME"
         read -p ">" input_server_type
@@ -965,12 +965,12 @@ case $1 in
                 exit 0
             fi
             echo -e "┌──────────────────────┐\n│     コマンド一覧     │\n│ ┌────────┬───────────┴────────────────────────┐"
-            echo "│■│ `tput setaf 1`make`tput sgr0`   │ サーバーを作成します               │"
-            echo "│`tput setaf 2 && tput bold`■`tput sgr0`│ `tput setaf 1`manage`tput sgr0` │ サーバーを管理します               │"
-            echo "│■│ `tput setaf 1`list`tput sgr0`   │ サーバーリストを表示します         │"
-            echo "│`tput setaf 2 && tput bold`■`tput sgr0`│ `tput setaf 1`import`tput sgr0` │ サーバーリストをインポートします   │"
-            echo "│■│ `tput setaf 1`export`tput sgr0` │ サーバーリストを出力します         │"
-            echo "│`tput setaf 2 && tput bold`■`tput sgr0`│ `tput setaf 1`remove`tput sgr0` │ サーバーを削除します               │"
+            echo "│■│ $(tput setaf 1)make$(tput sgr0)   │ サーバーを作成します               │"
+            echo "│$(tput setaf 2 && tput bold)■$(tput sgr0)│ $(tput setaf 1)manage$(tput sgr0) │ サーバーを管理します               │"
+            echo "│■│ $(tput setaf 1)list$(tput sgr0)   │ サーバーリストを表示します         │"
+            echo "│$(tput setaf 2 && tput bold)■$(tput sgr0)│ $(tput setaf 1)import$(tput sgr0) │ サーバーリストをインポートします   │"
+            echo "│■│ $(tput setaf 1)export$(tput sgr0) │ サーバーリストを出力します         │"
+            echo "│$(tput setaf 2 && tput bold)■$(tput sgr0)│ $(tput setaf 1)remove$(tput sgr0) │ サーバーを削除します               │"
             echo -e "└─┴────────┴────────────────────────────────────┘"
             read -p ">" input_data
             case "${input_data}" in
@@ -1031,20 +1031,20 @@ cat | sed -e 's/ - /  └  /g' -e 's/- -/       └  /g' <<EOF
 ##██║██║ ╚████║   ██║   ███████║███████╗  ##
 ##╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚══════╝  ##
 ##========================================##
-`tput setaf 1`main`tput sgr0 && tput bold`: メイン機能を使うことの宣言`tput sgr0`
- - `tput setaf 1`extension`tput sgr0 && tput bold`: 拡張機能を管理します`tput sgr0`
-- -`tput setaf 1`use`tput sgr0 && tput bold`: 拡張機能を使用します`tput sgr0`
-- -`tput setaf 1`list`tput sgr0 && tput bold`: 拡張機能の一覧を表示します`tput sgr0`
-- -`tput setaf 1`import`tput sgr0 && tput bold`: 拡張機能をインポートします`tput sgr0`
-- -`tput setaf 1`vcheck`tput sgr0 && tput bold`: 拡張機能の更新を確認 /更新 します`tput sgr0`
-- -`tput setaf 1`cloud`tput sgr0 && tput bold`: クラウドから拡張機能をダウンロードします`tput sgr0`
-`tput setaf 1`mc`tput sgr0 && tput bold`: Minecraftに関する機能を使うことの宣言`tput sgr0`
- - `tput setaf 1`extension`tput sgr0 && tput bold`: サーバーを作成します`tput sgr0`
- - `tput setaf 1`manage`tput sgr0 && tput bold`: サーバーを管理します`tput sgr0`
- - `tput setaf 1`list`tput sgr0 && tput bold`: サーバーリストを表示します`tput sgr0`
- - `tput setaf 1`export`tput sgr0 && tput bold`: サーバーリストを出力します`tput sgr0`
- - `tput setaf 1`import`tput sgr0 && tput bold`: サーバーリストをインポートします`tput sgr0`
- - `tput setaf 1`remove`tput sgr0 && tput bold`: サーバーを削除します`tput sgr0`
+$(tput setaf 1)main$(tput sgr0 && tput bold): メイン機能を使うことの宣言$(tput sgr0)
+ - $(tput setaf 1)extension$(tput sgr0 && tput bold): 拡張機能を管理します$(tput sgr0)
+- -$(tput setaf 1)use$(tput sgr0 && tput bold): 拡張機能を使用します$(tput sgr0)
+- -$(tput setaf 1)list$(tput sgr0 && tput bold): 拡張機能の一覧を表示します$(tput sgr0)
+- -$(tput setaf 1)import$(tput sgr0 && tput bold): 拡張機能をインポートします$(tput sgr0)
+- -$(tput setaf 1)vcheck$(tput sgr0 && tput bold): 拡張機能の更新を確認 /更新 します$(tput sgr0)
+- -$(tput setaf 1)cloud$(tput sgr0 && tput bold): クラウドから拡張機能をダウンロードします$(tput sgr0)
+$(tput setaf 1)mc$(tput sgr0 && tput bold): Minecraftに関する機能を使うことの宣言$(tput sgr0)
+ - $(tput setaf 1)extension$(tput sgr0 && tput bold): サーバーを作成します$(tput sgr0)
+ - $(tput setaf 1)manage$(tput sgr0 && tput bold): サーバーを管理します$(tput sgr0)
+ - $(tput setaf 1)list$(tput sgr0 && tput bold): サーバーリストを表示します$(tput sgr0)
+ - $(tput setaf 1)export$(tput sgr0 && tput bold): サーバーリストを出力します$(tput sgr0)
+ - $(tput setaf 1)import$(tput sgr0 && tput bold): サーバーリストをインポートします$(tput sgr0)
+ - $(tput setaf 1)remove$(tput sgr0 && tput bold): サーバーを削除します$(tput sgr0)
 EOF
     ;;
 esac
