@@ -14,6 +14,9 @@ IntegrationShell（統合シェル）
 現在サーバー管理機構の大幅な作り直しを行っており、
 これによりサーバーの設定が変更できない、またはサーバーが動かないなど多くの問題が発生するかもしれません。
 
+アップデート機能は.gitファイルが存在しないと使用できません。
+そのためgit cloneなどを使うことを推奨します。
+
 ## INTSLとの違い
 
 - コードの保守性を向上
@@ -181,6 +184,4 @@ Issuesは確認までに時間がかかると思われます、早めの対応�
 
 ## ライセンス
 
-|         |                                    |
-| ------- | ---------------------------------- |
-| INTSL V | Mozilla Public License Version 2.0 |
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fyupix%2Fintsl-v.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fyupix%2Fintsl-v?ref=badge_large)
