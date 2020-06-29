@@ -90,7 +90,7 @@ else
     exit 1
 fi
 mc_donwload_version="$INPUT_SERVER_VERSION"
-if [ ${mc_server_edition} = official -o ${mc_server_edition} = spigot -o ${mc_server_edition} = paper ]; then
+if [ ${mc_server_edition} = "official" ] || [ ${mc_server_edition} = "spigot" ] || [ ${mc_server_edition} = "paper" ]; then
     srce_edision="server"
     cp ${mc_server_jar_file}${mc_server_edition}${mc_donwload_version}.jar ${mc_server_create_file_dir}/${input_server_name}
 elif [[ $mc_server_edition = forge ]];then

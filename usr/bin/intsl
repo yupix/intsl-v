@@ -20,7 +20,7 @@ SELF_DIR_PATH=$(
 )/
 
 #その他使用ファイルの存在確認
-if [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/official" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/spigot" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/paper" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/forge" -o ! -e "${LIB_FILE_LOCATIONS}" -o ! -e "${USR_SHARE_FILE_LOCATIONS}doc/intsl_v/" -o ! -e "${USR_SHARE_FILE_LOCATIONS}intsl_v/locale" -o ! -e "${SETTING_FILE_LOCATIONS}" ]; then
+if [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/official" ] || [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/spigot" ] || [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/paper" ] || [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/forge" ] || [ ! -e "${LIB_FILE_LOCATIONS}" ] || [ ! -e "${USR_SHARE_FILE_LOCATIONS}doc/intsl_v/" ] || [ ! -e "${USR_SHARE_FILE_LOCATIONS}intsl_v/locale" ] || [ ! -e "${SETTING_FILE_LOCATIONS}" ]; then
     echo "intslを使用する上で必要なファイルが不足しています。"
     echo "不足しているファイルを作成する為、sudoのパスワードを入力してください。"
     sudo mkdir -p ${CACHE_FILE_LOCATIONS}minecraft_jar/official ${CACHE_FILE_LOCATIONS}minecraft_jar/spigot ${CACHE_FILE_LOCATIONS}minecraft_jar/paper ${CACHE_FILE_LOCATIONS}minecraft_jar/forge \
@@ -28,7 +28,7 @@ if [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/official" -o ! -e "${CACHE_FILE_
 fi
 
 #基本システムファイルの存在確認
-if [ ! -e "${SETTING_FILE_LOCATIONS}settings" -o ! -e "${VARIABLE_FILE_LOCATIONS}variable" -o ! -e "${LANGUAGE_FILE_LOCATIONS}" ]; then
+if [ ! -e "${SETTING_FILE_LOCATIONS}settings" ] || [ ! -e "${VARIABLE_FILE_LOCATIONS}variable" ] || [ ! -e "${LANGUAGE_FILE_LOCATIONS}" ]; then
     echo "システムファイルが破損している、又は存在しない為、起動に失敗しました。"
     echo "復元を試みますか?"
     echo "Coming Soon..."
@@ -85,13 +85,13 @@ EOF
 }
 spell_check_option() {
     if [[ -n "$VAR" ]]; then
-        if [ $VAR = "--type" -o $VAR = "--mcversion" -o $VAR = "--set-max-memory" -o $VAR = "--set-min-memory" -o $VAR = "--directory" -o $VAR = "--server-name" -o $VAR = "--default" -o $VAR = "--start" ]; then
+        if [ $VAR = "--type" ] || [ $VAR = "--mcversion" ] || [ $VAR = "--set-max-memory" ] || [ $VAR = "--set-min-memory" ] || [ $VAR = "--directory" ] || [ $VAR = "--server-name" ] || [ $VAR = "--default" ] || [ $VAR = "--start" ]; then
             echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) [ ${cache_option} ] オプションには引数が必要です"
             echo "原因: オプションにオプションが指定されています"
             exit 1
         fi
     else
-        if [ ${cache_option} = "--type" -o ${cache_option} = "--mcversion" ]; then
+        if [ ${cache_option} = "--type" ] || [ ${cache_option} = "--mcversion" ]; then
             echo "$(tput bold && tput setaf 3)${message_system_warning}:$(tput sgr0) [ ${cache_option} ] オプションには引数が必要です。"
             echo "不要なオプションは予期せぬ不具合の原因になります"
         fi
@@ -296,10 +296,10 @@ EOF
                                 read -p ">" input_data
                                 input_data=${input_data:-true}
                                 while :; do
-                                    if [ ${input_data,,} = true -o ${input_data,,} = yes -o ${input_data,,} = y ]; then
+                                    if [ ${input_data,,} = true ] || [ ${input_data,,} = yes ] || [ ${input_data,,} = y ]; then
                                         local input_data="true"
                                         break
-                                        elif [ ${input_data,,} = false -o ${input_data,,} = no -o ${input_data,,} = n ]; then
+                                        elif [ ${input_data,,} = false ] || [ ${input_data,,} = no ] || [ ${input_data,,} = n ]; then
                                         local input_data="false"
                                         break
                                     else

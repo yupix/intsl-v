@@ -35,7 +35,7 @@ for a in $(seq 1 4); do
     fi
 done
 echo "$description"
-if [ ${change_setting_number} = 3 -o ${change_setting_number} = 4 ]; then
+if [ ${change_setting_number} = 3 ] || [ ${change_setting_number} = 4 ]; then
     while :; do
         echo "使用する数値を入力してください。(単位等も除く)"
         read -p ">" input_data
