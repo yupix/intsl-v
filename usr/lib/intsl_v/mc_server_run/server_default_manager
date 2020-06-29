@@ -266,15 +266,15 @@ EOS
         [sS][tT][aA][tT][uU][sS])
             get_all_server_info
             if ! kill -0 ${get_server_settings_main_pid} >/dev/null 2>&1; then
-                messeage_color="`tput setaf 0 && tput bold`"
+                messeage_color="$(tput setaf 0 && tput bold)"
                 status_messeage=" OFFLINE "
             else
-                messeage_color="`tput setaf 2 && tput bold`"
+                messeage_color="$(tput setaf 2 && tput bold)"
                 status_messeage=" ONLINE  "
             fi
                 cat <<EOF
 ┌────────┬─┬──────────┐
-│ SERVER │${messeage_color}■`tput sgr0`│`tput setaf 0`${messeage_color}${status_messeage}`tput sgr0` │
+│ SERVER │${messeage_color}■$(tput sgr0)│$(tput setaf 0)${messeage_color}${status_messeage}$(tput sgr0) │
 └────────┴─┴──────────┘
 EOF
         ;;
