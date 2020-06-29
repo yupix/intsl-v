@@ -2,7 +2,7 @@
 while :; do
     echo "$INPUT_SERVER_VERSION"
     if [[ -z $INPUT_SERVER_VERSION ]]; then
-        read -p ">" INPUT_SERVER_VERSION
+        read -r -p ">" INPUT_SERVER_VERSION
     fi
     case $INPUT_SERVER_VERSION in
     1.7.10)
@@ -44,7 +44,7 @@ while :; do
 
     *)
         echo "存在しないバージョンです"
-        read -p ">" INPUT_SERVER_VERSION
+        read -r -p ">" INPUT_SERVER_VERSION
         ;;
     esac
 done

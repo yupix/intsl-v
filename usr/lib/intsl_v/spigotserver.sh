@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 while :; do
     if [[ -z $INPUT_SERVER_VERSION ]]; then
-        read -p ">" INPUT_SERVER_VERSION
+        read -r -p ">" INPUT_SERVER_VERSION
     else
         echo "入力したバージョン: $INPUT_SERVER_VERSION"
     fi
@@ -152,7 +152,7 @@ while :; do
         ;;
     *)
         echo "存在しないバージョンです"
-        read -p ">" INPUT_SERVER_VERSION
+        read -r -p ">" INPUT_SERVER_VERSION
         ;;
     esac
 done
