@@ -380,10 +380,9 @@ vcheck() {
     while :; do
         spinner_progress_status="アップデートを確認中"
         run_spinner
-        get_host_branch=$(git checkout | grep "Your branch" | gawk '{print $8}' | sed 's/\.//' | sed "s/'//g")
-        check_new_version=$(git remote show origin |grep "${get_host_branch}"|gawk '{print $5$6$7$8}')
-        reformat_check_new_version=$(echo ${check_new_version} | gawk '{print $2}')
-        if [[ ${reformat_check_new_version} -ge "(uptodate)" ]];then
+        get_host_branch=$(git branch --contains | cut -d " " -f 2)
+        check_new_version=$(git remote show origin | grep ${get_host_branch} | grep -c "(local out of date)")
+        if [[ ${check_new_version} = "1" ]];then
             echo "更新があります！更新しますか?(Y)es or (N)o"
             read -p ">" INPUT_Y_OR_N
             case "$INPUT_Y_OR_N" in
@@ -399,6 +398,7 @@ vcheck() {
             esac
         else
             echo -e '現在のINTSL Vは\e[1;37;32m最新バージョン\e[0mで実行中です '
+            break
         fi
     done
 }
