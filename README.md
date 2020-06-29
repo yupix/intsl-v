@@ -1,5 +1,6 @@
 ![IntegrationShell](https://repo.akarinext.org/pub/intsl_v/intsl_v.gif "Image")
 [![pipeline status](https://dev.akarinext.org/yupix/intsl-v/badges/master/pipeline.svg)](https://dev.akarinext.org/yupix/intsl-v/-/commits/master)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fyupix%2Fintsl-v.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fyupix%2Fintsl-v?ref=badge_shield)
 
 # INTSL V (AKARI)
 
