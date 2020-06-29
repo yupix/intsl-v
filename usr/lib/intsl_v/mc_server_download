@@ -85,7 +85,7 @@ run_forge_install() {
 
 cryptography=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 | sort | uniq)
 
-if [ ${mc_server_edition} = "official" -o ${mc_server_edition} = paper ]; then
+if [ ${mc_server_edition} = "official" ] || [ ${mc_server_edition} = "paper" ]; then
     mc_server_jar_file="${CACHE_FILE_LOCATIONS}minecraft_jar/$mc_server_edition/"
 elif [[ ${mc_server_edition} = "spigot" ]]; then
     mc_server_jar_file="${CACHE_FILE_LOCATIONS}minecraft_jar/$mc_server_edition/"

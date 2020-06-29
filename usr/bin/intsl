@@ -20,7 +20,7 @@ SELF_DIR_PATH=$(
 )/
 
 #その他使用ファイルの存在確認
-if [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/official" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/spigot" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/paper" -o ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/forge" -o ! -e "${LIB_FILE_LOCATIONS}" -o ! -e "${USR_SHARE_FILE_LOCATIONS}doc/intsl_v/" -o ! -e "${USR_SHARE_FILE_LOCATIONS}intsl_v/locale" -o ! -e "${SETTING_FILE_LOCATIONS}" ]; then
+if [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/official" ] || [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/spigot" ] || [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/paper" ] || [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/forge" ] || [ ! -e "${LIB_FILE_LOCATIONS}" ] || [ ! -e "${USR_SHARE_FILE_LOCATIONS}doc/intsl_v/" ] || [ ! -e "${USR_SHARE_FILE_LOCATIONS}intsl_v/locale" ] || [ ! -e "${SETTING_FILE_LOCATIONS}" ]; then
     echo "intslを使用する上で必要なファイルが不足しています。"
     echo "不足しているファイルを作成する為、sudoのパスワードを入力してください。"
     sudo mkdir -p ${CACHE_FILE_LOCATIONS}minecraft_jar/official ${CACHE_FILE_LOCATIONS}minecraft_jar/spigot ${CACHE_FILE_LOCATIONS}minecraft_jar/paper ${CACHE_FILE_LOCATIONS}minecraft_jar/forge \
@@ -28,7 +28,7 @@ if [ ! -e "${CACHE_FILE_LOCATIONS}minecraft_jar/official" -o ! -e "${CACHE_FILE_
 fi
 
 #基本システムファイルの存在確認
-if [ ! -e "${SETTING_FILE_LOCATIONS}settings" -o ! -e "${VARIABLE_FILE_LOCATIONS}variable" -o ! -e "${LANGUAGE_FILE_LOCATIONS}" ]; then
+if [ ! -e "${SETTING_FILE_LOCATIONS}settings" ] || [ ! -e "${VARIABLE_FILE_LOCATIONS}variable" ] || [ ! -e "${LANGUAGE_FILE_LOCATIONS}" ]; then
     echo "システムファイルが破損している、又は存在しない為、起動に失敗しました。"
     echo "復元を試みますか?"
     echo "Coming Soon..."
@@ -85,13 +85,13 @@ EOF
 }
 spell_check_option() {
     if [[ -n "$VAR" ]]; then
-        if [ $VAR = "--type" -o $VAR = "--mcversion" -o $VAR = "--set-max-memory" -o $VAR = "--set-min-memory" -o $VAR = "--directory" -o $VAR = "--server-name" -o $VAR = "--default" -o $VAR = "--start" ]; then
+        if [ $VAR = "--type" ] || [ $VAR = "--mcversion" ] || [ $VAR = "--set-max-memory" ] || [ $VAR = "--set-min-memory" ] || [ $VAR = "--directory" ] || [ $VAR = "--server-name" ] || [ $VAR = "--default" ] || [ $VAR = "--start" ]; then
             echo "$(tput bold && tput setaf 1)${message_system_error}:$(tput sgr0) [ ${cache_option} ] オプションには引数が必要です"
             echo "原因: オプションにオプションが指定されています"
             exit 1
         fi
     else
-        if [ ${cache_option} = "--type" -o ${cache_option} = "--mcversion" ]; then
+        if [ ${cache_option} = "--type" ] || [ ${cache_option} = "--mcversion" ]; then
             echo "$(tput bold && tput setaf 3)${message_system_warning}:$(tput sgr0) [ ${cache_option} ] オプションには引数が必要です。"
             echo "不要なオプションは予期せぬ不具合の原因になります"
         fi
@@ -296,10 +296,10 @@ EOF
                                 read -p ">" input_data
                                 input_data=${input_data:-true}
                                 while :; do
-                                    if [ ${input_data,,} = true -o ${input_data,,} = yes -o ${input_data,,} = y ]; then
+                                    if [ ${input_data,,} = true ] || [ ${input_data,,} = yes ] || [ ${input_data,,} = y ]; then
                                         local input_data="true"
                                         break
-                                        elif [ ${input_data,,} = false -o ${input_data,,} = no -o ${input_data,,} = n ]; then
+                                        elif [ ${input_data,,} = false ] || [ ${input_data,,} = no ] || [ ${input_data,,} = n ]; then
                                         local input_data="false"
                                         break
                                     else
@@ -376,80 +376,29 @@ serverlistoutput() {
 #INTSLGETV() {
 #    VERSIONGET=$(echo "$INTSL_V_VERSIONBODY" | sed -e 's/\(.\{1\}\)/.\1/g')
 #}
-
 vcheck() {
     while :; do
-        if [[ -e ${TMP_FILE_LOCATIONS}new-version.txt ]]; then
-            spinner_progress_status="キャッシュの削除中"
-            run_spinner
-            rm -rf ${TMP_FILE_LOCATIONS}new-version.txt
+        spinner_progress_status="アップデートを確認中"
+        run_spinner
+        get_host_branch=$(git branch --contains | cut -d " " -f 2)
+        check_new_version=$(git remote show origin | grep ${get_host_branch} | grep -c "(local out of date)")
+        if [[ ${check_new_version} = "1" ]];then
+            echo "更新があります！更新しますか?(Y)es or (N)o"
+            read -p ">" INPUT_Y_OR_N
+            case "$INPUT_Y_OR_N" in
+                [yY][eE][sS]|[yY])
+                    spinner_progress_status="アップデート中"
+                    run_spinner
+                    git pull
+                ;;
+                [nN][oO]|[nN])
+                    echo "キャンセルしました"
+                    break
+                ;;
+            esac
         else
-            spinner_progress_status="最新バージョンの確認中"
-            wget -q ${INTREPOURL}pub/intsl_v/new-version.txt -P ${TMP_FILE_LOCATIONS}
-            if [[ -e ${TMP_FILE_LOCATIONS}new-version.txt ]]; then
-                . ${TMP_FILE_LOCATIONS}new-version.txt
-                regular_version=$(echo "$NEWVERSION" | sed -e 's/\(.\)/\1./'g | sed -e 's/.$//')
-                if [[ $NEWVERSION -gt ${INTSL_V_VERSION} ]]; then
-                    echo "$message_update_exists"
-                    echo -e "${ECHO_RED_BOLD_COLOR}Current: INTSL-V-${INTSL_V_VERSION}${ECHO_COLOR_EXIT} ->  ${ECHO_GREEN_BOLD_COLOR}New: INTSL-V-${regular_version}${ECHO_COLOR_EXIT}"
-                    cat <<EOS
-${message_downalod_file}
-${message_use_possible}
-EOS
-                    read -p ">" input_data
-                    input_data=${input_data:-y}
-                    case ${input_data} in
-                        [yY] | [yY][eE][sS])
-                            echo "$message_updata_start"
-                            while [[ ! -e ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip ]]; do
-                                spinner_progress_status="$DATA_DOWNLOAD_NOW_ME"
-                                run_spinner
-                                wget -q https://repo.akarinext.org/pub/intsl_v/${regular_version}/INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip -P ${TMP_FILE_LOCATIONS}
-                            done
-                            echo "${message_download_success}"
-                            serverlistoutput
-                            unzip -qqo ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}.zip -d ${TMP_FILE_LOCATIONS}
-                            if [[ -e ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION} ]]; then
-                                echo "ファイルの解凍に成功"
-                                sudo cp -r ${TMP_FILE_LOCATIONS}INTSL_V-${regular_version}-${INTSL_V_EDITION}/. .
-                            else
-                                echo -e "${ECHO_RED_BOLD_COLOR}${message_system_error}:${ECHO_COLOR_EXIT} ファイルの解凍に失敗しました"
-                                echo "Systemを保護するためにサービスを終了します。"
-                                break
-                            fi
-                            . ${VARIABLE_FILE_LOCATIONS}variable
-                            if [[ ${NEWVERSION} -gt ${INTSL_V_VERSION} ]]; then
-                                echo "バージョンアップに失敗"
-                            else
-                                rm -rf news.txt
-                                wget -q ${INTREPOURL}pub/intsl/news.txt
-                                MAXLINE=$(cat news.txt | wc -l)
-                                while [[ $COUNT != $MAXLINE ]]; do
-                                    . ${SETTING_FILE_LOCATIONS}settings
-                                    spinner_progress_status="最新情報の取得中 $COUNT / $MAXLINE"
-                                    run_spinner
-                                    COUNT=$(($COUNT + 1))
-                                    GETLINE=$(sed -n ${COUNT}P news.txt)
-                                    echo "$GETLINE"
-                                done
-                                echo "$message_updata_success"
-                                
-                            fi
-                        ;;
-                        [nN] | [nN][oO])
-                            echo "${message_system_canceled}"
-                        ;;
-                    esac
-                    echo $name
-                    break
-                else
-                    echo -e '現在のINTSL Vは\e[1;37;32m最新バージョン\e[0mで実行中です '
-                    break
-                fi
-            else
-                echo "$message_download_failed"
-                break
-            fi
+            echo -e '現在のINTSL Vは\e[1;37;32m最新バージョン\e[0mで実行中です '
+            break
         fi
     done
 }
@@ -736,7 +685,7 @@ WELCOME_DEV_MESSAGE() {
 }
 mc_server_version_list() {
     if [[ -z "${input_server_type}" ]]; then
-        echo "`tput setaf 2 && tput bold`■`tput sgr0`は使用できる物です。`tput setaf 1 && tput bold`■`tput sgr0`は作成中の使用できない物です。"        
+        echo "`tput setaf 2 && tput bold`■`tput sgr0`は使用できる物です。`tput setaf 1 && tput bold`■`tput sgr0`は作成中の使用できない物です。"
         echo -e "┌──────────────────────┐\n│   Server Type List   │\n├───┬────────────────┬─┴──────────────────┐"
         echo "│ `tput setaf 2 && tput bold`1`tput sgr0` │ OfficialServer │ `tput setaf 1 && tput bold`6`tput sgr0` │ BungeeCord     │"
         echo "│ `tput setaf 2 && tput bold`2`tput sgr0` │ SpigotServer   │ `tput setaf 1 && tput bold`7`tput sgr0` │ WaterFall      │"
@@ -1004,9 +953,7 @@ case $1 in
                 mc_server_version_list
                 #サーバー管理オプション
                 elif [[ ${2} = manage ]]; then
-                word="管理するサーバー名"
-                purpose="server_list"
-                . ${VAR_LIB_FILE_LOCATIONS}server_list
+                . ${LIB_FILE_LOCATIONS}mc_server_run/server_default_manager
                 elif [[ ${2} = output ]]; then
                 serverlistoutput
                 #サーバーインポートオプション
@@ -1032,7 +979,7 @@ case $1 in
                 ;;
                 manage)
                     word="管理するサーバー名"
-                    . ${VAR_LIB_FILE_LOCATIONS}server_list
+                    . ${LIB_FILE_LOCATIONS}mc_server_run/server_default_manager
                 ;;
                 list)
                     echo "サーバー数: ${number_of_server}"

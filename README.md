@@ -1,5 +1,6 @@
 ![IntegrationShell](https://repo.akarinext.org/pub/intsl_v/intsl_v.gif "Image")
-[![pipeline status](https://dev.akarinext.org/yupix/intsl-v/badges/master/pipeline.svg)](https://dev.akarinext.org/yupix/intsl-v/-/commits/master)
+[![pipeline status](https://dev.akarinext.org/yupix/intsl-v/badges/master/pipeline.svg)](https://dev.akarinext.org/yupix/intsl-v/-/commits/master)[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fyupix%2Fintsl-v.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fyupix%2Fintsl-v?ref=badge_shield)[![CodeFactor](https://www.codefactor.io/repository/github/yupix/intsl-v/badge)](https://www.codefactor.io/repository/github/yupix/intsl-v)
+
 
 # INTSL V (AKARI)
 
@@ -9,12 +10,21 @@ IntegrationShell（統合シェル）
 このPROJECTはyupixが主に開発を行い、aki氏にテストして頂いています。
 そのため、すべての機能はテストできていません。
 
+## 注意事項
+
+現在サーバー管理機構の大幅な作り直しを行っており、
+これによりサーバーの設定が変更できない、またはサーバーが動かないなど多くの問題が発生するかもしれません。
+
+アップデート機能は.gitファイルが存在しないと使用できません。
+そのためgit cloneなどを使うことを推奨します。
+
 ## INTSLとの違い
 
 - コードの保守性を向上
 - コードの短縮
 - 細かなバグの修正
 - 機能の追加
+- jsonによるサーバーリスト管理
 
 ### 新たな機能
 
@@ -32,6 +42,7 @@ INTSLの際なかった機能一覧です
 - サーバーの起動時に使用するShellを1つで済ませられるように
 - サーバーが存在するかのチェックでファイルのみではなく、サーバーリストも確認するように
 - 全体的な大幅な改善
+- jsonでのサーバーリスト管理
 
 ## 既知の不具合
 
@@ -89,8 +100,8 @@ INTSLの際なかった機能一覧です
 - curl
 - wget
 - screen
-- [gron](https://github.com/tomnomnom/gron)
-  - [archlinux](https://aur.archlinux.org/packages/gron/)
+- [jq](https://github.com/tomnomnom/gron)
+  - [archlinux](https://www.archlinux.org/packages/community/x86_64/jq/)
 
 ### テスト済みOS
 
@@ -108,7 +119,7 @@ INTSLの際なかった機能一覧です
 一部の機能が正常に動作にしない可能性があります
 
 - BSD系OS
-- MAC
+- MAC（未確認）
 - [WINDOWS(WSL1)](https://www.microsoft.com/ja-jp/software-download/windows10ISO)
 
 ### 正常に動作しないOS
@@ -174,6 +185,4 @@ Issuesは確認までに時間がかかると思われます、早めの対応�
 
 ## ライセンス
 
-|         |                                    |
-| ------- | ---------------------------------- |
-| INTSL V | Mozilla Public License Version 2.0 |
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fyupix%2Fintsl-v.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fyupix%2Fintsl-v?ref=badge_large)
