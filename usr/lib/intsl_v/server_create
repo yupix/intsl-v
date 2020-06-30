@@ -67,7 +67,7 @@ mc_server_create_file_dir="$INPUT_SERVER_DIRECTORY"
 check_input_server_name="1"
 while [[ ${check_input_server_name} -gt "0" ]]; do
     # 変数内に/, #, !,-,',$,",(,),,,;,:があるか確認する
-    check_input_server_name=$(echo $input_server_name | egrep '/|\#|\"|\;|\)|\!|\(|\:|\,|\-|'\' | wc -c)
+    check_input_server_name=$(echo $input_server_name | grep -E '/|\#|\"|\;|\)|\!|\(|\:|\,|\-|'\' | wc -c)
     
     if [ $check_input_server_name -gt 0 ]; then
         echo "$check_input_server_name に「/  #  \! - \' $ \" ( )  ; :」が含まれいます"
@@ -166,7 +166,7 @@ fi
 mktemp_back=$(mktemp --suffix=.json)
 cp ${VAR_LIB_FILE_LOCATIONS}server_list.json ${mktemp_back}
 get_servers=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[0].servers)
-new_get_servers=$(echo $(($get_servers +1)))
+new_get_servers=$(expr $get_servers +1)
 echo "sa-ba- $new_get_servers"
 cat ${VAR_LIB_FILE_LOCATIONS}server_list.json| jq '.[0].servers|="'${new_get_servers}'"' > ${mktemp_back}
 mktemp=$(mktemp --suffix=.json)

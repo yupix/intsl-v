@@ -26,7 +26,7 @@ mc_server_create_file_dir="$INPUT_SERVER_DIRECTORY"
 check_input_server_name="1"
 while [[ ${check_input_server_name} -gt "0" ]]; do
     # 変数内に/, #, !,-,',$,",(,),,,;,:があるか確認する
-    check_input_server_name=$(echo $input_server_name | egrep '/|\#|\"|\;|\)|\!|\(|\:|\,|\-|'\' | wc -c)
+    check_input_server_name=$(echo $input_server_name | grep -E '/|\#|\"|\;|\)|\!|\(|\:|\,|\-|'\' | wc -c)
 
     if [ $check_input_server_name -gt 0 ]; then
         echo "$check_input_server_name に「/  #  \! - \' $ \" ( )  ; :」が含まれいます"
