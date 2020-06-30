@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 get_server_list(){
-    get_servers=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[0].servers)
+    get_servers=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[0].servers)
     for i in $(seq ${get_servers});do
-        check_server_name=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].name)
+        check_server_name=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].name)
         if [[ $listmode = "true" ]];then
             echo "$check_server_name"
         else
@@ -20,7 +20,7 @@ get_server_list(){
     unset listmode
 }
 
-if [[ ! -e ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json ]];then
+if [[ ! -e ${VAR_LIB_FILE_LOCATIONS}server_list.json ]];then
     echo "サーバーリストが存在しません。"
     echo "再度にサーバーを作成してから再度実行してください。"
     exit
@@ -45,30 +45,37 @@ get_server_list
 #必要情報の大量取得
 
 get_all_server_info(){
+    if [[ $start_mode = true ]];then
+        cd -
+    fi
     get_server_name="${check_server_name}"
-    get_server_description=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].description)
-    get_server_depends_jar=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].depends.jar)
-    get_server_depends_lib=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].depends.lib)
-    get_server_file_serverpath=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].file.serverpath)
-    get_server_file_hash_md5sum=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].file.hash.md5)
-    get_server_file_hash_sha512sum=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].file.hash.sha512sum)
+    get_server_description=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].description)
+    get_server_depends_jar=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].depends.jar)
+    get_server_depends_lib=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].depends.lib)
+    get_server_file_serverpath=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].file.serverpath)
+    get_server_file_hash_md5sum=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].file.hash.md5)
+    get_server_file_hash_sha512sum=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].file.hash.sha512sum)
     
     ##設定情報取得
     
     ###基本設定取得
-    get_server_settings_main_maxmemory=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.maxmemory)
-    get_server_settings_main_minmemory=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.minmemory)
-    get_server_settings_main_javahome=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.javahome)
+    get_server_settings_main_maxmemory=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.maxmemory)
+    get_server_settings_main_minmemory=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.minmemory)
+    get_server_settings_main_javahome=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.javahome)
     ####起動分
-    get_server_settings_main_jvmargument=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.jvmargument)
+    get_server_settings_main_jvmargument=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.jvmargument)
     ####起動分をメモリ含めて再度構成
     get_server_settings_main_jvmargument=$(eval echo $get_server_settings_main_jvmargument)
-    get_server_settings_main_screenname=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.screenname)
-    get_server_settings_main_pid=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.pid)
-    get_server_settings_main_status=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.status)
+    get_server_settings_main_screenname=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.screenname)
+    get_server_settings_main_pid=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.pid)
+    get_server_settings_main_status=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.status)
+    if [[ $start_mode = true ]];then
+        cd -
+    fi
 }
 get_all_server_info
 start_mode="true"
+
 
 . ${SETTING_FILE_LOCATIONS}variable
 
@@ -159,9 +166,7 @@ while :; do
                 run_spinner
                 if [[ -e eula.txt ]]; then
                     EULACONSENT=$(< ./eula.txt grep eula=false | sed 's/eula=//g')
-                    echo ""
-                    echo "$EULACONSENT"
-                    if [[ 'false' = $EULACONSENT ]]; then
+                    if [[ '\false' = $EULACONSENT ]]; then
                         echo "EULA(MINECRAFT エンド ユーザー ライセンス条項)に同意していません。"
                         echo "こちらを読み、同意する場合は(Y)esキャンセルする場合は(N)oと入力してください"
                         echo "https://account.mojang.com/documents/minecraft_eula"
@@ -211,11 +216,11 @@ EOS
                 
                 screen -AdmS ${get_server_settings_main_screenname} ${get_server_settings_main_javahome} ${get_server_settings_main_jvmargument} -jar ${get_server_depends_jar} nogui
                 mktemp=$(mktemp --suffix=.json)
-                < ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq '.['$i'].settings.main.status|="online"' | sed 's/\\t//' > ${mktemp} && < ${mktemp} tr '' _ > ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json
+                cd - && < ${VAR_LIB_FILE_LOCATIONS}server_list.json jq '.['$i'].settings.main.status|="online"' | sed 's/\\t//' > ${mktemp} && < ${mktemp} tr '' _ > ${VAR_LIB_FILE_LOCATIONS}server_list.json &&cd -
                 
                 #PID取得用
                 getpid=$(screen -ls | grep ${get_server_settings_main_screenname} | sed -e 's/\..*//')
-                < ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq '.['$i'].settings.main.pid|="'"${getpid}"'"' | sed 's/\\t//' > ${mktemp} && < ${mktemp} tr '' _ > ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json
+                cd - && < ${VAR_LIB_FILE_LOCATIONS}server_list.json jq '.['$i'].settings.main.pid|="'"${getpid}"'"' | sed 's/\\t//' > ${mktemp} && < ${mktemp} tr '' _ > ${VAR_LIB_FILE_LOCATIONS}server_list.json &&cd -
             else
                 echo "サーバーは既に起動しています。"
             fi
@@ -224,7 +229,7 @@ EOS
         
         #サーバー停止
         stop)
-            get_server_settings_main_pid=$(< ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.pid)
+            get_server_settings_main_pid=$(cd - && < ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[$i].settings.main.pid && cd -)
             echo $get_server_settings_main_pid
             spinner_progress_status="プロセスの有無を確認中"
             run_spinner
@@ -233,7 +238,7 @@ EOS
                 if [ "$(screen -ls | grep ${get_server_settings_main_screenname})" == "" ]; then
                     if [[ $retrycount = 1 ]]; then
                         mktemp=$(mktemp --suffix=.json)
-                        < ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json jq '.['$i'].settings.main.status|="offline"' | sed 's/\\t//' > ${mktemp} && < ${mktemp} tr '' _ > ${ROOT_DIRECTORY}/${VAR_LIB_FILE_LOCATIONS}server_list.json
+                        cd - && < ${VAR_LIB_FILE_LOCATIONS}server_list.json jq '.['$i'].settings.main.status|="offline"' | sed 's/\\t//' > ${mktemp} && < ${mktemp} tr '' _ > ${VAR_LIB_FILE_LOCATIONS}server_list.json &&cd -
                         echo "サーバーの停止に成功しました。"
                         break
                     fi

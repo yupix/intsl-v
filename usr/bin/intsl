@@ -10,11 +10,9 @@
 . ${SETTING_FILE_LOCATIONS}variable
 #言語ファイル
 . ${LANGUAGE_FILE_LOCATIONS}${setting_use_lang}
-ROOT_DIRECTORY="${PWD}"
 export setting_use_lang
 export SETTING_FILE_LOCATIONS
 export LANGUAGE_FILE_LOCATIONS
-export ROOT_DIRECTORY
 #----------------------------------------------------------------------------------------#
 SELF_DIR_PATH=$(
     cd $(dirname $0)
