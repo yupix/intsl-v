@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cryptography=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 | sort | uniq)
+cryptography=$(< /dev/urandom tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 | sort | uniq)
 
 if [[ ${mc_server_edition} = forge ]]; then
     cat <<EOF >${mc_server_create_file_dir}/${input_server_name}/setting.txt

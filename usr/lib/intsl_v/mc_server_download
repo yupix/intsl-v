@@ -20,7 +20,7 @@ run_spigot_build() {
             screen -AdmS ${cryptography} java -jar BuildTools.jar --rev ${buildversion} nogui
             while [[ ${buildstatus} != "Success! Everything completed successfully. Copying final .jar files now." ]]; do
                 #更新
-                buildstatus=$(cat ./BuildTools.log.txt | grep "Success! Everything completed successfully. Copying final .jar files now.")
+                buildstatus=$(< ./BuildTools.log.txt grep "Success! Everything completed successfully. Copying final .jar files now.")
                 #現状
                 local spinner_progress_status="BUILD NOW                 "
                 run_spinner
@@ -83,7 +83,7 @@ run_forge_install() {
     mc_server_create
 }
 
-cryptography=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 | sort | uniq)
+cryptography=$(< /dev/urandom tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 | sort | uniq)
 
 if [ ${mc_server_edition} = "official" ] || [ ${mc_server_edition} = "paper" ]; then
     mc_server_jar_file="${CACHE_FILE_LOCATIONS}minecraft_jar/$mc_server_edition/"

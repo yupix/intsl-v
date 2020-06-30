@@ -53,7 +53,7 @@ ECHO_BLUE_BOLD_COLOR="\e[34;1m"
 ##EXIT
 ECHO_COLOR_EXIT="\033[0;39m"
 #--------------------------------------------------------------------------------#
-cryptography=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 | sort | uniq)
+cryptography=$(< /dev/urandom tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 | sort | uniq)
 
 chars="/-\|"
 
