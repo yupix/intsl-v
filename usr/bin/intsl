@@ -383,8 +383,8 @@ extension_import() {
         
         rm -rf ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME}
         
-        GETIEXT=$(cat ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh | grep -e IEXT -e INT -e VURL >>${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME})
-        MAXLINE=$(< ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME} tr ' ' _ | wc -l)
+        GETIEXT=$(< ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh tr '' _| grep -e IEXT -e INT -e VURL >>${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME})
+        MAXLINE=$(< ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME} tr '' _ | wc -l)
         
         sed -i ''$INTSL_EXTENSION_LIST_ADD_LINE'i'\#${INPUT_EXTENSION_NAME}START'' ${VAR_LIB_FILE_LOCATIONS}extensions
         
@@ -407,7 +407,7 @@ extension_import() {
         done
         
         #行の取得
-        MAXLINE=$(< ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh tr ' ' _ | wc -l)
+        MAXLINE=$(< ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh tr '' _ | wc -l)
         for a in $(seq 7); do
             #Config再読込
             . ${SETTING_FILE_LOCATIONS}settings
@@ -486,7 +486,7 @@ extension_cloud_install() {
         echo "${main_ext_name} ${main_ext_version}" >>${TMP_FILE_LOCATIONS}extensions_list
     done
     echo "=================================" >>${TMP_FILE_LOCATIONS}extensions_list
-    cat ${TMP_FILE_LOCATIONS}extensions_list | column -t | awk '{printf "%-15s %s\n",$1,$2}'
+    < ${TMP_FILE_LOCATIONS}extensions_list tr '' _ | column -t | awk '{printf "%-15s %s\n",$1,$2}'
     echo "拡張機能の取得に成功しました"
     echo "取得した拡張機能数: ${i}"
     read -r -p ">" input_install_extension_name
@@ -567,7 +567,7 @@ DEV_CONTENT() {
             echo "開発者ログインをする際のパスワードを変更します。"
             echo "現在のパスワードを入力してください。"
             . etc/intsl_v/passwd/dev_pass
-            read -s -p ">" input_password_data
+            read -s -r -p ">" input_password_data
             local input_password_check=$(echo ${input_password_data} | sha512sum | sed -e "s/-//g")
             if [[ ${input_password_check} = ${password} ]]; then
                 echo "パスワードを変更しますか?"
@@ -576,7 +576,7 @@ DEV_CONTENT() {
                 case ${input_choise_data} in
                     [yY])
                         echo "新しいパスワードを入力してください"
-                        read -s -p ">" input_new_password_data
+                        read -s -r -p ">" input_new_password_data
                         local input_new_password_check=$(echo ${input_new_password_data} | sha512sum | sed -e "s/-//g")
                         sudo rm -rf etc/intsl_v/passwd/dev_pass
                 cat <<EOF >etc/intsl_v/passwd/dev_pass
@@ -602,7 +602,7 @@ DEVELOPER_LOGIN() {
             #spinner_progress_status="過去のログイン記録を参照中..."
             #run_spinner
             echo "パスワードを入力してください"
-            read -s -p ">" input_password_data
+            read -s -r -p ">" input_password_data
             input_password_check=$(echo $input_password_data | sha512sum | sed -e "s/-//g")
             if [[ $input_password_check = $password ]]; then
                 echo "認証に成功"
@@ -706,7 +706,7 @@ mc_server_version_list() {
 }
 MC_SERVER_IMPORT() {
     if [[ -e ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt ]]; then
-        MAXLINE=$(< ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt tr ' ' _| wc -l)
+        MAXLINE=$(< ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt tr '' _| wc -l)
         while [[ $COUNT != $MAXLINE ]]; do
             . ${SETTING_FILE_LOCATIONS}settings
             spinner_progress_status="進捗 $COUNT / $MAXLINE"

@@ -49,26 +49,26 @@ get_all_server_info(){
         cd -
     fi
     get_server_name="${check_server_name}"
-    get_server_description=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].description)
-    get_server_depends_jar=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].depends.jar)
-    get_server_depends_lib=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].depends.lib)
-    get_server_file_serverpath=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].file.serverpath)
-    get_server_file_hash_md5sum=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].file.hash.md5)
-    get_server_file_hash_sha512sum=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].file.hash.sha512sum)
+    get_server_description=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].description)
+    get_server_depends_jar=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].depends.jar)
+    get_server_depends_lib=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].depends.lib)
+    get_server_file_serverpath=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].file.serverpath)
+    get_server_file_hash_md5sum=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].file.hash.md5)
+    get_server_file_hash_sha512sum=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].file.hash.sha512sum)
     
     ##設定情報取得
     
     ###基本設定取得
-    get_server_settings_main_maxmemory=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.maxmemory)
-    get_server_settings_main_minmemory=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.minmemory)
-    get_server_settings_main_javahome=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.javahome)
+    get_server_settings_main_maxmemory=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].settings.main.maxmemory)
+    get_server_settings_main_minmemory=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].settings.main.minmemory)
+    get_server_settings_main_javahome=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].settings.main.javahome)
     ####起動分
-    get_server_settings_main_jvmargument=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.jvmargument)
+    get_server_settings_main_jvmargument=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].settings.main.jvmargument)
     ####起動分をメモリ含めて再度構成
     get_server_settings_main_jvmargument=$(eval echo $get_server_settings_main_jvmargument)
-    get_server_settings_main_screenname=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.screenname)
-    get_server_settings_main_pid=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.pid)
-    get_server_settings_main_status=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.status)
+    get_server_settings_main_screenname=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].settings.main.screenname)
+    get_server_settings_main_pid=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].settings.main.pid)
+    get_server_settings_main_status=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].settings.main.status)
     if [[ $start_mode = true ]];then
         cd -
     fi
@@ -165,8 +165,8 @@ while :; do
                 spinner_progress_status="ファイルの確認中"
                 run_spinner
                 if [[ -e eula.txt ]]; then
-                    EULACONSENT=$(cat ./eula.txt | grep eula=false | sed 's/eula=//g')
-                    if [[ \false = $EULACONSENT ]]; then
+                    EULACONSENT=$(< ./eula.txt tr '' _ | grep eula=false | sed 's/eula=//g')
+                    if [[ '\false' = $EULACONSENT ]]; then
                         echo "EULA(MINECRAFT エンド ユーザー ライセンス条項)に同意していません。"
                         echo "こちらを読み、同意する場合は(Y)esキャンセルする場合は(N)oと入力してください"
                         echo "https://account.mojang.com/documents/minecraft_eula"
