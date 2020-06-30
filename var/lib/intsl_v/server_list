@@ -35,8 +35,8 @@ if [[ ${purpose} = remove ]]; then
         read -r -p ">" input_server_name
     fi
     SERVER_LIST
-    get_ext_manager_start_line=$(grep -nw ${input_server_name,,}START ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d\: -f1)
-    get_ext_manager_exit_line=$(grep -nw ${input_server_name,,}EXIT ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d\: -f1)
+    get_ext_manager_start_line=$(grep -nw ${input_server_name,,}START ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d'\:' -f1)
+    get_ext_manager_exit_line=$(grep -nw ${input_server_name,,}EXIT ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d'\:' -f1)
     sed -i -e ''${get_ext_manager_start_line}','${get_ext_manager_exit_line}'d' ${VAR_LIB_FILE_LOCATIONS}server_list
     new_server_add_line=$((server_add_line - 6))
     sed -i -e 's/server_add_line="'${server_add_line}'"/server_add_line="'${new_server_add_line}'"/' ${SETTING_FILE_LOCATIONS}settings

@@ -383,8 +383,8 @@ extension_import() {
         
         rm -rf ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME}
         
-        GETIEXT=$(< ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh tr '' _| grep -e IEXT -e INT -e VURL >>${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME})
-        MAXLINE=$(< ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME} tr '' _ | wc -l)
+        GETIEXT=$(< ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh grep -e IEXT -e INT -e VURL >>${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME})
+        MAXLINE=$(< ${TMP_FILE_LOCATIONS}${INPUT_EXTENSION_NAME} wc -l)
         
         sed -i ''$INTSL_EXTENSION_LIST_ADD_LINE'i'\#${INPUT_EXTENSION_NAME}START'' ${VAR_LIB_FILE_LOCATIONS}extensions
         
@@ -407,7 +407,7 @@ extension_import() {
         done
         
         #行の取得
-        MAXLINE=$(< ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh tr '' _ | wc -l)
+        MAXLINE=$(< ${HOME_FILE_LOCATIONS}intsl_v/extensions/${INPUT_EXTENSION_NAME}.sh wc -l)
         for a in $(seq 7); do
             #Config再読込
             . ${SETTING_FILE_LOCATIONS}settings
@@ -486,7 +486,7 @@ extension_cloud_install() {
         echo "${main_ext_name} ${main_ext_version}" >>${TMP_FILE_LOCATIONS}extensions_list
     done
     echo "=================================" >>${TMP_FILE_LOCATIONS}extensions_list
-    < ${TMP_FILE_LOCATIONS}extensions_list tr '' _ | column -t | awk '{printf "%-15s %s\n",$1,$2}'
+    < ${TMP_FILE_LOCATIONS}extensions_list column -t | awk '{printf "%-15s %s\n",$1,$2}'
     echo "拡張機能の取得に成功しました"
     echo "取得した拡張機能数: ${i}"
     read -r -p ">" input_install_extension_name
@@ -706,7 +706,7 @@ mc_server_version_list() {
 }
 MC_SERVER_IMPORT() {
     if [[ -e ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt ]]; then
-        MAXLINE=$(< ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt tr '' _| wc -l)
+        MAXLINE=$(< ${CACHE_FILE_LOCATIONS}OUTPUTSERVERLIST.txt wc -l)
         while [[ $COUNT != $MAXLINE ]]; do
             . ${SETTING_FILE_LOCATIONS}settings
             spinner_progress_status="進捗 $COUNT / $MAXLINE"

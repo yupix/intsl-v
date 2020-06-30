@@ -165,10 +165,10 @@ EOF
 fi
 mktemp_back=$(mktemp --suffix=.json)
 cp ${VAR_LIB_FILE_LOCATIONS}server_list.json ${mktemp_back}
-get_servers=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[0].servers)
-new_get_servers=$(expr $get_servers +1)
+get_servers=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq -r .[0].servers)
+new_get_servers=$(($get_servers + 1))
 echo "sa-ba- $new_get_servers"
-cat ${VAR_LIB_FILE_LOCATIONS}server_list.json| jq '.[0].servers|="'${new_get_servers}'"' > ${mktemp_back}
+< ${VAR_LIB_FILE_LOCATIONS}server_list.json jq '.[0].servers|="'${new_get_servers}'"' > ${mktemp_back}
 mktemp=$(mktemp --suffix=.json)
 #管理用のjson
 create_default_json
