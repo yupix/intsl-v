@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 get_server_list(){
-    get_servers=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[0].servers)
+    get_servers=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[0].servers)
     for i in $(seq ${get_servers});do
-        check_server_name=$(cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].name)
+        check_server_name=$(< ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].name)
         if [[ $listmode = "true" ]];then
             echo "$check_server_name"
         else
@@ -124,7 +124,7 @@ while :; do
         cd)
             while :; do
                 if [[ ${mc_run_server_status} = online ]]; then
-                    read INPUT_COMMAND
+                    read -r -p ">" INPUT_COMMAND
                     case $INPUT_COMMAND in
                         exit)
                             echo "サービスを終了します"
@@ -216,11 +216,11 @@ EOS
                 
                 screen -AdmS ${get_server_settings_main_screenname} ${get_server_settings_main_javahome} ${get_server_settings_main_jvmargument} -jar ${get_server_depends_jar} nogui
                 mktemp=$(mktemp --suffix=.json)
-                cd - && cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq '.['$i'].settings.main.status|="online"' | sed 's/\\t//' > ${mktemp} && cat ${mktemp} > ${VAR_LIB_FILE_LOCATIONS}server_list.json &&cd -
+                cd - && < ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq '.['$i'].settings.main.status|="online"' | sed 's/\\t//' > ${mktemp} && < ${mktemp} tr '' _ > ${VAR_LIB_FILE_LOCATIONS}server_list.json &&cd -
                 
                 #PID取得用
                 getpid=$(screen -ls | grep ${get_server_settings_main_screenname} | sed -e 's/\..*//')
-                cd - && cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq '.['$i'].settings.main.pid|="'"${getpid}"'"' | sed 's/\\t//' > ${mktemp} && cat ${mktemp} > ${VAR_LIB_FILE_LOCATIONS}server_list.json &&cd -
+                cd - && < ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq '.['$i'].settings.main.pid|="'"${getpid}"'"' | sed 's/\\t//' > ${mktemp} && < ${mktemp} tr '' _ > ${VAR_LIB_FILE_LOCATIONS}server_list.json &&cd -
             else
                 echo "サーバーは既に起動しています。"
             fi
@@ -229,7 +229,7 @@ EOS
         
         #サーバー停止
         stop)
-            get_server_settings_main_pid=$(cd - && cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq -r .[$i].settings.main.pid && cd -)
+            get_server_settings_main_pid=$(cd - && < ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq -r .[$i].settings.main.pid && cd -)
             echo $get_server_settings_main_pid
             spinner_progress_status="プロセスの有無を確認中"
             run_spinner
@@ -238,7 +238,7 @@ EOS
                 if [ "$(screen -ls | grep ${get_server_settings_main_screenname})" == "" ]; then
                     if [[ $retrycount = 1 ]]; then
                         mktemp=$(mktemp --suffix=.json)
-                        cd - && cat ${VAR_LIB_FILE_LOCATIONS}server_list.json | jq '.['$i'].settings.main.status|="offline"' | sed 's/\\t//' > ${mktemp} && cat ${mktemp} > ${VAR_LIB_FILE_LOCATIONS}server_list.json &&cd -
+                        cd - && < ${VAR_LIB_FILE_LOCATIONS}server_list.json tr '' _ | jq '.['$i'].settings.main.status|="offline"' | sed 's/\\t//' > ${mktemp} && < ${mktemp} tr '' _ > ${VAR_LIB_FILE_LOCATIONS}server_list.json &&cd -
                         echo "サーバーの停止に成功しました。"
                         break
                     fi
@@ -308,7 +308,7 @@ EOF
                         echo "└ ${mc_run_server_mem_min}"
                         echo "4.サーバーメモリ最大"
                         echo "└ ${mc_run_server_mem_max}"
-                        read INPUT_SERVER_SETTING
+                        read -r -p ">" INPUT_SERVER_SETTING
                         case $INPUT_SERVER_SETTING in
                             1)
                                 change_setting_number="1"
