@@ -38,11 +38,11 @@ echo "$description"
 if [ ${change_setting_number} = 3 ] || [ ${change_setting_number} = 4 ]; then
     while :; do
         echo "使用する数値を入力してください。(単位等も除く)"
-        read -p ">" input_data
+        read -r -p ">" input_data
         if [[ "${input_data}" =~ ^[0-9]+$ ]]; then
             echo "単位を選択してください (GB / MB)"
             while :; do
-                read -p ">" input_unit_data
+                read -r -p ">" input_unit_data
                 overwrite_unit_data=$(echo "${input_unit_data,,}" | grep -o -e "g" -e "m")
                 case ${overwrite_unit_data} in
                 [gG] | [mM])
@@ -55,7 +55,7 @@ if [ ${change_setting_number} = 3 ] || [ ${change_setting_number} = 4 ]; then
                 esac
             done
             echo "最終確認: ${input_data}${use_unit^}Bでよろしいですか?"
-            read -p ">" final_check_data
+            read -r -p ">" final_check_data
             final_check_data=${final_check_data:-y}
             case ${final_check_data} in
             [yY] | [yY][eE][sS])
@@ -76,6 +76,6 @@ if [ ${change_setting_number} = 3 ] || [ ${change_setting_number} = 4 ]; then
     done
 else
     echo "使用する名前を入力してください"
-    read -p ">" input_data
+    read -r -p ">" input_data
 fi
 sed -i -e 's/'$use_sed'="'${sed_comman}'"/'$use_sed'="'${input_data}${use_unit}'"/' $server_dir/setting.txt

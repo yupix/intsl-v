@@ -14,7 +14,7 @@ VURL="https://dev.akarinext.org/yupix/intsl-on-mindustry/-/raw/master/newversion
 
 echo "使用するコマンドを入力してください。"
 while :; do
-    read -p ">" INPUT_DATA
+    read -r -p ">" INPUT_DATA
     case $INPUT_DATA in
     start)
         while :; do
@@ -42,7 +42,7 @@ while :; do
         ;;
 
     createworld)
-        read -p ">" INPUT_DATA
+        read -r -p ">" INPUT_DATA
         case $INPUT_DATA in
         fork)
             WORLD_TYPE="fork"
@@ -79,7 +79,7 @@ while :; do
             ;;
         custom)
             echo "world名を入力してください。"
-            read -p ">" $INPUT_DATA
+            read -r -p ">" $INPUT_DATA
             WORLD_TYPE="$INPUT_DATA"
             ;;
         esac
@@ -92,7 +92,7 @@ while :; do
 
     save)
         echo "ファイル名を入力してください。"
-        read -p ">"
+        read -r -p ">"
         screen -S $SCREEN_NAME -p 0 -X stuff "save $INPUT_NAME $(echo -ne '\r')"
         ;;
 

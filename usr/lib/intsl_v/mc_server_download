@@ -112,7 +112,7 @@ else
                 fi
             fi
             if [[ -z ${INPUT_Y_OR_N} ]]; then
-                read -p ">" INPUT_Y_OR_N
+                read -r -p ">" INPUT_Y_OR_N
                 INPUT_Y_OR_N=${INPUT_Y_OR_N:-y}
             fi
             echo ${INPUT_Y_OR_N}

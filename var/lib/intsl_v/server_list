@@ -32,7 +32,7 @@ server_list_get() {
 if [[ ${purpose} = remove ]]; then
     if [[ -z $input_server_name ]]; then
         echo "${word}を入力してください"
-        read -p ">" input_server_name
+        read -r -p ">" input_server_name
     fi
     SERVER_LIST
     get_ext_manager_start_line=$(grep -nw ${input_server_name,,}START ${VAR_LIB_FILE_LOCATIONS}server_list | cut -d\: -f1)
@@ -85,7 +85,7 @@ elif [[ ${purpose} = list ]]; then
 else
     if [[ -z $input_server_name ]]; then
         echo "${word}を入力してください"
-        read -p ">" input_server_name
+        read -r -p ">" input_server_name
         SERVER_LIST
     else
         SERVER_LIST

@@ -2,7 +2,7 @@
 while :; do
     echo "$INPUT_SERVER_VERSION"
     if [[ -z $INPUT_SERVER_VERSION ]]; then
-        read -p ">" INPUT_SERVER_VERSION
+        read -r -p ">" INPUT_SERVER_VERSION
     fi
     case $INPUT_SERVER_VERSION in
     1.6.1)
@@ -11,7 +11,7 @@ while :; do
 使用するForgeのバージョンを入力してください
 1│🐞 Latest 1.6.1 - 8.9.0.775
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -28,7 +28,7 @@ EOF
 1│🐞 Latest 1.6.2 - 9.10.1.871
 2│🌟 Stable 1.6.2 - 9.10.1.871
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1 | 2)
             forge_type="latest"
@@ -44,7 +44,7 @@ EOF
 使用するForgeのバージョンを入力してください
 1│🐞 Latest 1.6.3 - 9.11.0.878
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1 | 2)
             forge_type="latest"
@@ -60,7 +60,7 @@ EOF
 使用するForgeのバージョンを入力してください
 1│🐞 Latest 1.6.4 - 9.11.1.1345
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1 | 2)
             forge_type="latest"
@@ -77,7 +77,7 @@ EOF
 1│🐞 Latest 1.7.2 - 10.12.2.1147
 2│🌟 Stable 1.7.2 - 10.12.2.1121
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -99,7 +99,7 @@ EOF
 使用するForgeのバージョンを入力してください
 1│🐞 Latest 1.7.10_pre4 - 10.12.2.1149
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1 | 2)
             forge_type="latest"
@@ -116,7 +116,7 @@ EOF
 1│🐞 Latest 1.7.10 - 10.13.4.1614
 2│🌟 Stable 1.7.10 - 10.13.4.1558
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -139,7 +139,7 @@ EOF
 1│🐞 Latest 1.8 - 11.14.4.1577
 2│🌟 Stable 1.8 - 11.14.4.1563
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -161,7 +161,7 @@ EOF
 使用するForgeのバージョンを入力してください
 1│🐞 Latest 1.8.8 - 11.15.0.1655
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -178,7 +178,7 @@ EOF
 1│🐞 Latest 1.8.9 - 11.15.1.2318
 2│🌟 Stable 1.8.9 - 11.15.1.1722
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -201,7 +201,7 @@ EOF
 1│🐞 Latest 1.9 - 12.16.1.1938
 2│🌟 Stable 1.9 - 12.16.1.1887
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -224,7 +224,7 @@ EOF
 1│🐞 Latest 1.9.4 - 12.17.0.2051
 2│🌟 Stable 1.9.4 - 12.17.0.1976
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -247,7 +247,7 @@ EOF
 使用するForgeのバージョンを入力してください
 1│🐞 Latest 1.10 - 12.18.0.2000
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -264,7 +264,7 @@ EOF
 1│🐞 Latest 1.10.2 - 12.18.3.2511
 2│🌟 Stable 1.10.2 - 12.18.3.2185
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -287,7 +287,7 @@ EOF
 1│🐞 Latest 1.11 - 13.19.1.2199
 2│🌟 Stable 1.11 - 13.19.1.2189
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -310,7 +310,7 @@ EOF
 1│🐞 Latest 1.11.2 - 13.20.1.2588
 2│🌟 Stable 1.11.2 - 13.20.1.2386
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -333,7 +333,7 @@ EOF
 1│🐞 Latest 1.12 - 14.21.1.2443
 2│🌟 Stable 1.12 - 14.21.1.2387
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -356,7 +356,7 @@ EOF
 1│🐞 Latest 1.12.1 - 14.22.1.2485
 2│🌟 Stable 1.12.1 - 14.22.1.2478
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -379,7 +379,7 @@ EOF
 1│🐞 Latest 1.12.2 - 14.23.5.2854
 2│🌟 Stable 1.12.2 - 14.23.5.2854
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1 | 2)
             forge_type="latest"
@@ -395,7 +395,7 @@ EOF
 使用するForgeのバージョンを入力してください
 1│🐞 Latest 1.13.2 - 25.0.219
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -411,7 +411,7 @@ EOF
 使用するForgeのバージョンを入力してください
 1│🐞 Latest 1.14.2 - 26.0.63
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -427,7 +427,7 @@ EOF
 使用するForgeのバージョンを入力してください
 1│🐞 Latest 1.14.3 - 27.0.60
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -444,7 +444,7 @@ EOF
 1│🐞 Latest 1.14.4 - 28.2.18
 2│🌟 Stable 1.14.4 - 28.2.0
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -466,7 +466,7 @@ EOF
 使用するForgeのバージョンを入力してください
 1│🐞 Latest 1.15 - 29.0.4
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -482,7 +482,7 @@ EOF
 使用するForgeのバージョンを入力してください
 1│🐞 Latest 1.15.1 - 30.0.51
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -499,7 +499,7 @@ EOF
 1│🐞 Latest 1.15.2 - 31.2.8
 2│🌟 Stable 1.15.2 - 31.2.0
 EOF
-        read -p ">" INPUT_FORGE_VERSION
+        read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
@@ -518,7 +518,7 @@ EOF
 
     *)
         echo "存在しないバージョンです"
-        read -p ">" INPUT_SERVER_VERSION
+        read -r -p ">" INPUT_SERVER_VERSION
         ;;
     esac
 done

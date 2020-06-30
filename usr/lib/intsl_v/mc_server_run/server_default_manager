@@ -28,7 +28,7 @@ fi
 if [[ -z "$input_server_name" ]];then
     echo "管理したいサーバー名を入力してください。 (listで一覧を表示)"
     while :; do
-        read -p ">" input_server_name
+        read -r -p ">" input_server_name
         
         if [[ $input_server_name = list ]];then
             listmode="true"
@@ -90,7 +90,7 @@ run_spinner() {
 
 DISCORD_WEBHOOK_ON_OFF() {
     echo "WebHookを有効にしますか?"
-    read -p ">" INPUT_WEBHOOK_TRUE
+    read -r -p ">" INPUT_WEBHOOK_TRUE
     case $INPUT_WEBHOOK_TRUE in
         [yY] | [yY][eE][sS] | [tT][rR][uU][eE])
             TRUE_OR_FALSE="true"
@@ -118,7 +118,7 @@ while :; do
     echo "back | 元いた画面に戻ります"
     
     if [[ -z "${input_server_behavior}" ]]; then
-        read -p ">" input_server_behavior
+        read -r -p ">" input_server_behavior
     fi
     case $input_server_behavior in
         cd)
@@ -171,7 +171,7 @@ while :; do
                         echo "こちらを読み、同意する場合は(Y)esキャンセルする場合は(N)oと入力してください"
                         echo "https://account.mojang.com/documents/minecraft_eula"
                         while :; do
-                            read -p ">" INPUT_EULA_DATA
+                            read -r -p ">" INPUT_EULA_DATA
                             INPUT_EULA_DATA=${INPUT_EULA_DATA:-y}
                             case $INPUT_EULA_DATA in
                                 [yY] | [yY][eE][sS])
@@ -296,7 +296,7 @@ EOF
                 echo "閲覧したい設定を選んでください。"
                 echo " 1.サーバー関連 | 2.バックアップ関連"
                 echo " 3.WebHook関連  |"
-                read -p ">" INPUT_DATA
+                read -r -p ">" INPUT_DATA
                 case $INPUT_DATA in
                     [1])
                         echo "~サーバー設定~"
@@ -355,14 +355,14 @@ EOF
                             echo "└ 2.WebHookの名前: ${mc_run_server_discord_webhook_name}"
                             echo "└ 3.WebHookのアイコン画像: ${mc_run_server_discord_webhook_avator}"
                             echo "└ 4.WebHookURL: ${mc_run_server_discord_webhook_URL}"
-                            read -p ">" INPUT_SELECT_DATA
+                            read -r -p ">" INPUT_SELECT_DATA
                             case $INPUT_SELECT_DATA in
                                 [1])
                                     DISCORD_WEBHOOK_ON_OFF
                                 ;;
                                 [2])
                                     echo "WebHookで使用する名前を入力してください。"
-                                    read -p ">" INPUT_WEBHOOK_NAME
+                                    read -r -p ">" INPUT_WEBHOOK_NAME
                                     sed -i -e 's/'${mc_run_server_discord_webhook_name}'="'${mc_run_server_discord_webhook_name}'"/'${mc_run_server_discord_webhook_name}'="'$INPUT_WEBHOOK_NAME'"/' ./setting.txt
                                     . ./setting.txt
                                     if [[ $INPUT_WEBHOOK_NAME = ${mc_run_server_discord_webhook_name} ]]; then
@@ -373,7 +373,7 @@ EOF
                                 ;;
                                 [3])
                                     echo "WebHookで使用するアイコンのURLを入力してください。"
-                                    read -p ">" INPUT_WEBHOOK_AVATOR
+                                    read -r -p ">" INPUT_WEBHOOK_AVATOR
                                     sed -i -e 's/'${mc_run_server_discord_webhook_avator}'="'${mc_run_server_discord_webhook_avator}'"/'${mc_run_server_discord_webhook_avator}'="'$INPUT_WEBHOOK_AVATOR'"/' ./setting.txt
                                     . ./setting.txt
                                     if [[ $INPUT_WEBHOOK_AVATOR = ${mc_run_server_discord_webhook_avator} ]]; then
@@ -384,7 +384,7 @@ EOF
                                 ;;
                                 [4])
                                     echo "WebHook URLを入力してください。"
-                                    read -p ">" INPUT_WEBHOOK_URL
+                                    read -r -p ">" INPUT_WEBHOOK_URL
                                     sed -i -e 's,'mc_run_server_discord_webhook_URL'="'${mc_run_server_discord_webhook_URL}'",'mc_run_server_discord_webhook_URL'="'$INPUT_WEBHOOK_URL'",' ./setting.txt
                                     . ./setting.txt
                                     if [[ $INPUT_WEBHOOK_URL = ${mc_run_server_discord_webhook_URL} ]]; then
@@ -395,7 +395,7 @@ EOF
                                 ;;
                             esac
                             elif [[ ${mc_run_server_discord_webhook} = false ]]; then
-                            read -p ">" INPUT_SELECT_DATA
+                            read -r -p ">" INPUT_SELECT_DATA
                             case $INPUT_SELECT_DATA in
                                 [1])
                                     DISCORD_WEBHOOK_ON_OFF

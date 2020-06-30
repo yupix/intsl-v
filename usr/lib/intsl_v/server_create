@@ -42,7 +42,7 @@ EOF
 
 if [[ -z "${input_server_name}" ]]; then
     echo "サーバー名を入力してください。"
-    read -p ">" input_server_name
+    read -r -p ">" input_server_name
 fi
 echo $input_server_name
 if [[ ! -e ${HOME_FILE_LOCATIONS}/intsl_v ]]; then
@@ -55,7 +55,7 @@ if [[ -z ${INPUT_SERVER_DIRECTORY} ]]; then
     else
         echo "サーバーのディレクトリーを指定してください"
         echo "default: ${HOME_FILE_LOCATIONS}intsl_v"
-        read -p ">" INPUT_SERVER_DIRECTORY
+        read -r -p ">" INPUT_SERVER_DIRECTORY
         INPUT_SERVER_DIRECTORY=${INPUT_SERVER_DIRECTORY:-${HOME_FILE_LOCATIONS}intsl_v}
     fi
 fi
@@ -72,7 +72,7 @@ while [[ ${check_input_server_name} -gt "0" ]]; do
     if [ $check_input_server_name -gt 0 ]; then
         echo "$check_input_server_name に「/  #  \! - \' $ \" ( )  ; :」が含まれいます"
         echo "再度入力してください"
-        read -p ">" input_server_name
+        read -r -p ">" input_server_name
     else
         echo -e "${ECHO_GREEN_BOLD_COLOR}文字のスペルチェックに成功${ECHO_COLOR_EXIT}"
     fi
@@ -100,7 +100,7 @@ if [[ -e "${mc_server_create_file_dir}/${input_server_name}" ]]; then
     done
     echo "変更する場合は代替案の数字を、しない場合は、nを入力してください"
     while :; do
-        read -p ">" input_alternate_name
+        read -r -p ">" input_alternate_name
         case $input_alternate_name in
             [1] | [2] | [3] | [4] | [5] | [6] | [7])
                 if [[ ! -e "${mc_server_create_file_dir}/${input_server_name}${input_alternate_name}" ]]; then
