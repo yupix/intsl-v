@@ -5,6 +5,7 @@ server_list.json
 test.sh
 auto_push
 dummy
+.history
 
 # Dependency directories #
 new-version.txt
