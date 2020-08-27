@@ -1,5 +1,4 @@
 platform:
   - x64
 test_script:
-  - sh export PATH="$(pwd)/usr/bin:$PATH"
-  - sh intsl -V
+  - sh test.sh
