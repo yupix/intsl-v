@@ -1,0 +1,5 @@
+platform:
+  - x64
+before_build:
+  - export PATH="$(pwd)/usr/bin:$PATH"
+  - intsl -V
