@@ -1,5 +1,4 @@
 platform:
   - x64
 build_script:
-  - export PATH="$(pwd)/usr/bin:$PATH"
-  - intsl -V
+  - echo "test"
