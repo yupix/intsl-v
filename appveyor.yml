@@ -1,6 +1,0 @@
-platform:
-  - x64
-test_script:
-  - echo $PWD
-  - sh: export PATH="$(pwd)/usr/bin:$PATH"
-  - sh: intsl -V
