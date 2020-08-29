@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-    docker {
-      image 'archlinux:latest'
-    }
-
-  }
+  agent any
   stages {
     stage('Test') {
       steps {
