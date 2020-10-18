@@ -240,7 +240,15 @@ while :; do
     1.16.1)
         mc_server_jar_url="https://launcher.mojang.com/v1/objects/a412fd69db1f81db3f511c1463fd304675244077/server.jar"
         break
-        ;;        
+        ;;
+    1.16.2)
+        mc_server_jar_url="https://launcher.mojang.com/v1/objects/f02f4473dbf152c23d7d484952121db0b36698cb/server.jar"
+        break
+        ;;
+    1.16.3)
+        mc_server_jar_url="https://launcher.mojang.com/v1/objects/c5f6fb23c3876461d46ec380421e42b289789530/server.jar"
+        break
+        ;;
     *)
         echo "存在しないバージョンです"
         read -r -p ">" INPUT_SERVER_VERSION
