@@ -38,8 +38,11 @@ while :; do
         break
         ;;
     1.15.2)
-        mc_server_jar_url="https://repo.akarinext.org/pub/paper/1.15.2/paper-155.jar"
+        mc_server_jar_url="https://papermc.io/ci/job/Paper-1.15/389/artifact/paperclip-389.jar"
         break
+        ;;
+    1.16.3)
+        mc_server_jar_url="https://papermc.io/ci/job/Paper-1.16/240/artifact/paperclip-240.jar"
         ;;
 
     *)
