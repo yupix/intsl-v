@@ -496,15 +496,15 @@ EOF
         minecraft_version="${INPUT_SERVER_VERSION}"
         cat <<EOF
 使用するForgeのバージョンを入力してください
-1│🐞 Latest 1.15.2 - 31.2.8
+1│🐞 Latest 1.15.2 -  31.2.45
 2│🌟 Stable 1.15.2 - 31.2.0
 EOF
         read -r -p ">" INPUT_FORGE_VERSION
         case ${INPUT_FORGE_VERSION} in
         1)
             forge_type="latest"
-            mc_forge_version="31.2.8"
-            mc_server_jar_url="https://files.minecraftforge.net/maven/net/minecraftforge/forge/1.15.2-31.2.8/forge-1.15.2-31.2.8-installer.jar"
+            mc_forge_version="31.2.45"
+            mc_server_jar_url="http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.15.2-31.2.45/forge-1.15.2-31.2.45-installer.jar"
             ;;
 
         2)
@@ -515,7 +515,61 @@ EOF
         esac
         break
         ;;
+    1.16.1)
+        minecraft_version="${INPUT_SERVER_VERSION}"
+        cat <<EOF
+使用するForgeのバージョンを入力してください
+1│🐞 Latest 1.16.1 - 32.0.108
+EOF
+        read -r -p ">" INPUT_FORGE_VERSION
+        case ${INPUT_FORGE_VERSION} in
+        1)
+            forge_type="latest"
+            mc_forge_version="32.0.108"
+            mc_server_jar_url="http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.16.1-32.0.108/forge-1.16.1-32.0.108-installer.jar"
+            ;;
+        esac
+        break
+        ;;
+    1.16.2)
+        minecraft_version="${INPUT_SERVER_VERSION}"
+        cat <<EOF
+使用するForgeのバージョンを入力してください
+1│🐞 Latest 1.16.2 - 33.0.61
+EOF
+        read -r -p ">" INPUT_FORGE_VERSION
+        case ${INPUT_FORGE_VERSION} in
+        1)
+            forge_type="latest"
+            mc_forge_version="33.0.61"
+            mc_server_jar_url="http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.16.2-33.0.61/forge-1.16.2-33.0.61-installer.jar"
+            ;;
+        esac
+        break
+        ;;
+    1.16.3)
+        minecraft_version="${INPUT_SERVER_VERSION}"
+        cat <<EOF
+使用するForgeのバージョンを入力してください
+1│🐞 Latest 1.16.3 -  34.1.23
+2│🌟 Stable 1.16.3 - 34.1.0
+EOF
+        read -r -p ">" INPUT_FORGE_VERSION
+        case ${INPUT_FORGE_VERSION} in
+        1)
+            forge_type="latest"
+            mc_forge_version="34.1.23"
+            mc_server_jar_url="http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.16.3-34.1.23/forge-1.16.3-34.1.23-installer.jar"
+            ;;
 
+        2)
+            forge_type="stable"
+            mc_forge_version="34.1.0"
+            mc_server_jar_url="http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.16.3-34.1.0/forge-1.16.3-34.1.0-installer.jar"
+            ;;
+        esac
+        break
+        ;;
     *)
         echo "存在しないバージョンです"
         read -r -p ">" INPUT_SERVER_VERSION
