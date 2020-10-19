@@ -15,7 +15,7 @@ shell_check:
     stage: shell_check
     script:
         - cd test
-        - docker run --rm -v "$PWD:/mnt" koalaman/shellcheck:latest test.sh
+        - shellcheck test.sh
 
 local_check:
     tags:
