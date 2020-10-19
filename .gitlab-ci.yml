@@ -7,15 +7,18 @@ stages:
   # - server_create
 
 shell_check:
-    image: koalaman/shellcheck:latest
+    image: koalaman/shellcheck-alpine:latest
     tags:
         - archlinux
         - docker
         - linux
     stage: shell_check
     script:
-        - cd test
-        - shellcheck test.sh
+        - shellcheck usr/bin/instl
+        - shellcheck test/installer.sh
+        - shellcheck usr/lib/intsl_v/server_create
+        - shellcheck usr/lib/intsl_v/setting_function
+        - shellcheck usr/lib/intsl_v/server_default_settings.sh
 
 local_check:
     tags:
