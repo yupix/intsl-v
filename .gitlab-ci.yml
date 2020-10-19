@@ -1,7 +1,7 @@
 image: yupix/intsl
 
 stages:
- - shell_check
+  - shell_check
   - local_check
   - package_check
   # - server_create
