@@ -14,8 +14,7 @@ shell_check:
         - linux
     stage: shell_check
     script:
-        - cd test
-        - shellcheck test.sh
+        - shellcheck *
 
 local_check:
     tags:
