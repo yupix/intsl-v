@@ -7,7 +7,7 @@ stages:
   # - server_create
 
 shell_check:
-    image: koalaman/shellcheck:latest
+    image: koalaman/shellcheck-alpine:latest
     tags:
         - archlinux
         - docker
