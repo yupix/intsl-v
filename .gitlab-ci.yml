@@ -1,9 +1,21 @@
 image: yupix/intsl
 
 stages:
+ - shell_check
   - local_check
   - package_check
   # - server_create
+
+shell_check:
+    image: koalaman/shellcheck:latest
+    tags:
+        - archlinux
+        - docker
+        - linux
+    stage: shell_check
+    script:
+        - cd test
+        - docker run --rm -v "$PWD:/mnt" koalaman/shellcheck:latest test.sh
 
 local_check:
     tags:
